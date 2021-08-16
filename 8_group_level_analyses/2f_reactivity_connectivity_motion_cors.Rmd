@@ -1,0 +1,338 @@
+---
+title: "Reactivity - Connectivity Plots"
+author: "Paul A. Bloom"
+date: "March 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+library(lme4)
+library(ggpubr)
+source('helper_functions.R')
+```
+
+
+```{r}
+# reactivity fear
+reactivity_fear = read.csv('compiled_data/comps_amyg_fear_reactivity_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(name, Subject, wave, Block, ageCenter, Age, meanAge, prev_studied, motion, meanFdAll, scanner, blockBin,
+                contains('amyg'), contains('amyg'), -contains('High'), -contains('Low')) 
+
+names(reactivity_fear)[grepl('amyg', names(reactivity_fear))] = paste0('fear_',names(reactivity_fear)[grepl('amyg', names(reactivity_fear))])
+names(reactivity_fear)[grepl('Amyg', names(reactivity_fear))] = paste0('fear_',names(reactivity_fear)[grepl('Amyg', names(reactivity_fear))])
+
+# reactivity neutral
+reactivity_neutral = read.csv('compiled_data/comps_amyg_neut_reactivity_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(name,contains('amyg'), contains('Amyg'), -contains('High'), -contains('Low')) 
+
+names(reactivity_neutral)[grepl('amyg', names(reactivity_neutral))] = paste0('neut_',names(reactivity_neutral)[grepl('amyg', names(reactivity_neutral))])
+names(reactivity_neutral)[grepl('Amyg', names(reactivity_neutral))] = paste0('neut_',names(reactivity_neutral)[grepl('Amyg', names(reactivity_neutral))])
+
+# reactivity fear > neutral
+reactivity_fear_minus_neutral = read.csv('compiled_data/comps_amyg_fear_minus_neut_reactivity_master.csv', stringsAsFactors = FALSE)%>%
+  dplyr::select(name, contains('amyg'), contains('Amyg'), -contains('High'), -contains('Low')) 
+
+names(reactivity_fear_minus_neutral)[grepl('amyg', names(reactivity_fear_minus_neutral))] = paste0('fear_minus_neut_',names(reactivity_fear_minus_neutral)[grepl('amyg', names(reactivity_fear_minus_neutral))])
+names(reactivity_fear_minus_neutral)[grepl('Amyg', names(reactivity_fear_minus_neutral))] = paste0('fear_minus_neut_',names(reactivity_fear_minus_neutral)[grepl('Amyg', names(reactivity_fear_minus_neutral))])
+
+# ppi
+ppi = read.csv('compiled_data/comps_amyg_all_contrasts_ppi_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(name, contains('mpfc'), -contains('beta'))
+
+# bsc
+bsc = read.csv('compiled_data/comps_amyg_all_contrasts_bsc_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(name, contains('mpfc'), -contains('beta'), -contains('left'), -contains('right')) %>%
+  mutate_if(is.numeric, scale, center = FALSE)
+
+# compile all metrics
+brain_metrics = reactivity_fear %>%
+  left_join(., reactivity_neutral, by = 'name') %>%
+  left_join(., reactivity_fear_minus_neutral, by = 'name') %>%
+  left_join(., ppi, by = 'name') %>%
+  left_join(., bsc, by = 'name') 
+
+
+
+brain_metrics_long = brain_metrics %>%
+  pivot_longer(c(contains('fear'), contains('neut')), names_to = 'brain_measure', values_to  = 'value') %>%
+  group_by(brain_measure) %>%
+  nest() %>%
+  mutate(motion_cor = map(data, ~cor.test(.$meanFdAll, .$value,conf.level = .95)),
+         tidy_motion = map(motion_cor, ~broom::tidy(.)))  %>%
+  unnest(tidy_motion) %>%
+  mutate(Contrast = case_when(
+    grepl('fear', brain_measure) & !grepl('neut', brain_measure) ~ 'Fear > Baseline',
+    grepl('neut', brain_measure) & !grepl('fear', brain_measure) ~ 'Neutral > Baseline',
+    grepl('fear', brain_measure) & grepl('neut', brain_measure) ~ 'Fear > Neutral'),
+    Measure = case_when(
+      grepl('deconv', brain_measure) ~ 'gPPI',
+      grepl('gsr', brain_measure) ~ 'BSC',
+      !grepl('deconv', brain_measure) & !grepl('gsr', brain_measure) ~ 'Reactivity'
+    ))
+
+```
+
+# ppi motion correlation plot
+```{r}
+gPPI_motion_correlations = brain_metrics_long %>%
+  ungroup() %>%
+  dplyr::filter(Measure %in% c('gPPI')) %>%
+  group_by(Measure, Contrast) %>%
+  dplyr::mutate(rank = rank(estimate),
+                deconv = ifelse(grepl('no_deconv', brain_measure), '-deconv', '+deconv'),
+                roi = case_when(
+                  grepl('mpfc1', brain_measure) ~ 'mPFC #1',
+                  grepl('mpfc2', brain_measure) ~ 'mPFC #2',
+                  grepl('mpfc3', brain_measure) ~ 'mPFC #3',
+                  grepl('vmpfc', brain_measure) ~ 'large vmPFC')) %>%
+  dplyr::arrange(rank) %>%
+  ggplot(data = ., aes(x = roi, y = estimate, color = deconv)) +
+  geom_hline(yintercept = 0) +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), 
+                width = 0, position = position_dodge(0.3)) +
+  geom_point(position = position_dodge(0.3)) + 
+  facet_grid('Contrast',scales = 'free_y') +
+  coord_flip() +
+  labs(y = 'Correlation between mean FD & gPPI estimates', x = 'mPFC ROI') +
+  theme_bw() +
+  theme(legend.title = element_blank())
+
+ggsave(gPPI_motion_correlations, filename = 'plots/supplement/gppi_motion_correlataions.png', height = 4, width =7)
+```
+
+# BSC motion correlation
+
+```{r}
+bsc_motion_correlations = brain_metrics_long %>%
+  ungroup() %>%
+  dplyr::filter(Measure %in% c('BSC')) %>%
+  group_by(Measure, Contrast) %>%
+  dplyr::mutate(rank = rank(estimate),
+                gsr = ifelse(grepl('no_gsr', brain_measure), '-Global Signal Correction', '+Global Signal Correction'),
+                roi = case_when(
+                  grepl('mpfc1', brain_measure) ~ 'mPFC #1',
+                  grepl('mpfc2', brain_measure) ~ 'mPFC #2',
+                  grepl('mpfc3', brain_measure) ~ 'mPFC #3',
+                  grepl('vmpfc', brain_measure) ~ 'large vmPFC')) %>%
+  dplyr::arrange(rank) %>%
+  ggplot(data = ., aes(x = roi, y = estimate, color = gsr)) +
+  geom_hline(yintercept = 0) +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), 
+                width = 0, position = position_dodge(0.3)) +
+  geom_point(position = position_dodge(0.3)) + 
+  facet_grid('Contrast',scales = 'free_y') +
+  coord_flip() +
+  labs(y = 'Correlation between mean FD & BSC estimates', x = 'mPFC ROI') +
+  theme_bw() +
+  theme(legend.title = element_blank())
+
+ggsave(bsc_motion_correlations, filename = 'plots/supplement/bsc_motion_correlataions.png', height = 4, width =7)
+```
+```
+
+
+```{r}
+reactivity_motion_sca = function(df, contrast, labels){
+  sca_decision_frame = df %>%
+    ungroup() %>%
+    mutate(., rank = rank(estimate),
+             tstat = ifelse(grepl('tstat', brain_measure), '|', NA),
+             amyg_right = ifelse(grepl('right', tolower(brain_measure)), '|', NA),
+             amyg_left = ifelse(grepl('left', tolower(brain_measure)), '|', NA),
+             amyg_bilateral = ifelse(grepl('bilateral', tolower(brain_measure)), '|', NA),
+             native_space = ifelse(grepl('native', brain_measure), '|', NA),
+             glm_fsl= ifelse((grepl('og', brain_measure) | grepl('fsl', brain_measure)), NA, '|'),
+             motion_reg6 = case_when(
+               grepl('fsl_1', brain_measure) ~ '|',
+               grepl('fsl_3', brain_measure) ~ '|',
+               grepl('afni_5', brain_measure) ~ '|',
+               grepl('afni_6', brain_measure) ~ '|'),
+             motion_reg18 = case_when(
+               grepl('fsl_2', brain_measure) ~ '|',
+               grepl('fsl_4', brain_measure) ~ '|',
+               grepl('afni_7', brain_measure) ~ '|',
+               grepl('afni_7', brain_measure) ~ '|'),
+             motion_reg24 = ifelse(grepl('og', brain_measure), '|', NA),
+             hrf_2gamma = case_when(
+               grepl('fsl_1', brain_measure) ~ '|',
+               grepl('fsl_2', brain_measure) ~ '|',
+               grepl('og', brain_measure) ~ '|'),
+             highpass = case_when(
+               grepl('afni_6', brain_measure) ~ '|',
+               grepl('afni_8', brain_measure) ~ '|'),
+             overlap_0 = case_when(
+               conf.low < 0 & conf.high < 0 ~ 'neg_y',
+               conf.low < 0 & estimate < 0 & conf.high > 0 ~ 'neg_n',
+               conf.low < 0 & estimate > 0 & conf.high > 0 ~ 'pos_n',
+               conf.low  > 0 & conf.high > 0 ~ 'pos_y',
+             ))
+  
+  sca_decision_frame$overlap_0 = factor(sca_decision_frame$overlap_0, levels = c("neg_y", "neg_n", "pos_n", "pos_y"))
+  
+  median_model_frame = sca_decision_frame %>%
+      summarise(estimate = median(estimate), conf.low = median(conf.low), conf.high = median(conf.high), rank= median(rank))
+  
+  sca_decision_frame_long = sca_decision_frame %>%
+      tidyr::gather(key = 'fork', value = 'choice', c(tstat, amyg_right, amyg_left, amyg_bilateral, native_space,
+                                                      glm_fsl,
+                                                      motion_reg6, motion_reg18, motion_reg24,
+                                                      hrf_2gamma, highpass)) %>%
+      mutate(decisiontype = case_when(
+        grepl('amyg', fork) ~ 'Amygdala\n Roi',
+        fork == 'native_space' ~ 'Amygdala\n Roi',
+        fork %in% c('motion_reg6', 'motion_reg18', 'motion_reg24', 'highpass', 'hrf_2gamma', 
+                    'glm_fsl', 'tstat') ~ 'Subject-Level\nModel'
+      ))
+    
+    # get average rank of each pipeline by beta estimate
+    sca_decision_frame_long_ranks = sca_decision_frame_long %>%
+      dplyr::filter(choice == '|') %>%
+      dplyr::group_by(fork) %>%
+      summarise(mean_rank = -1*mean(rank))
+    
+    # join ranks with decision frame
+    sca_decision_frame_long = left_join(sca_decision_frame_long, sca_decision_frame_long_ranks)
+    
+    # rename variables to be human-interpretable
+    sca_decision_frame_long$fork  = dplyr::recode(sca_decision_frame_long$fork, 'tstat' = 'use tstats (vs. beta estimates)',
+                                                  'hrf_2gamma' = '2gamma hrf (vs. 1gamma)',
+                                                  'highpass' = 'quadratic detrending (vs. highpass)',
+                                                  'native_space' = 'native space (vs. mni space)',
+                                                  'glm_fsl' = 'glm in afni (vs. glm in fsl)',
+                                                  'amyg_right' = 'right amygdala',
+                                                  'amyg_left' =  'left amygdala',
+                                                  'amyg_bilateral' = 'bilateral amygdala',
+                                                  'motion_reg24' = '24 motion regs (preregistered pipeline)',
+                                                  'motion_reg18' = '18 motion regs + WM + CSF',
+                                                  'motion_reg6' = '6 motion regs')
+    
+    sca_decision_frame_long$fork_ordered = reorder(sca_decision_frame_long$fork,  sca_decision_frame_long$mean_rank)
+    
+    
+    # color palette to code the following:
+    # blue = negative, distinct from 0
+    # red = negative, not distinct from 0
+    # green = positive, not distinct from 0
+    # purple = positive, distinct from 0
+    if('neg_y' %in% sca_decision_frame$overlap_0){
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[1:4]
+    }else if('neg_n' %in% sca_decision_frame$overlap_0){
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[2:4]
+    }else if('pos_n' %in% sca_decision_frame$overlap_0){
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[3:4]
+    }else{
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[4:4]
+    }
+    
+    # summary for lower plot
+    decision_summary = sca_decision_frame_long %>% 
+      group_by(choice, decisiontype, fork, fork_ordered) %>%
+      summarise(n = n(), median_rank = median(rank), lwr_rank = quantile(rank, .25), upr_rank = quantile(rank, .75)) %>%
+      dplyr::filter(choice =='|')
+    
+    
+    sca_top = ggplot(sca_decision_frame, aes(x = rank, y = estimate, color = overlap_0)) +
+      geom_hline(yintercept = 0, lty = 1, color = 'black') +
+      geom_hline(yintercept = median(sca_decision_frame$estimate), color = 'black', lty = 2) +
+      geom_point(alpha = .8) + 
+      geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0, lwd = .15, alpha = .8) +
+      geom_point(data = median_model_frame,aes(x = rank, y = estimate), color = 'black') +
+      geom_errorbar(data = median_model_frame,aes(x = rank, y = estimate, ymin = conf.low, ymax = conf.high), color = 'black') +
+      labs(x = '', y = 'Correlation with mean FD\n(across scans)', title = contrast) +
+      theme_classic() +
+      theme(legend.position = 'none') +
+      scale_color_manual(values = my_colors)
+    
+    sca_bottom = ggplot(sca_decision_frame_long, aes(x = rank, y = fork_ordered, color = overlap_0)) +
+      geom_text(aes(label = choice), alpha = .8) +
+      labs(x = "Models ranked by beta estimates", y = "Decision Points") + 
+      theme_bw() + 
+      theme(legend.title = element_text(size = 10),
+            legend.text = element_text(size = 8),
+            axis.text = element_text(color = "black", size = 8),
+            legend.position = "none",
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            strip.text.y = element_text(size = 8)) +
+      scale_color_manual(values = my_colors) +
+      facet_grid(rows = vars(decisiontype), drop = TRUE, scales = 'free_y', space = 'free_y') +
+      geom_point(data = decision_summary, aes(x = median_rank, y = fork_ordered), color = 'black') +
+      geom_errorbarh(data = decision_summary, aes(x = median_rank, y = fork_ordered, xmin = lwr_rank, xmax = upr_rank), color = 'black')
+    
+  sca_panel = cowplot::plot_grid(sca_top, sca_bottom, ncol = 1, align = "v", axis = 'lr', labels = labels)
+
+  return(sca_panel)
+}
+
+```
+
+
+```{r}
+mot_r_a = reactivity_motion_sca(df =dplyr::filter(brain_metrics_long, Measure == 'Reactivity', Contrast == 'Fear > Baseline'), 
+                      contrast = 'Fear > Baseline', labels = c('A', ''))
+mot_r_b = reactivity_motion_sca(df =dplyr::filter(brain_metrics_long, Measure == 'Reactivity', Contrast == 'Neutral > Baseline'), 
+                      contrast = 'Neutral > Baseline', labels = c('B', ''))
+
+mot_r_c = reactivity_motion_sca(df =dplyr::filter(brain_metrics_long, Measure == 'Reactivity', Contrast == 'Fear > Neutral'), 
+                      contrast = 'Fear > Neutral', labels = c('C', 'F'))
+
+mot_r_grid = cowplot::plot_grid(mot_r_a, mot_r_b, mot_r_c, nrow = 2)
+
+
+ggsave(mot_r_grid, filename = 'plots/supplement/amyg_reactivity_correlations_motion.png', width = 10, height = 8)
+```
+
+# Relationships between reactivity and connectivity
+
+```{r}
+coefs = read.csv('output/multi_metric/reactivity_connectivity_coefs.csv', stringsAsFactors = FALSE)
+coefs = dplyr::filter(coefs, !grepl('sd', term), !grepl('cor', term), !grepl('native', term)) %>%
+  mutate(predictor_condition = case_when(
+      grepl('fear_reactivity', predictor) ~ 'Reactivity\nFear > Baseline',
+      grepl('fear_minus_neut_reactivity', predictor) ~ 'Reactivity\nFear > Neutral',
+      grepl('neut_reactivity', predictor) & ! grepl('fear_minus_neut_reactivity', predictor)  ~ 'Reactivity\nNeutral > Baseline'),
+     `Connectivity Outcome` = case_when(
+       grepl('deconv', outcome) & !grepl('no_deconv', outcome) ~ 'PPI - Deconv',
+       grepl('no_deconv', outcome) ~ 'PPI - No Deconv',
+       grepl('no_gsr', outcome) ~ 'BSC - No GSR',
+       grepl('gsr', outcome) &! grepl('no_gsr', outcome) ~ 'BSC - GSR'
+     ),
+     outcome_condition = case_when(
+      grepl('fear', outcome) & !grepl('fear_minus_neut', outcome) ~ 'Connectivity\nFear',
+      grepl('fear_minus', outcome) ~ 'Connectivity\nFear > Neutral',
+      grepl('neut', outcome) & !grepl('fear_minus_neut', outcome)  ~ 'Connectivity\nNeutral')
+  )
+
+
+coefs %>%
+  dplyr::filter(grepl('reactivity', term), !grepl(':', term)) %>%
+  dplyr::arrange(estimate) %>%
+  group_by(predictor_condition, outcome_condition) %>%
+  dplyr::mutate(rank = rank(estimate)) %>%
+  ggplot(aes(x = predictor_condition, y = estimate, color = `Connectivity Outcome`)) +
+    geom_hline(yintercept = 0, lty = 2) +
+    geom_point(position = position_dodge(width = .4)) + 
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0, position = position_dodge(width = .4)) +
+    facet_grid(~outcome_condition, scales = 'free_x', drop = TRUE) +
+  theme_bw() +
+  labs(y = 'Beta Estimates\nAssociations between connectivity ~ reactivity', x = 'Reactivity Contrast')
+
+
+coefs %>%
+  dplyr::filter(grepl(':', term)) %>%
+  dplyr::arrange(estimate) %>%
+  group_by(predictor_condition, outcome_condition) %>%
+  dplyr::mutate(rank = rank(estimate)) %>%
+  ggplot(aes(x = predictor_condition, y = estimate, color = `Connectivity Outcome`)) +
+    geom_hline(yintercept = 0, lty = 2) +
+    geom_point(position = position_dodge(width = .4)) + 
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0, position = position_dodge(width = .4)) +
+    facet_grid(~outcome_condition, scales = 'free_x', drop = TRUE) +
+  theme_bw() +
+  labs(y = 'Beta Estimates\nAge-Reactivity Interaction Terms', x = 'Reactivity Contrast')
+```

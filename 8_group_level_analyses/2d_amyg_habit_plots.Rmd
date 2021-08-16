@@ -1,0 +1,746 @@
+---
+title: "Amygdala Habituation Plots"
+author: "Paul A. Bloom"
+date: "March 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+library(lme4)
+library(rstanarm)
+source('helper_functions.R')
+```
+
+# Pull in and bind together multiverse outputs
+
+Model Coefficients
+```{r}
+slope_files = paste0('output/habit/', dir('output/habit/', pattern = 'slope_coefs*'))
+halves_files = paste0('output/habit/', dir('output/habit/', pattern = 'halves_coefs*'))
+single_trial_files = paste0('output/habit/', dir('output/habit/', pattern = 'single_trial_coefs*'))
+
+
+for (ii in 1:length(slope_files)){
+  temp_frame = read.csv(slope_files[ii], stringsAsFactors = FALSE)
+  if (ii == 1){
+    slope_coefs = temp_frame
+  }else{
+    slope_coefs = rbind(slope_coefs, temp_frame)
+  }
+  rm(temp_frame)
+}
+
+
+for (ii in 1:length(halves_files)){
+  temp_frame = read.csv(halves_files[ii], stringsAsFactors = FALSE)
+  if (ii == 1){
+    halves_coefs = temp_frame
+  }else{
+    halves_coefs = rbind(halves_coefs, temp_frame)
+  }
+  rm(temp_frame)
+}
+
+
+for (ii in 1:length(single_trial_files)){
+  temp_frame = read.csv(single_trial_files[ii], stringsAsFactors = FALSE)
+  if (ii == 1){
+    single_trial_coefs = temp_frame
+  }else{
+    single_trial_coefs = rbind(single_trial_coefs, temp_frame)
+  }
+  rm(temp_frame)
+}
+
+
+```
+
+Filter only select coefficients
+```{r}
+# make sure age coefs are named the same thing for quadratic models
+slope_coefs = mutate(slope_coefs, 
+                          term = ifelse(term == 'polyageCenter2rawEQTRUE1', 'ageCenter', term)) %>%
+  dplyr::filter(!grepl('r_', term))
+
+halves_coefs = mutate(halves_coefs, 
+                          term = ifelse(term == 'polyageCenter2rawEQTRUE1', 'ageCenter', term),
+                          term = ifelse(term == 'polyageCenter2rawEQTRUE1:halfhalf2', 'ageCenter:halfhalf2', term)) %>%
+  dplyr::filter(!grepl('r_', term))
+```
+
+Model Predictions
+```{r}
+slope_pred_files = paste0('output/habit/', dir('output/habit/', pattern = 'slope_model_preds*'))
+halves_pred_files = paste0('output/habit/', dir('output/habit/', pattern = 'halves_model_preds*'))
+single_trial_pred_files = paste0('output/habit/', dir('output/habit/', pattern = 'single_trial_model_preds*'))
+single_trial_factor_pred_files = paste0('output/habit/', dir('output/habit/', pattern = 'single_trial_model_factor_preds*'))
+
+
+
+for (ii in 1:length(slope_pred_files)){
+  temp_frame_pred = read.csv(slope_pred_files[ii], stringsAsFactors = FALSE)
+  if (ii == 1){
+    slope_preds = temp_frame_pred
+  }else{
+    slope_preds = rbind(slope_preds, temp_frame_pred)
+  }
+}
+
+
+
+for (ii in 1:length(halves_pred_files)){
+  temp_frame_pred = read.csv(halves_pred_files[ii], stringsAsFactors = FALSE)
+  if (ii == 1){
+    halves_preds = temp_frame_pred
+  }else{
+    halves_preds = rbind(halves_preds, temp_frame_pred)
+  }
+}
+
+
+for (ii in 1:length(single_trial_pred_files)){
+  temp_frame_pred = read.csv(single_trial_pred_files[ii], stringsAsFactors = FALSE)
+  if (ii == 1){
+    single_trial_preds = temp_frame_pred
+  }else{
+    single_trial_preds = rbind(single_trial_preds, temp_frame_pred)
+  }
+}
+
+for (ii in 1:length(single_trial_factor_pred_files)){
+  temp_frame_pred = read.csv(single_trial_factor_pred_files[ii], stringsAsFactors = FALSE)
+  if (ii == 1){
+    single_trial_factor_preds = temp_frame_pred
+  }else{
+    single_trial_factor_preds = rbind(single_trial_factor_preds, temp_frame_pred)
+  }
+}
+
+
+single_trial_factor_preds$trial_model_discrete = 'yes'
+single_trial_preds$trial_model_discrete = 'no'
+
+single_trial_factor_preds = dplyr::select(single_trial_factor_preds, everything(), trial = trial_factor)
+single_trial_preds = rbind(single_trial_preds, single_trial_factor_preds)
+
+single_trial_preds = mutate(single_trial_preds,
+                            amyg_roi = case_when(
+                              grepl('right', pipeline) ~ 'right',
+                              grepl('left', pipeline) ~ 'left',
+                              grepl('bilateral', pipeline) ~ 'bilateral'
+                            ),
+                            contrast = ifelse(grepl('fear', pipeline), 'fear', 'neutral'),
+                            gsr = ifelse(grepl('no_gsr', pipeline), 'no', 'yes'),
+                            within_center = ifelse(grepl('_w', pipeline), 'yes', 'no'),
+                            quadratic = ifelse(grepl('Quadratic', model_type), 'yes', 'no'),
+                            ctrl_block = ifelse(grepl('Block', model_type), 'yes', 'no'),
+                            ctrl_scanner = ifelse(grepl('Scanner', model_type), 'yes', 'no'))
+
+```
+
+```{r}
+# Load in raw data
+amyg_slope= read.csv('compiled_data/habit_slopes_master_comps.csv', stringsAsFactors = FALSE)
+
+amyg_halves = read.csv('compiled_data/habit_halves_master_comps.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(everything(), pipeline = set)
+
+
+single_trial_preds$age = round(single_trial_preds$ageCenter + amyg_slope$meanAge[1],1)
+save(single_trial_preds, file = 'output/habit/habit_summary_outputs.rda')
+
+
+# Nest and set indices
+amyg_slope_long = amyg_slope %>%
+  tidyr::gather(., key = 'pipeline', value = 'slope', contains('slope')) %>%
+  dplyr::group_by(pipeline) %>%
+  ungroup() %>%
+  dplyr::mutate(., index = 1:nrow(.)) 
+
+amyg_halves_long = amyg_halves %>%
+  dplyr::filter(!is.na(reactivity)) %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  ungroup() %>%
+  mutate(., index = 1:nrow(.)) %>%
+  unnest(data)
+```
+
+# SCA Plot
+
+```{r}
+make_sca_plot_slope = function(coefs, 
+                         fork_list, 
+                         contrast_type, 
+                         plot_title,
+                         term_choice){
+  sca_decision_frame = coefs %>%
+    dplyr::filter(term == term_choice) %>%
+    dplyr::arrange(estimate) %>%
+    mutate(., rank = 1:nrow(.),
+           quadratic = ifelse(grepl('Quadratic', model_type), '|', NA),
+           random_slopes = ifelse(grepl('NoRandomSlopes', model_type), '|', NA),
+           ctrl_scanner = ifelse(grepl('Scanner', model_type), '|', NA),
+           ctrl_block = ifelse(grepl('Block', model_type), '|', NA),
+           amyg_right = ifelse(grepl('right', tolower(pipeline)), '|', NA),
+           amyg_left = ifelse(grepl('left', tolower(pipeline)), '|', NA),
+           amyg_bilateral = ifelse(grepl('bilateral', tolower(pipeline)), '|', NA),
+           gsr = ifelse(grepl('no_gsr', tolower(pipeline)), NA, '|'),
+           overlap_0 = case_when(
+             conf.low < 0 & conf.high < 0 ~ 'neg_y',
+             conf.low < 0 & estimate < 0 & conf.high > 0 ~ 'neg_n',
+             conf.low < 0 & estimate > 0 & conf.high > 0 ~ 'pos_n',
+             conf.low  > 0 & conf.high > 0 ~ 'pos_y',
+           ))
+  
+  
+  # median model
+  median_model_frame = sca_decision_frame %>%
+    ungroup() %>%
+    summarise(estimate = median(estimate), conf.low = median(conf.low), conf.high = median(conf.high), 
+              rank= median(rank))
+  
+  
+  sca_decision_frame_long = sca_decision_frame %>%
+    tidyr::gather(key = 'fork', value = 'choice', all_of(fork_list)) %>%
+    mutate(decisiontype = case_when(
+      grepl('amyg', fork) ~ 'Amyg\n ROI',
+      fork %in% c('quadratic', 'random_slopes', 'ctrl_scanner','ctrl_block') ~ 'Group\nModel',
+      fork %in% c('gsr') ~ 'GSS'
+    ))
+  
+  # get average rank of each pipeline by beta estimate
+  sca_decision_frame_long_ranks = sca_decision_frame_long %>%
+    dplyr::filter(choice == '|') %>%
+    dplyr::group_by(fork) %>%
+    summarise(mean_rank = -1*mean(rank))
+  
+  # join ranks with decision frame
+  sca_decision_frame_long = left_join(sca_decision_frame_long, sca_decision_frame_long_ranks)
+  
+  # rename variables to be human-interpretable
+  sca_decision_frame_long$fork  = dplyr::recode(sca_decision_frame_long$fork, 
+                                                'quadratic' = 'quadratic age term (vs. none)',
+                                                'random_slopes' = 'random intercepts only',
+                                                'ctrl_block' = 'covariate for task block',
+                                                'ctrl_scanner' = 'covariate for scanner used',
+                                                'amyg_right' = 'right amygdala',
+                                                'amyg_left' =  'left amygdala',
+                                                'amyg_bilateral' = 'bilateral amygdala',
+                                                'gsr' = 'subtract global signal (vs. not)')
+  
+  sca_decision_frame_long$fork_ordered = reorder(sca_decision_frame_long$fork,  sca_decision_frame_long$mean_rank)
+  
+  
+  sca_decision_frame$overlap_0 = factor(sca_decision_frame$overlap_0, levels = c("neg_y", "neg_n", "pos_n", "pos_y"))
+
+  # color palette to code the following:
+  # blue = negative, distinct from 0
+  # red = negative, not distinct from 0
+  # green = positive, not distinct from 0
+  # purple = positive, distinct from 0
+  if('neg_y' %in% sca_decision_frame$overlap_0){
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[1:4]
+  }else if('neg_n' %in% sca_decision_frame$overlap_0){
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[2:4]
+  }else if('pos_n' %in% sca_decision_frame$overlap_0){
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[3:4]
+  }else{
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[4:4]
+  }
+  
+  # recode overlap 0 markings for informative legend
+  sca_decision_frame$overlap_0 = dplyr::recode(sca_decision_frame$overlap_0,
+                                               'neg_y' = '-, 95% PI excluding 0',
+                                               'neg_n' = '-, 95% PI including 0',
+                                               'pos_n' = '+, 95% PI including 0',
+                                               'pos_y' = '+, 95% PI excluding 0')
+  
+  sca_top = ggplot(sca_decision_frame, aes(x = rank, y = estimate, color = overlap_0)) +
+    geom_hline(yintercept = 0, color = 'black') +
+    geom_hline(yintercept = median(sca_decision_frame$estimate), color = 'black', lty = 2) +
+    geom_point() + 
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0, lwd = .15, alpha = .8) +
+    geom_point(data = median_model_frame,aes(x = rank, y = estimate), color = 'black') +
+    geom_errorbar(data = median_model_frame,aes(x = rank, y = estimate, ymin = conf.low, ymax = conf.high), color = 'black', width = 0) +
+    labs(x = '', y = paste0(plot_title, '\nEst. Slopes'), title = '') +
+    theme_classic() +
+    theme(legend.position = 'top', legend.title = element_blank()) +
+    scale_color_manual(values = my_colors) +
+    ylim(-0.01, 0.03)
+  
+  sca_bottom = ggplot(sca_decision_frame_long, aes(x = rank, y = fork_ordered, color = overlap_0)) +
+    geom_text(aes(label = choice), alpha = .8) +
+    labs(x = paste0(plot_title, " analysis specifications ranked by beta estimates"), y = "") + 
+    theme_bw() + 
+    theme(legend.title = element_text(size = 10),
+          legend.text = element_text(size = 7),
+          axis.text = element_text(color = "black"),
+          legend.position = "none",
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          strip.text.y = element_text(size = 8)) +
+    scale_color_manual(values = my_colors) +
+    facet_grid(rows = vars(decisiontype), drop = TRUE, scales = 'free_y', space = 'free_y')
+  
+  sca_panel = cowplot::plot_grid(sca_top, sca_bottom, ncol = 1, align = "v", axis = 'lr', rel_heights = c(1,1.5))
+  cowplot::save_plot(sca_panel, filename = paste0('plots/habit/', contrast_type, '_amyg_slope_sca.pdf'), 
+                     base_height = 6, base_width = 10)
+  
+    return(list('sca_decision_frame' = sca_decision_frame, 
+              'sca_decision_frame_long' = sca_decision_frame_long,
+              'sca_top' = sca_top,
+              'sca_bottom' = sca_bottom,
+              'sca_panel' = sca_panel))
+}
+```
+
+```{r}
+make_sca_plot_halves = function(coefs, 
+                         fork_list, 
+                         contrast_type, 
+                         plot_title,
+                         term_choice){
+  sca_decision_frame = coefs %>%
+    dplyr::filter(term == term_choice) %>%
+    dplyr::arrange(estimate) %>%
+    mutate(., rank = 1:nrow(.),
+           quadratic = ifelse(grepl('Quadratic', model_type), '|', NA),
+           ctrl_scanner = ifelse(grepl('Scanner', model_type), '|', NA),
+           ctrl_block = ifelse(grepl('Block', model_type), '|', NA),
+           amyg_right = ifelse(grepl('right', tolower(pipeline)), '|', NA),
+           amyg_left = ifelse(grepl('left', tolower(pipeline)), '|', NA),
+           amyg_bilateral = ifelse(grepl('bilateral', tolower(pipeline)), '|', NA),
+           gsr = ifelse(grepl('no_gsr', tolower(pipeline)), NA, '|'),
+           random_half_fx = ifelse(grepl('_r', model_type), '|', NA),
+           overlap_0 = case_when(
+             lower < 0 & upper < 0 ~ 'neg_y',
+             lower < 0 & estimate < 0 & upper > 0 ~ 'neg_n',
+             lower < 0 & estimate > 0 & upper > 0 ~ 'pos_n',
+             lower  > 0 & upper > 0 ~ 'pos_y',
+           ))
+  
+  sca_decision_frame$overlap_0 = factor(sca_decision_frame$overlap_0, levels = c("neg_y", "neg_n", "pos_n", "pos_y"))
+
+  
+  sca_decision_frame_long = sca_decision_frame %>%
+    tidyr::gather(key = 'fork', value = 'choice', all_of(fork_list)) %>%
+    mutate(decisiontype = case_when(
+      grepl('amyg', fork) ~ 'Amygdala\n Roi',
+      fork %in% c('quadratic', 'ctrl_scanner','ctrl_block', 'random_half_fx') ~ 'Group-Level\nModel',
+      fork %in% c('gsr') ~ 'GSS'
+    ))
+  
+  # get average rank of each pipeline by beta estimate
+  sca_decision_frame_long_ranks = sca_decision_frame_long %>%
+    dplyr::filter(choice == '|') %>%
+    dplyr::group_by(fork) %>%
+    summarise(mean_rank = -1*mean(rank))
+  
+  # join ranks with decision frame
+  sca_decision_frame_long = left_join(sca_decision_frame_long, sca_decision_frame_long_ranks)
+  
+  # rename variables to be human-interpretable
+  sca_decision_frame_long$fork  = dplyr::recode(sca_decision_frame_long$fork, 
+                                                'quadratic' = 'quadratic age term (vs. none)',
+                                                'ctrl_block' = 'covariate for task block',
+                                                'ctrl_scanner' = 'covariate for scanner used',
+                                                'amyg_right' = 'right amygdala',
+                                                'amyg_left' =  'left amygdala',
+                                                'amyg_bilateral' = 'bilateral amygdala',
+                                                'gsr' = 'subtract global signal (vs. not)',
+                                                'random_half_fx' = 'random effects for trial half (vs. none)')
+  
+  sca_decision_frame_long$fork_ordered = reorder(sca_decision_frame_long$fork,  sca_decision_frame_long$mean_rank)
+  
+  
+
+  # color palette to code the following:
+  # blue = negative, distinct from 0
+  # red = negative, not distinct from 0
+  # green = positive, not distinct from 0
+  # purple = positive, distinct from 0
+  if('neg_y' %in% sca_decision_frame$overlap_0){
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[1:4]
+  }else if('neg_n' %in% sca_decision_frame$overlap_0){
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[2:4]
+  }else if('pos_n' %in% sca_decision_frame$overlap_0){
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[3:4]
+  }else{
+      my_colors <- RColorBrewer::brewer.pal(4, "Set1")[4:4]
+  }
+  
+  # recode overlap 0 markings for informative legend
+  sca_decision_frame$overlap_0 = dplyr::recode(sca_decision_frame$overlap_0,
+                                               'neg_y' = '-, 95% PI excluding 0',
+                                               'neg_n' = '-, 95% PI including 0',
+                                               'pos_n' = '+, 95% PI including 0',
+                                               'pos_y' = '+, 95% PI excluding 0')
+  
+  sca_top = ggplot(sca_decision_frame, aes(x = rank, y = estimate, color = overlap_0)) +
+    geom_hline(yintercept = 0, color = 'black') +
+    geom_hline(yintercept = median(sca_decision_frame$estimate), color = 'black', lty = 2) +
+    geom_point() + 
+    geom_errorbar(aes(ymin = lower, ymax = upper), width = 0, lwd = .15, alpha = .8) +
+    labs(x = '', y = 'Estimated Betas', title = plot_title) +
+    theme_classic() +
+    theme(legend.position = 'top', legend.title = element_blank()) +
+    scale_color_manual(values = my_colors)
+  
+  sca_bottom = ggplot(sca_decision_frame_long, aes(x = rank, y = fork_ordered, color = overlap_0)) +
+    geom_text(aes(label = choice), alpha = .8) +
+    labs(x = "Analysis specifications ranked by beta estimates", y = "Decision Points") + 
+    theme_bw() + 
+    theme(legend.title = element_text(size = 10),
+          legend.text = element_text(size = 9),
+          axis.text = element_text(color = "black"),
+          legend.position = "none",
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          strip.text.y = element_text(size = 8)) +
+    scale_color_manual(values = my_colors) +
+    facet_grid(rows = vars(decisiontype), drop = TRUE, scales = 'free_y', space = 'free_y')
+  
+  sca_panel = cowplot::plot_grid(sca_top, sca_bottom, ncol = 1, align = "v", axis = 'lr')
+  cowplot::save_plot(sca_panel, filename = paste0('plots/habit/', contrast_type, '_amyg_halves_sca.pdf'), 
+                     base_height = 6, base_width = 10)
+  
+  return(list('sca_decision_frame' = sca_decision_frame, 
+              'sca_decision_frame_long' = sca_decision_frame_long,
+              'sca_top' = sca_top,
+              'sca_bottom' = sca_bottom,
+              'sca_panel' = sca_panel))
+}
+```
+
+
+
+Run function to make sca plots!
+```{r}
+fork_list = c('quadratic', 'random_slopes', 'ctrl_scanner', 'ctrl_block',
+              'amyg_right', 'amyg_left', 'amyg_bilateral', 'gsr')
+
+slope_sca_fear = make_sca_plot_slope(coefs = dplyr::filter(slope_coefs, grepl('fear', pipeline)), 
+                    contrast_type = 'fear',
+                    plot_title = 'Fear',
+                    term_choice = 'ageCenter',
+                    fork_list = fork_list)
+
+slope_sca_neutral = make_sca_plot_slope(coefs = dplyr::filter(slope_coefs, grepl('neut', pipeline)), 
+                    contrast_type = 'neut',
+                    plot_title = 'Neutral',
+                    term_choice = 'ageCenter',
+                    fork_list = fork_list)
+
+
+slope_sca_fear_intercept = make_sca_plot_slope(coefs = dplyr::filter(slope_coefs, grepl('fear', pipeline)), 
+                    contrast_type = 'fear_intercept',
+                    plot_title = 'Slopes over fear trials\nIntercept',
+                    term_choice = '(Intercept)',
+                    fork_list = fork_list)
+
+slope_sca_neutral_intercept = make_sca_plot_slope(coefs = dplyr::filter(slope_coefs, grepl('neut', pipeline)), 
+                    contrast_type = 'neut_intercept',
+                    plot_title = 'Slopes over neutral trials\nIntercept',
+                    term_choice = '(Intercept)',
+                    fork_list = fork_list)
+
+
+table(slope_sca_fear$sca_decision_frame$overlap_0)/nrow(slope_sca_fear$sca_decision_frame)
+
+table(slope_sca_neutral$sca_decision_frame$overlap_0)/nrow(slope_sca_neutral$sca_decision_frame)
+```
+
+
+```{r}
+fork_list = c('quadratic', 'ctrl_scanner', 'ctrl_block', 'random_half_fx',
+              'amyg_right', 'amyg_left', 'amyg_bilateral', 'gsr')
+
+halves_sca_fear_inter = make_sca_plot_halves(coefs = dplyr::filter(halves_coefs, grepl('fear', pipeline)) %>%
+                                               dplyr::mutate(estimate = -1*estimate,
+                                                             upper1 = -1*lower,
+                                                             lower = -1*upper,
+                                                             upper = upper1), 
+                    contrast_type = 'fear',
+                    plot_title = 'Age-related change in first  > second half\nFear > Baseline',
+                    term_choice = 'b_ageCenter:halfhalf2',
+                    fork_list = fork_list)
+
+halves_sca_neut_inter = make_sca_plot_halves(coefs = dplyr::filter(halves_coefs, grepl('neut', pipeline)) %>%
+                                               dplyr::mutate(estimate = -1*estimate,
+                                                             upper1 = -1*lower,
+                                                             lower = -1*upper,
+                                                             upper = upper1), 
+                    contrast_type = 'neut',
+                    plot_title = 'Age-related change in first  > second half\nNeutral > Baseline',
+                    term_choice = 'b_ageCenter:halfhalf2',
+                    fork_list = fork_list)
+
+
+# fear halves
+table(halves_sca_fear_inter$sca_decision_frame$overlap_0)/nrow(halves_sca_fear_inter$sca_decision_frame)
+
+#neut halves
+table(halves_sca_neut_inter$sca_decision_frame$overlap_0)/nrow(halves_sca_neut_inter$sca_decision_frame)
+
+1 - table(halves_sca_neut_inter$sca_decision_frame$overlap_0)/nrow(halves_sca_neut_inter$sca_decision_frame)
+
+half_interaction_sca_plt = cowplot::plot_grid(halves_sca_fear_inter$sca_panel, halves_sca_neut_inter$sca_panel, labels = c('A', 'B'))
+
+
+save_plot(half_interaction_sca_plt, filename = 'plots/supplement/habit_half_interaction_sca_plt.png', base_height = 5, base_width = 12)
+```
+
+
+```{r}
+half_demo = halves_preds %>%
+  dplyr::filter(model_type == 'modLinear',
+                pipeline %in% c('bilateral_no_gsr_fear', 'bilateral_no_gsr_neut'))  %>%
+  dplyr::mutate(half = ifelse(half == 'half1', 'Trials 1-12', 'Trials 13-24'),
+                Age = ageCenter + mean(amyg_halves$Age),
+                `Face Emotion` = ifelse(grepl('fear', pipeline), 'Fear', 'Neutral')) %>%
+  dplyr::select(Trials = half, everything())
+
+
+slope_demo = slope_preds %>%
+  dplyr::filter(model_type == 'modLinear',
+                pipeline %in% c('bilateral_no_gsr_fear_slope', 'bilateral_no_gsr_neut_slope'))  %>%
+  dplyr::mutate(Age = ageCenter + mean(amyg_halves$Age),
+                `Face Emotion` = ifelse(grepl('fear', pipeline), 'Fear', 'Neutral'))
+
+
+trial_plot_demo = single_trial_preds %>%
+  dplyr::filter(pipeline %in% c('bilateral_no_gsr_fear', 'bilateral_no_gsr_neut')) %>%
+  mutate(., `Face Emotion` = ifelse(grepl('fear', pipeline), 'Fear', 'Neutral'),
+         age_round = round(age)) %>%
+  dplyr::filter(age_round %in% c(6,12,18), 
+                model_type == 'modLinear', 
+                scanner == 1,
+                blockBin == 'first',
+                trial_model_discrete == 'no') %>%
+  mutate(., age_round = case_when(
+    age_round == 6 ~ '6 yrs',
+    age_round == 12 ~ '12 yrs',
+    age_round == 18 ~ '18 yrs'
+  ))
+
+
+trial_plot_demo$age_round = factor(trial_plot_demo$age_round, levels = c('6 yrs', '12 yrs', '18 yrs'))
+
+slope_raw_demo = amyg_slope_long %>%
+  dplyr::filter(pipeline %in% c('bilateral_no_gsr_fear_slope', 'bilateral_no_gsr_neut_slope')) %>%
+  mutate(., `Face Emotion` = ifelse(grepl('fear', pipeline), 'Fear', 'Neutral'))
+
+
+half_raw_demo = amyg_halves %>%
+  dplyr::filter(pipeline %in%c('bilateral_no_gsr_fear', 'bilateral_no_gsr_neut')) %>%
+  dplyr::mutate(half = ifelse(half == 'half1', 'Trials 1-12', 'Trials 13-24'),
+                `Face Emotion` = ifelse(grepl('fear', pipeline), 'Fear', 'Neutral')) %>%
+  dplyr::select(Trials = half, everything())
+
+half_plot = ggplot(half_demo, aes(x = Age, 
+                                  y = Estimate, color = Trials, fill =Trials)) +
+  geom_point(data = half_raw_demo, aes(x = Age, y = reactivity), alpha = .2) +
+  geom_line(data = half_raw_demo, aes(x = Age, y = reactivity, group = interaction(Subject, Trials)), alpha = .1) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), alpha = .5, color = NA) +
+  geom_line() +
+  labs(x = 'Age (in years)', y = 'Estimated Amygdala Reactivity\nFear > Baseline') +
+  scale_color_brewer(palette = 'Set1') +
+  scale_fill_brewer(palette = 'Set1') +
+  theme_bw() +
+  theme(legend.position = 'bottom',
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        legend.title = element_blank())  +
+  facet_grid(~`Face Emotion`)
+
+
+slope_plot= ggplot(slope_demo, aes(x = Age, y = Estimate,color = `Face Emotion`, fill = `Face Emotion`))+
+  geom_point(data = slope_raw_demo, aes(x = Age, y = slope), alpha = .5) +
+  geom_line(data = slope_raw_demo, aes(x = Age, y = slope, group = interaction(Subject, `Face Emotion`)), alpha = .2) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), alpha = .5, color = NA) +
+  geom_line() +
+  labs(x = 'Age (in years)', y = 'Estimated Slope Across Trials') +
+  scale_color_brewer(palette = 'Set2') +
+  scale_fill_brewer(palette = 'Set2') +
+  theme_bw() +
+  theme(legend.position = 'bottom', panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        legend.title = element_blank())
+
+
+slope_plot
+
+trial_plot_pallete = c('red', 'purple', 'blue')
+
+trial_plot= ggplot(trial_plot_demo, aes(x = trial, y = Estimate, color = age_round, fill = age_round)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), color = NA, alpha = .3) +
+  geom_line() +
+  facet_grid(~`Face Emotion`) +
+  theme_bw() +
+  theme(legend.position = 'bottom',
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        legend.title = element_blank()) +
+  scale_x_continuous(breaks = c(0,5,10,15,20)) +
+  labs(x = 'Trial #', y = 'Estimated Amygdala Reactivity') 
+
+habit_fig2 = cowplot::plot_grid(half_plot, slope_plot, trial_plot, nrow = 1,
+                   labels = c('A', 'B', 'C'))
+
+cowplot::save_plot(habit_fig2, filename = 'plots/habit/habit_fig2.pdf', base_width = 8, base_height = 4)
+```
+
+
+```{r}
+left_side_2= cowplot::plot_grid(slope_plot + theme(legend.position = 'right') + labs(y = 'Estimated Slopes\nAcross Trials'), 
+                                half_plot + theme(legend.position = 'right') + labs(y = 'Estimated Amyg. Reactivity'), 
+                                trial_plot + theme(legend.position = 'right') + labs(y = 'Estimated Amyg. Reactivity'), ncol = 1, labels = c('A', 'B', 'C'))
+right_side_2 = cowplot::plot_grid(slope_sca_fear$sca_panel, slope_sca_neutral$sca_panel, ncol = 1, labels = c('D', 'E'))
+fig2_v2 = cowplot::plot_grid(left_side_2, right_side_2, ncol =2)
+cowplot::save_plot(fig2_v2, filename = 'plots/habit/habit_fig2_v2.pdf', base_width = 14, base_height = 9.5)
+
+```
+
+# Mean slopes
+```{r}
+slope_mean_miniverse = amyg_slope %>% 
+  dplyr::filter(censoredTR <= 40) %>%
+  dplyr::select(Subject, motion, contains('slope')) %>%
+  pivot_longer(contains('slope')) %>%
+  group_by(name) %>%
+  nest() %>%
+  mutate(., model = map(data, 
+                             ~lmer(value ~ 1  + (1|Subject), data = .))) %>%
+  mutate(., coefs = map(model, ~broom.mixed::tidy(.))) %>%
+  dplyr::select(., -data, -model) %>%
+  unnest(coefs) %>%
+  dplyr::filter(term == '(Intercept)') %>%
+  dplyr::mutate(lwr = estimate - 2*std.error,
+                upr = estimate + 2*std.error,
+                rank = rank(estimate),
+                   contrast = ifelse(grepl('fear', name), 'Fear > Baseline', 'Neutral > Baseline'),
+                   gsr = ifelse(grepl('no_gsr', name),'No GSS', 'GSS'),
+                   roi = case_when(grepl('right', name) ~ 'Right Amyg',
+                                   grepl('bilateral', name) ~ 'Bilateral Amyg',
+                                   grepl('left', name) ~ 'Left Amyg'))
+
+
+
+slope_mean_miniverse_plt = ggplot(slope_mean_miniverse, aes(x = roi, y = estimate, color = gsr)) +
+  geom_point(position = position_dodge(.3)) + 
+  facet_grid(~contrast) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0, position = position_dodge(.3)) +
+  theme_bw() +
+  labs(x= '', y = 'Estimated Mean Slope Across Trials') +
+  theme(legend.title = element_blank())
+
+ggsave(slope_mean_miniverse_plt, filename = 'plots/supplement/amygdala_slope_mean_miniverse.png', height = 4, width = 8)
+
+```
+
+
+# Mean difference in reactivity by trial half
+
+```{r}
+half_mean_miniverse = amyg_halves %>% 
+  dplyr::filter(censoredTR <= 40) %>%
+  group_by(pipeline) %>%
+  dplyr::filter(!is.na(pipeline)) %>%
+  nest() %>%
+  mutate(., model = map(data, 
+                             ~lmer(reactivity ~ half  + (1|Subject), data = .))) %>%
+  mutate(., coefs = map(model, ~broom.mixed::tidy(.))) %>%
+  dplyr::select(., -data, -model) %>%
+  unnest(coefs) %>%
+ dplyr::filter(term == 'halfhalf2') %>%
+  dplyr::mutate(lwr = estimate - 2*std.error,
+                upr = estimate + 2*std.error,
+                rank = rank(estimate),
+                   contrast = ifelse(grepl('fear', pipeline), 'Fear > Baseline', 'Neutral > Baseline'),
+                   gsr = ifelse(grepl('no_gsr', pipeline),'No GSS', 'GSS'),
+                   roi = case_when(grepl('right', pipeline) ~ 'Right Amyg',
+                                   grepl('bilateral', pipeline) ~ 'Bilateral Amyg',
+                                   grepl('left', pipeline) ~ 'Left Amyg'))
+
+
+half_mean_miniverse_plt = ggplot(half_mean_miniverse, aes(x = roi, y = -1*estimate, color = gsr)) +
+  geom_point(position = position_dodge(.3)) + 
+  facet_grid(~contrast) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_errorbar(aes(ymin = -1*lwr, ymax = -1*upr), width = 0, position = position_dodge(.3)) +
+  theme_bw() +
+  labs(x= '', y = 'Estimated Mean Difference In Reactivity\nTrials 1-12 > Trials 13-24') +
+  theme(legend.title = element_blank())
+
+
+ggsave(half_mean_miniverse_plt, file = 'plots/supplement/amyg_trial_half_differences_mean.png', height = 4, width = 8)
+
+```
+
+# Single-trial
+```{r}
+
+single_trial_pred_format = single_trial_preds %>%
+  dplyr::filter(ageCenter %in% c(-6, 0, 6), scanner == 1, blockBin == 'first', motion == 0, within_center == 'no') %>%
+  group_by(trial, ageCenter) %>%
+  mutate(mod_rank = 1:n()) %>%
+  mutate(age_code = dplyr::recode(ageCenter, `-6`='6 yrs', `0`='12 yrs', `6` = '18 yrs'),
+         contrast = ifelse(contrast == 'fear', 'Fear', 'Neutral'),
+         trial_model_discrete = ifelse(trial_model_discrete == 'yes', 'Trials Modeled Discretely', 'Trials Modeled Continuously'))
+  
+
+single_trial_pred_format$age_code = factor(single_trial_pred_format$age_code, levels = c('6 yrs', '12 yrs', '18 yrs'))
+  
+
+
+
+single_trial_sca_pred = ggplot(single_trial_pred_format, aes(x = trial, y = Estimate, group = interaction(mod_rank, age_code), color = age_code)) +
+  geom_line(alpha = .4) +
+  geom_hline(yintercept = 0) +
+  facet_grid(trial_model_discrete~contrast) +
+  theme_bw() +
+  labs(x = 'Trial', y = 'Model-Estimated Mean Amygdala Reactivity') +
+  theme(legend.title = element_blank())
+
+
+
+single_trial_sca_coef = single_trial_coefs %>%
+  dplyr::filter(term == 'b_ageCenter:trial') %>%
+  mutate(contrast = ifelse(grepl('fear', pipeline), 'Fear', 'Neutral')) %>%
+  group_by(contrast) %>%
+  mutate(ind = rank(estimate)) %>%
+  ggplot(aes(x = ind, y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper)) + 
+  theme_bw() +
+  geom_hline(yintercept = 0, lty = 2) +
+  facet_grid(~contrast) +
+  labs(x = 'Models ordered by estimate magnitude', y = 'Trial X Age Interaction Term\nAge-related change in slope across trials')
+
+
+ggsave(single_trial_sca_pred, file = 'plots/supplement/single_trial_sca_pred.png', height = 6, width = 8)
+ggsave(single_trial_sca_coef, file = 'plots/supplement/single_trial_sca_coef.png', height = 4, width = 8)
+
+single_trial_coefs %>%
+  dplyr::filter(term == 'b_ageCenter:trial') %>%
+  mutate(contrast = ifelse(grepl('fear', pipeline), 'Fear', 'Neutral'),
+         overlap_0 = case_when(
+             lower < 0 & upper < 0 ~ 'neg_y',
+             lower < 0 & estimate < 0 & upper > 0 ~ 'neg_n',
+             lower < 0 & estimate > 0 & upper > 0 ~ 'pos_n',
+             lower  > 0 & upper > 0 ~ 'pos_y',
+           )) %>%
+  group_by(contrast, overlap_0) %>%
+  summarise(n = n(), prop = n /48)
+```

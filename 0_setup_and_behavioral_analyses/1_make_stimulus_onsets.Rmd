@@ -1,0 +1,238 @@
+---
+title: "5_make_onsets"
+author: "Paul A. Bloom"
+date: "November 16, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Load data in and set up
+
+```{r}
+load('master_behav.rda')
+load('subjectframes.rda')
+
+# How long are the actual stims? Faces are on screen for 350ms
+faceLength = .350
+
+
+onsetMaster <- select(masterFearHappy, Subject, wave, emotion, face.OnsetTime, fix.OnsetTime, DummyFix.OffsetTime, tr_result, Block, Procedure.Block.) %>%
+  mutate(., name = case_when(
+    wave == 1 & Subject <= 9 ~ paste0('SB00', Subject),
+    wave == 1 & Subject > 9 & Subject <= 99 ~ paste0('SB0', Subject),
+    wave == 1 & Subject > 99 ~ paste0('SB', Subject),
+    wave == 2 & Subject <= 9 ~ paste0('SB00', Subject, '_fu1'),
+    wave == 2 & Subject > 9 & Subject <= 99 ~ paste0('SB0', Subject, '_fu1'),
+    wave == 2 & Subject > 99 ~ paste0('SB', Subject, '_fu1'),
+    wave == 3 & Subject <= 9 ~ paste0('SB00', Subject, '_fu2'),
+    wave == 3 & Subject > 9 & Subject <= 99 ~ paste0('SB0', Subject, '_fu2'),
+    wave == 3 & Subject > 99 ~ paste0('SB', Subject, '_fu2')
+  ),
+  runType = case_when(
+    Procedure.Block. == 'BlockProcNeutFear' ~ 'fear',
+    Procedure.Block. == 'BlockProcNeutralHap' ~ 'happy',
+    Procedure.Block. == 'BlockProcNeutSad' ~ 'sad'
+  ))
+
+```
+
+Make the onsets for each run for each scan session!
+
+```{r}
+subsMaybeEarlyParadigmWave1 = c()
+subsAllEmotions$onsetsBoth24Trials = NA
+for(ii in 1:nrow(subsAllEmotions)){
+  subjectFrame = subset(onsetMaster, 
+                        runType == subsAllEmotions$runType[ii] & 
+                          name == subsAllEmotions$name[ii])
+  
+  if(length(subjectFrame$Subject[is.na(subjectFrame$face.OnsetTime)]) == 2){
+    runStart <- subjectFrame$fix.OnsetTime[!is.na(subjectFrame$fix.OnsetTime)] 
+  }
+  # For subjects with the earlier version of the paradigm -- use DummyFix.Offset Time -- it SEEMS to be working although maybe 500ms off, hard to know for these subjects
+  else if(length(subjectFrame$Subject[is.na(subjectFrame$face.OnsetTime)]) == 1){
+    runStart <- subjectFrame$DummyFix.OffsetTime[1] # maybe at 500ms here to account for 'missing' eprime time
+    subsMaybeEarlyParadigmWave1 <- c(subsMaybeEarlyParadigmWave1, subsAllEmotions$name[ii])
+  }
+  if(!is.na(runStart)){
+      # Calculate onset times based on runStart
+      fearTimes <- subjectFrame$face.OnsetTime[subjectFrame$emotion == 'FearT_nogo' | subjectFrame$emotion == 'FearNT_nogo' ] - runStart
+      sadTimes <- subjectFrame$face.OnsetTime[subjectFrame$emotion == 'SadNT_nogo' | subjectFrame$emotion == 'SadT_nogo' ] - runStart
+      happyTimes <- subjectFrame$face.OnsetTime[subjectFrame$emotion == 'HapNT_nogo' | subjectFrame$emotion == 'HapT_nogo' ] - runStart
+      neutTimes <- subjectFrame$face.OnsetTime[subjectFrame$emotion == 'NeutNT_go' | 
+                                                 subjectFrame$emotion == 'NeutralT_go' | subjectFrame$emotion == 'NeutT_go'] - runStart
+      fearTimes = fearTimes/1000
+      neutTimes = neutTimes/1000
+      sadTimes = sadTimes/1000
+      happyTimes = happyTimes/1000
+  }
+  # If run is fear, make data frames and onset files for the fear run
+  if(subsAllEmotions$runType[ii] == 'fear'){
+      fearOnset = cbind(fearTimes, rep(faceLength, length(fearTimes)), rep(1, length(fearTimes)))
+      neutOnset = cbind(neutTimes, rep(faceLength, length(neutTimes)), rep(1, length(neutTimes)))
+      checkFear = nrow(fearOnset) == 24
+      checkNeut = nrow(neutOnset) == 24
+      subsAllEmotions$onsetsBoth24Trials[ii] = checkFear && checkNeut
+      write.table(fearOnset, file = paste0('../../data/', subsAllEmotions$name[ii], '/model/fear/', 
+                                           subsAllEmotions$name[ii], '_fearOnsets.txt'), 
+                  col.names = FALSE, row.names =  FALSE, quote = FALSE)
+      write.table(neutOnset, file = paste0('../../data/', subsAllEmotions$name[ii], '/model/fear/', 
+                                           subsAllEmotions$name[ii], '_neutOnsets.txt'), 
+                  col.names = FALSE, row.names =  FALSE, quote = FALSE)
+  }
+  # If run is sad, make data frames and onset files for the happy run
+  else if(subsAllEmotions$runType[ii] == 'sad'){
+      sadOnset = cbind(sadTimes, rep(faceLength, length(sadTimes)), rep(1, length(sadTimes)))
+      neutOnset = cbind(neutTimes, rep(faceLength, length(neutTimes)), rep(1, length(neutTimes)))
+      checkSad= nrow(sadOnset) == 24
+      checkNeut = nrow(neutOnset) == 24
+      subsAllEmotions$onsetsBoth24Trials[ii] = checkSad && checkNeut
+      write.table(sadOnset, file = paste0('../../data/', subsAllEmotions$name[ii], '/model/sad/', 
+                                           subsAllEmotions$name[ii], '_sadOnsets.txt'), 
+                  col.names = FALSE, row.names =  FALSE, quote = FALSE)
+      write.table(neutOnset, file = paste0('../../data/', subsAllEmotions$name[ii], '/model/sad/', 
+                                           subsAllEmotions$name[ii], '_neutOnsets.txt'), 
+                  col.names = FALSE, row.names =  FALSE, quote = FALSE)
+  }
+  # If run is happy, make data frames and onset files for the hapypy run
+  else if(subsAllEmotions$runType[ii] == 'happy'){
+      happyOnset = cbind(happyTimes, rep(faceLength, length(happyTimes)), rep(1, length(happyTimes)))
+      neutOnset = cbind(neutTimes, rep(faceLength, length(neutTimes)), rep(1, length(neutTimes)))
+      checkHappy = nrow(happyOnset) == 24
+      checkNeut = nrow(neutOnset) == 24
+      subsAllEmotions$onsetsBoth24Trials[ii] = checkHappy && checkNeut
+      write.table(happyOnset, file = paste0('../../data/', subsAllEmotions$name[ii], '/model/happy/', 
+                                           subsAllEmotions$name[ii], '_happyOnsets.txt'), 
+                  col.names = FALSE, row.names =  FALSE, quote = FALSE)
+      write.table(neutOnset, file = paste0('../../data/', subsAllEmotions$name[ii], '/model/happy/', 
+                                           subsAllEmotions$name[ii], '_neutOnsets.txt'), 
+                  col.names = FALSE, row.names =  FALSE, quote = FALSE)
+  }
+}
+```
+
+Which subjects had an earlier paradigm?
+```{r}
+unique(subsMaybeEarlyParadigmWave1)
+```
+
+
+Corrections to adjust stim timing files for subjects with alterations in scanning procedure
+```{r}
+# scanner was triggered early for SB007 fear run
+SB007_sad = read.table('../../data/SB007/model/sad/SB007_sadOnsets.txt')
+SB007_neut = read.table('../../data/SB007/model/sad/SB007_neutOnsets.txt')
+
+SB007_sad$V1 = SB007_sad$V1 + 1
+SB007_neut$V1 = SB007_neut$V1 + 1
+
+write.table(SB007_sad, file = '../../data/SB007/model/sad/SB007_sadOnsets.txt', col.names = FALSE, row.names =  FALSE, quote = FALSE)
+write.table(SB007_neut, file = '../../data/SB007/model/sad/SB007_neutOnsets.txt', col.names = FALSE, row.names =  FALSE, quote = FALSE)
+
+```
+
+
+Make stim files for concatenated fear/happy runs
+
+```{r}
+# make frame of scans with both fear and happy run
+fearHappyScans = select(subsAllEmotions, name, runType, Block) %>%
+  tidyr::spread(., key = runType, value = Block) %>%
+  select(., -sad) %>%
+  filter(., !is.na(fear), !is.na(happy)) %>%
+  mutate(., first = ifelse(fear > happy, 'happy', 'fear'),
+         second = ifelse(fear < happy, 'happy', 'fear'),
+         fearOnsetFile = paste0('../../data/', name, '/model/fear/', name, '_fearOnsets.txt'),
+         happyOnsetFile = paste0('../../data/', name, '/model/happy/', name, '_happyOnsets.txt'),
+         neutFearRunOnsetFile = paste0('../../data/', name, '/model/fear/', name, '_neutOnsets.txt'),
+         neutHappyRunOnsetFile = paste0('../../data/', name, '/model/happy/', name, '_neutOnsets.txt')
+         ) %>%
+  filter(., name != 'SB198')
+
+# corrections
+fearHappyScans$second[fearHappyScans$name=='SB028'] = 'happy'
+fearHappyScans$second[fearHappyScans$name=='SB087'] = 'happy'
+
+
+# This extra file is for a 'block regressor' -- it is a 1 for all TRs in the first run of the concatenated block
+blockRegressorFrame = data.frame(0, 260, 1)
+```
+
+```{r}
+# loop to make concatenated onset files, adding 260 seconds to second run
+for (ii in 1:nrow(fearHappyScans)){
+  print(fearHappyScans$name[ii])
+  fearStims = read.table(fearHappyScans$fearOnsetFile[ii])
+  happyStims = read.table(fearHappyScans$happyOnsetFile[ii])
+  neutFearRunStims = read.table(fearHappyScans$neutFearRunOnsetFile[ii])
+  neutHappyRunStims = read.table(fearHappyScans$neutHappyRunOnsetFile[ii])
+
+  if(file.exists(fearHappyScans$fearOnsetFile[ii]) & file.exists(fearHappyScans$happyOnsetFile[ii])){
+    # add 260s to necessary files
+    if(fearHappyScans$first[ii] == 'happy'){
+      fearStims = fearStims %>%
+        mutate(., V1 = V1 + 260)
+      neutFearRunStims= neutFearRunStims %>%
+        mutate(., V1 = V1 + 260)
+    }
+    else{
+      happyStims = happyStims %>%
+        mutate(., V1 = V1 + 260)
+      neutHappyRunStims = neutHappyRunStims %>%
+        mutate(., V1 = V1 + 260)    
+    }
+    # Write out files
+    write.table(fearStims, file = paste0('../../data/', fearHappyScans$name[ii], '/model/concat/', 
+                                       fearHappyScans$name[ii], '_fearOnsets.txt'), row.names = FALSE, col.names = FALSE)
+    write.table(happyStims, file = paste0('../../data/', fearHappyScans$name[ii], '/model/concat/', 
+                                        fearHappyScans$name[ii], '_happyOnsets.txt'), row.names = FALSE, col.names = FALSE)
+    write.table(neutFearRunStims, file = paste0('../../data/', fearHappyScans$name[ii], '/model/concat/', 
+                                              fearHappyScans$name[ii], '_neutFearRunOnsets.txt'), row.names = FALSE, col.names = FALSE)
+    write.table(neutHappyRunStims, file = paste0('../../data/', fearHappyScans$name[ii], '/model/concat/', 
+                                               fearHappyScans$name[ii], '_neutHappyRunOnsets.txt'), row.names = FALSE, col.names = FALSE)
+    
+    # Make extra block stim file
+    write.table(blockRegressorFrame,  file = paste0('../../data/', fearHappyScans$name[ii], '/model/concat/', 
+                                               fearHappyScans$name[ii], '_FirstRunRegressor.txt'), row.names = FALSE, col.names = FALSE)
+  }
+  else{
+    print('Missing onsets for ', fearHappyScans$name)
+  }
+}
+```
+
+# Merge BOLD Files For Concatenation Using fslmerge
+```{r}
+for(ii in 1:nrow(fearHappyScans)){
+  firstRun = paste0('../../data/', fearHappyScans$name[ii], '/BOLD/', fearHappyScans$first[ii], 
+                    '/',  fearHappyScans$name[ii],'_tgng_', fearHappyScans$first[ii], '_bold.nii.gz')
+  secondRun = paste0('../../data/', fearHappyScans$name[ii], '/BOLD/', fearHappyScans$second[ii], 
+                    '/',  fearHappyScans$name[ii], '_tgng_', fearHappyScans$second[ii], '_bold.nii.gz')
+  
+  # Output dir and files
+  concatBoldDir = paste0('../../data/', fearHappyScans$name[ii], '/BOLD/concat')
+  dir.create(concatBoldDir)
+  outputBold = paste0('../../data/', fearHappyScans$name[ii], '/BOLD/concat/', fearHappyScans$name[ii], '_tgng_concat_bold.nii.gz')
+
+  if(file.exists(firstRun) & file.exists(secondRun)){
+    mergeMessage = paste0('fslmerge -t ', outputBold, ' ',  firstRun, ' ', secondRun)
+    print(mergeMessage)
+    system(mergeMessage)
+  }
+}
+
+
+
+```
+
+Write out fearHappyScans list
+```{r}
+write.csv(fearHappyScans, file = 'concatScansFrame.csv', row.names = FALSE)
+nrow(fearHappyScans)
+```
+
+
