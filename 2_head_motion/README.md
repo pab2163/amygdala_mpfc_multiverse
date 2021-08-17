@@ -22,6 +22,16 @@ This file, called `confound.txt` will have 1 column and 130 rows (1 row per TR).
 
 This also creates a file called `outlier_output.txt` with some useful info on how many total outliers of the chosen metric (framewise displacement) were detected. 
 
+```
+ndel = 0 ; mask =  ; do_moco = yes ; thresh = .9 ; use_thresh = yes ; metric = fd
+brainmed = 714.000000  ; maskmean = 0.345725 
+Calculating outliers
+Range of metric values: 0.012444 1.400310 
+Found 1 outliers over .9
+Generating EVs
+Found spikes at  128
+```
+
 
 ## `2_haba_bold_motion_assess_all_emotions.py`
 
