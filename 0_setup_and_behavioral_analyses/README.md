@@ -69,10 +69,19 @@ Here is the same set of stimulus timings as above, only formatted for AFNI GLM n
 
 ## `3_plot_task_behavior.Rmd`
 
-*Generate fitted model predictions from the brms models from the previous step for each task performance outcome as a function of age, and plot using `ggplot2`!
+*Generate fitted model predictions from the brms models from the previous step for each task performance outcome as a function of age, and plot using `ggplot2`*!
 
 1. Generate a 'grid' of age values to generate predictions for (from ages 4-22 years)
 2. Extract fitted model predictions from the brms models using the `fitted()` function
 3. Plot fitted model predictions overlaid on raw data for each outcome, then use `grid.arrange()` to put them together into a multipanel plot!
 
-![](plots/compsFearPlotPanel.png)
+<img src='plots/compsFearPlotPanel.png' width = '700'/>
+
+Accuracy, hits, false alarms, and RT as a function of age
+
+4. Also run an additonal set of models using `d'` as the task performance metric and generate a plot for these
+
+
+<img src='plots/dprime_age.png' width = '500'/>
+
+D' as a function of age
