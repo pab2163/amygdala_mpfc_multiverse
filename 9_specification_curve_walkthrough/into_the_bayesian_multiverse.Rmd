@@ -1,13 +1,35 @@
 ---
 title: "Into the (Bayesian) Multiverse!"
+author: "Paul A. Bloom"
 ---
+
+Welcome! This document serves 2 purposes:
+
+1. Provide a walkthough for anyone potentially interested in conducting multiverse analyses (or specification curves), especially when considering Bayesian models or fMRI data
+2. Serve as documentation for analysis code for [Bloom et al. 2021](https://osf.io/) with code that can  be run using *simulated data* (i.e. fake data), since we cannot share the data publicly.  
+
+
 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(downloadthis)
 ```
 
-## Load Packages
+```{r,echo=FALSE}
+## Link in Github repo
+download_link(
+  link = "https://github.com/fmmattioni/downloadthis/raw/master/inst/example/file_1.pdf",
+  button_label = "Download simulated data csv",
+  button_type = "default",
+  has_icon = TRUE,
+  icon = "fa fa-save",
+  self_contained = FALSE
+)
+```
+
+
+# Load Packages
 
 ```{r,warning=FALSE, message=FALSE,results='hide'}
 library(tidyverse)
@@ -15,7 +37,56 @@ library(specr)
 library(brms)
 ```
 
+
+# Simulated data here only!
+
+**Note:** these data are fake! Under our Institutional Review Board protocol and for the purpose of creating participant identies private, we cannot share our actual data publicly. However, we've *simulated* an amygdala reactivity dataset for the purposes of creating a multiverse analysis where the code can actually be run!
+
+* Briefly, to create simulated data that *decently* approximates the real data without risk of identifying participants, we created a multivariate regression model using [brms](https://github.com/paul-buerkner/brms), then drew samples from the model's posterior predictive distribution for each timepoint for each real participant. 
+* We also scrambled the order of participant IDs and added noise to ages. 
+* So, the data here should do a reasonable job of mimicking the *structure* of some of the data analyzed in [Bloom et al](https://osf.io/) without compromising participant data privacy and security. 
+
+# Read in the data
+
+Here's what is in each column:
+
+* `id` - participant ID, identifies a participant across timepoints
+* `wave` - the study timepoint (either `1`, `2`, or `3`)
+* `age` - participant age at the given timepoint, in years
+* `block` - the temporal position of the task run relative to other tasks in the scanner (`1` = first, `2` = second, `3` = third)
+* `motion` - head motion (mean framewise displacement), which has been z-scored here
+* `scanner` - whether the data were collected on a first MRI scanner (`1`= timepoints 1 & 2) or a second (`2` = timepoint 3). Both were Siemens Tim Trio
+* `prev_studied`- whether this scan was previously analyzed in similar work by [Gee et al (2013)](https://www.jneurosci.org/content/33/10/4584). `1` indicates a scan was previously studied
+
+All of the rest of the columns are measurements of amygdala reactivity to fear faces > baseline for each scan, labeled such that:
+
+* columns with the `ho` prefix are from amygdala ROIs defined by the Harvard-Oxford subcortical atlas, `native` prefix columns are in native space defined through Freesurfer
+* columns with the `right` prefix are the right amygdala, and `left` are the left
+* columns with the `beta` prefix denote raw beta estimates of amygdala reactivity magnitude, while the `tstat` prefix denote t-statistic measurements of amygdala reactivity scaled by estimation uncertainty (the standard error)
+
+
+
 ```{r}
-fake_data = read_csv('../../sb_gonogo/mri_scripts/9_compile_results/simulated_amygdala_reactivity.csv')
-head(fake_data)
+fake_data = read_csv('simulated_amygdala_reactivity.csv')
+head(fake_data[,1:8])
+```
+# Specifiation curve: `specr` version
+
+```{r}
+
+outcomes = names(fake_data)[grepl('amyg', names(fake_data))]
+
+lmer_ri_1 <- function(formula, data,...) {
+  require(lme4)
+  require(broom.mixed)
+  formula <- paste(formula, "+ motion + (1|id)")
+  lmer(formula, data)
+}
+
+specs = specr::run_specs(df = fake_data,
+                         x = 'age', y = outcomes, 
+                         controls = c('block', 'scanner'),
+                         model = 'lmer_ri_1')
+
+plot_specs(specs)
 ```
