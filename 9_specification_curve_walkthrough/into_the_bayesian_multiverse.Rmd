@@ -1,0 +1,21 @@
+---
+title: "Into the (Bayesian) Multiverse!"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+
+```{r,warning=FALSE, message=FALSE,results='hide'}
+library(tidyverse)
+library(specr)
+library(brms)
+```
+
+```{r}
+fake_data = read_csv('../../sb_gonogo/mri_scripts/9_compile_results/simulated_amygdala_reactivity.csv')
+head(fake_data)
+```
