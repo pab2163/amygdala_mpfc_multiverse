@@ -1,0 +1,29 @@
+---
+title: "Into the (Bayesian) Multiverse!"
+author: "Paul Bloom"
+date: "8/18/2021"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+# Into the (Bayesian) Multiverse!
+
+As if multiverse analyses weren't enough....
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+
+```{r}
+library(tidyverse)
+library(specr)
+library(brms)
+```
+
+```{r}
+fake_data = read_csv('../../sb_gonogo/mri_scripts/9_compile_results/simulated_amygdala_reactivity.csv')
+head(fake_data)
+```
