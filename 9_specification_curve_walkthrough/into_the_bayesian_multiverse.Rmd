@@ -12,21 +12,9 @@ Welcome! This document serves 2 purposes:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(downloadthis)
+knitr::opts_chunk$set(echo = TRUE) 
 ```
 
-```{r,echo=FALSE}
-## Link in Github repo
-download_link(
-  link = "https://github.com/fmmattioni/downloadthis/raw/master/inst/example/file_1.pdf",
-  button_label = "Download simulated data csv",
-  button_type = "default",
-  has_icon = TRUE,
-  icon = "fa fa-save",
-  self_contained = FALSE
-)
-```
 
 
 # Load Packages
@@ -74,6 +62,8 @@ head(fake_data[,1:8])
 
 ```{r}
 
+fake_data = mutate(fake_data, grp = ifelse(is.na(prev_studied), 'not_studied', 'prev_studied'))
+
 outcomes = names(fake_data)[grepl('amyg', names(fake_data))]
 
 lmer_ri_1 <- function(formula, data,...) {
@@ -86,7 +76,9 @@ lmer_ri_1 <- function(formula, data,...) {
 specs = specr::run_specs(df = fake_data,
                          x = 'age', y = outcomes, 
                          controls = c('block', 'scanner'),
-                         model = 'lmer_ri_1')
+                         model = 'lmer_ri_1',
+                         subsets = list(grp = 'not_studied'))
 
 plot_specs(specs)
+unique(fake_data$grp)
 ```
