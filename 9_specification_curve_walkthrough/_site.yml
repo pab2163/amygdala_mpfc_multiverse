@@ -3,10 +3,12 @@ output_dir: "../docs"
 navbar:
   title: "Amygdala Multiverse"
   left:
-  - text: "Home"
+  - text: "Info"
     href: index.html
-  - text: "Speed and Distance"
+  - text: "Amygdala Multiverse Demo"
     href: into_the_bayesian_multiverse.html
 output:
   html_document:
     theme: cosmo
+    toc: yes
+    toc_float: true
