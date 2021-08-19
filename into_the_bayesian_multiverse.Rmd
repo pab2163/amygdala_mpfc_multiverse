@@ -1,10 +1,5 @@
 ---
-title: "Into the (Bayesian) Multiverse!"
-author: "Paul Bloom"
-date: "8/18/2021"
-output:
-  md_document:
-    variant: markdown_github
+title: "Speed and Distance"
 ---
 
 # Into the (Bayesian) Multiverse!
@@ -24,6 +19,6 @@ library(brms)
 ```
 
 ```{r}
-fake_data = read_csv('../../sb_gonogo/mri_scripts/9_compile_results/simulated_amygdala_reactivity.csv')
+fake_data = read_csv('../sb_gonogo/mri_scripts/9_compile_results/simulated_amygdala_reactivity.csv')
 head(fake_data)
 ```

@@ -1,0 +1,130 @@
+---
+title: "Dprime and Motion Analyses"
+author: "Paul A. Bloom"
+date: "March 2020"
+output: pdf_document
+---
+
+
+# Dprime and motion analyses
+
+Supplemental analyses of age-related change and ICC (Bayesian) using dprime
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+library(lme4)
+library(brms)
+library(kableExtra)
+library(sjPlot)
+library(sjstats)
+
+# source code for flat violin plots
+source('https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R')
+
+
+# Function written by Monica Thieu for calculating dprime
+sdt_dprime <- function (hit, fa) {result = (qnorm(hit) - qnorm(fa)); return(result)}
+
+```
+
+# Remake task behavior plot
+
+```{r}
+theme_set(theme_bw())
+load('../../communications/longitudinalAmygGrowth/plots/compsFearBehavPlots.rda')
+behavior_grid = cowplot::plot_grid(accPlot, hitPlot, falseAlarmPlot, rtPlot,
+                   ncol = 2, align = 'v')
+cowplot::save_plot(behavior_grid, filename = 'plots/supplement/task_behavior_grid.pdf', base_height = 6, base_width = 12)
+```
+
+# Dprime analysis
+```{r}
+load('../../mri_scripts/0_setup_behav/master_behav.rda')
+
+comp_beh = master %>%
+  dplyr::filter(group != 'PI', group != 'Foster Care')
+
+# calculate dprime
+comb_beh_dprime = comp_beh %>%
+  group_by(Subject, wave, Age) %>%
+  summarise(n =n(), 
+            hits = sum(tr_result == 'hit'),
+            fa = sum(tr_result == 'false_alarm'),
+            hit_rate = (hits + .5)/(sum(cresp == 1) + 1),
+            fa_rate = (fa + .5) / (sum(cresp == 0) + 1),
+            dprime = sdt_dprime(hit_rate, fa_rate))
+
+
+# run models (1  = linear, 2 = quadratic, 3 = cubic)
+dprime_m1 = brm(data = comb_beh_dprime, dprime ~ Age + (Age | Subject), cores = 4)
+dprime_m2 = brm(data = comb_beh_dprime, dprime ~ poly(Age, 2, raw = TRUE) + (Age | Subject), cores = 4)
+dprime_m3 = brm(data = comb_beh_dprime, dprime ~ poly(Age, 3, raw = TRUE) + (Age | Subject), cores = 4)
+
+# extract predictions with regards to age
+preds_m1 = conditional_effects(dprime_m1)$Age %>% dplyr::mutate(model = 'linear')
+preds_m2 = conditional_effects(dprime_m2)$Age %>% dplyr::mutate(model = 'quadratic')
+preds_m3 = conditional_effects(dprime_m3)$Age %>% dplyr::mutate(model = 'cubic')
+
+# combind preds
+preds_all = rbind(preds_m1, preds_m2, preds_m3)
+
+
+# plot
+dprime_plot = ggplot(preds_all, aes(x = Age, y = estimate__, color = model)) +
+  geom_point(comb_beh_dprime, mapping = aes(x = Age, y = dprime), color = 'black', alpha = .5) +
+  geom_line(comb_beh_dprime, mapping = aes(x = Age, y = dprime, group = Subject), color = 'black', alpha = .3) +
+  geom_ribbon(aes(ymin = lower__, ymax = upper__, fill = model), alpha = .2, color = NA) +
+  geom_line(lwd = 1) +
+  labs(y = "d'") +
+  theme(legend.title = element_blank())
+
+# save plot
+ggsave(dprime_plot, file = 'plots/supplement/dprime_age.pdf', height = 4, width = 6)
+```
+
+# Variance decomposition for dprime
+
+```{r}
+performance::variance_decomposition(dprime_m1, robust = TRUE)
+```
+
+# Motion
+
+```{r}
+motion = read_csv('compiled_data/comps_amyg_fear_reactivity_master.csv') %>%
+  dplyr::mutate(censored = ifelse(censoredTR <= 40, 'Included', 'Excluded'))
+
+
+motion_plot = ggplot(motion, aes(x = Age, y = meanFdAll)) +
+  geom_point(aes(color = censored)) +
+  geom_line(aes(group = Subject), alpha = .1) +
+  geom_smooth(color = 'black') +
+  theme_bw() +
+  labs(y = 'Mean Framewise Displacement (mm)') +
+  theme(legend.title = element_blank())
+
+ggsave(motion_plot, filename = 'plots/supplement/motion_plot.png', height = 4, width = 6)
+
+```
+
+# Model motion age-related change with brms
+
+```{r}
+motion_model = brm(data = motion, meanFdAll ~ Age + (Age | Subject), cores = 4)
+motion_model_included = brm(data = dplyr::filter(motion, censored == 'Included'), meanFdAll ~ Age + (Age | Subject), cores = 4)
+
+summary(motion_model)
+summary(motion_model_included)
+
+conditional_effects(motion_model_included)
+
+```
+
+
+```{r}
+performance::variance_decomposition(motion_model)
+performance::variance_decomposition(motion_model_included)
+```
