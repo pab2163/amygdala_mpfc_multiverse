@@ -32,11 +32,17 @@ GLM Specifics
     2. *neutral face stimuli*
 * Contrasts of interest here are `fear faces > baseline`, `neutral faces > baseline`, and `fear faces > neutral faces`
 
-
-
 ## `1_make_fsfs_for_haba.py`
 
-## `2_gather_level1_jobs_haba.py`
+This script loops through all available BOLD runs and makes a separate feat script from `feat_template_24motion_no_errors.fsf` specific to that scan. 
 
+**Note:** there are a few specific scan runs (4 of them) where BBR or nonlinear anatomical-->standard registration are turned off, because these steps resulted in large distortions initially. These alterations are at the bottom of the script
 
-## `3_submit_level1_jobs.haba.py`
+## `run_level1_haba.sh`
+
+This script runs 1 `feat` job for preprocessing + level1 GLM for 1 scan run on Habanero, using 4 cores and with time allotted up to 11 hours 55 minutes. It takes 1 command line argument denoting which `.fsf` to run
+
+## `2_submit_level1_jobs.haba.py`
+
+Loops through all scan runs to submit jobs to run `feat` on Columbia's Habanero cluster using the `sbatch` command (launching `run_level1_haba.sh` in parallel for each scan). After this is run, we get `feat` directories with preprocessed data and level-1 GLM outputs for each scan! These are labled `24motion_no_errors.feat`
+
