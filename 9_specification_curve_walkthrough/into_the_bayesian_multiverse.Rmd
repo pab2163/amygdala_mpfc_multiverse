@@ -9,8 +9,6 @@ Welcome! This document serves 2 purposes:
 2. Serve as documentation for analysis code for [Bloom et al. 2021](https://osf.io/) with code that can  be run using *simulated data* (i.e. fake data), since we cannot share the data publicly.  
 
 
-
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE) 
 ```
@@ -19,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Load Packages
 
-```{r,warning=FALSE, message=FALSE,results='hide'}
+```{r message=FALSE, results='hide'}
 library(tidyverse)
 library(specr)
 library(brms)
