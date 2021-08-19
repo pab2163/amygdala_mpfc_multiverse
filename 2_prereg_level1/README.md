@@ -32,7 +32,11 @@ GLM Specifics
 * 2 EVs (explanatory variables). Both are `set fmri(shape2) 3` to indicate that the regressor will be in the 3-column format (see the README file in the `0_setup_and_behavioral_aanalysis` folder). They will be convolved with a double-gamma HRF (`set fmri(convolve2) 3`) and will include an extra regresssor with the demporal derivative (`set fmri(deriv_yn2) 1`) since there is no slice-timing correction in the pipeline.
     1. *fear face stimuli*
     2. *neutral face stimuli*
-* Contrasts of interest here are `fear faces > baseline`, `neutral faces > baseline`, and `fear faces > neutral faces`
+* Contrasts of interest here are `fear faces > baseline`, `neutral faces > baseline`, and `fear faces > neutral faces`, although we also have contrasts for `neutral > fear`, `all faces > baseline`, and `baseline > fear` & `baseline > neutral` (although these last two are the inverse of the first two)
+
+
+The GSLM design matrix is stored in a `design.mat` file after feat is run, and can be visualized as below, where columns are regressors. The first 4 are task (1 = fear, 2 = fear temporal derivative, 3 = neutral, 4 = neutral temporal derivative), while the rest are nuisance regressors for motion.  The text at the bottom indicates the coding for each of the 7 contrasts used. 
+<img src='images/design.png' width = '800'/>
 
 ## `1_make_fsfs_for_haba.py`
 
