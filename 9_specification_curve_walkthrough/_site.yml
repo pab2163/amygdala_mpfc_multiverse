@@ -1,5 +1,12 @@
 name: "amygdala-multiverse"
 output_dir: "../docs"
+navbar:
+  title: "Amygdala Multiverse"
+  left:
+  - text: "Home"
+    href: index.html
+  - text: "Speed and Distance"
+    href: into_the_bayesian_multiverse.html
 output:
   html_document:
     theme: cosmo
