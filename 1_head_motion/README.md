@@ -10,14 +10,14 @@ This is a slurm launch script for running motion correction for *one scan run*. 
 1. The script takes 2-command line arguments for `curDir` (the current directory where the BOLD file is saved) and `boldFile` (the BOLD file to be assessed for motion)
 2. For the given BOLD file, run [fsl_motion_outliers](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSLMotionOutliers) to generate an estimate of [framewise displacement](https://wiki.cam.ac.uk/bmuwiki/FMRI) for each TR, as well as a 1-column file denoting TRs where `FD > 0.9mm` (we chose a threshold of .9mm). This file will later be used to downweight these high-motion TRs in the GLM
 
-This file, called `confound.txt` will have 1 column and 130 rows (1 row per TR). For example, if the below were the first 5 rows of the file, this would indicate that in the 3rd volume there was a spike in framewise displacement (FD) above our threshold of .9mm. Later, we'll downweight this volume in the GLM so that BOLD signal specifically during this volume doesn't influence estimates of task-evoked reactivity or functional connectivity. 
+This file, called `confound.txt` will have `k` column and 130 rows (1 row per TR, where `k` is the number of TRs over the given threshold). For example, if the below were the first 5 rows of the file with `k=2`, this would indicate that in the 3rd volume and 4th volumes there were spikes in framewise displacement (FD) above our threshold of .9mm. Later, we'll downweight these volume in the GLM so that BOLD signal specifically during this volume doesn't influence estimates of task-evoked reactivity or functional connectivity. Each column will be one regressor in the GLM, effectively making sure that no other regressors will be able to account for the variance in the row marked by the `1`
 
 ```
-0
-0
-1
-0
-0
+0   0
+0   0
+1   0
+0   1
+0   0
 ```
 
 This also creates a file called `outlier_output.txt` with some useful info on how many total outliers of the chosen metric (framewise displacement) were detected. 

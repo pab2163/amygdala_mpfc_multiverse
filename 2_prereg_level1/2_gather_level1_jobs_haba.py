@@ -19,22 +19,21 @@ directoryName = sys.argv[1]
 
 # import saved list of subjects to preprocess
 #subsToProc = [line.rstrip('\n') for line in open('level1Sublist.txt')]
-subsFrame = pd.read_csv('../2_motion/subsConcatForLev1.csv')
+subsFrame = pd.read_csv('../2_motion/subsAllEmotionsForLev1.csv')
 
 subsFrame['runList'] = np.nan
 
 # Loop through the data frame of subjects 
 for index, row in subsFrame.iterrows():
-	fsfFile = 'sub_fsfs_concat/%s/%s_concat_lev1.fsf'%(directoryName, row['name'])
+	fsfFile = 'sub_fsfs_all_emotions/%s/%s_%s_lev1.fsf'%(directoryName, row['name'], row['runType'])
 	subsFrame.loc[index, 'runList']= fsfFile
 	print(fsfFile)
 
-	# Currently conda envs/pandas not working on haba but if I can get that working
-	submitMessage = "sbatch -o %s_%%j.out -e %s_%%j.err run_level1_haba.sh %s"%(row['name'], row['name'], fsfFile)
-	print(submitMessage)
-	os.system(jobSubmitMessage)
+	#submitMessage = "sbatch -o %s_%%j.out -e %s_%%j.err run_level1_haba.sh %s"%((row['name']+row['runType']), (row['name']+row['runType']), fsfFile)
+	#print(submitMessage)
+	#os.system(jobSubmitMessage)
 
 print('Done!')
-subsFrame['runList'].to_csv('runListConcat.txt', index = False)
+subsFrame['runList'].to_csv('runListAllEmotions.txt', index = False)
 
 
