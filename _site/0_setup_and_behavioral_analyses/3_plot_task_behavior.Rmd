@@ -1,0 +1,217 @@
+---
+title: "making plots for comps fear behavior"
+author: "Paul Bloom"
+date: "May 25, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(brms)
+library(ggplot2)
+library(gridExtra)
+theme_set(theme_bw())
+```
+
+
+# Import fitted models
+```{r}
+load('fearModelsComps.rda')
+```
+
+# Create grid of ages to predict for (5-22)
+```{r}
+predGrid = data.frame(ageCenterAt5 = 0:17) %>%
+  mutate(Age = ageCenterAt5 + 5)
+```
+
+# Generate model fits for outcomes of each of the models
+```{r}
+accFits = fitted(fearModelAccuracy, newdata = predGrid, re_formula = NA) %>%
+  cbind(predGrid, .)
+
+falseAlarmFits = fitted(fearModelFalseAlarms, newdata = predGrid, re_formula = NA) %>%
+  cbind(predGrid, .)
+
+hitsFits = fitted(fearModelHits, newdata = predGrid, re_formula = NA) %>%
+  cbind(predGrid, .)
+
+rtFits = fitted(fearModelRT, newdata = predGrid, re_formula = NA) %>%
+  cbind(predGrid, .) %>%
+  mutate(., model = 'linear')
+
+rtFits2 = fitted(fearModelRT2, newdata = predGrid, re_formula = NA) %>%
+  cbind(predGrid, .) %>%
+  mutate(., model = 'quadratic')
+
+rtFits3 = fitted(fearModelRT3, newdata = predGrid, re_formula = NA) %>%
+  cbind(predGrid, .) %>%
+  mutate(., model = 'cubic')
+
+```
+
+
+# Gemerate raw data summaries for each of the models
+```{r}
+# accuracy
+accRaw = fearModelAccuracy$data %>%
+  group_by(name) %>%
+  summarise(ageCenterAt5 = ageCenterAt5[1], Subject = Subject[1], n = n(), outcome = sum(acc)/n) %>%
+  mutate(., modelType = 'Accuracy') %>%
+  mutate(Age = ageCenterAt5 + 5)
+
+# false alarms
+falseAlarmRaw = fearModelFalseAlarms$data %>%
+  group_by(name) %>%
+  summarise(ageCenterAt5 = ageCenterAt5[1], Subject = Subject[1], n = n(), outcome = sum(falseAlarm)/n) %>%
+  mutate(., modelType = 'False Alarms') %>%
+  mutate(Age = ageCenterAt5 + 5)
+
+# hits
+hitsRaw = fearModelHits$data %>%
+  group_by(name) %>%
+  summarise(ageCenterAt5 = ageCenterAt5[1], Subject = Subject[1], n = n(), outcome = sum(hit)/n) %>%
+  mutate(., modelType = 'Hits') %>%
+  mutate(Age = ageCenterAt5 + 5)
+
+# RT for hits
+rtRaw = fearModelRT$data %>%
+  group_by(name) %>%
+  summarise(ageCenterAt5 = ageCenterAt5[1], Subject = Subject[1], n = n(), outcome = mean(face.RT)) %>%
+  mutate(., modelType = 'RT (Hits)') %>%
+  mutate(Age = ageCenterAt5 + 5)
+
+rtRaw2 = fearModelRT2$data %>%
+  group_by(name) %>%
+  summarise(ageCenterAt5 = ageCenterAt5[1], Subject = Subject[1], n = n(), outcome = mean(face.RT)) %>%
+  mutate(., modelType = 'RT (Hits) 2') %>%
+  mutate(Age = ageCenterAt5 + 5)
+
+rtRaw3 = fearModelRT3$data %>%
+  group_by(name) %>%
+  summarise(ageCenterAt5 = ageCenterAt5[1], Subject = Subject[1], n = n(), outcome = mean(face.RT)) %>%
+  mutate(., modelType = 'RT (Hits) 3') %>%
+  mutate(Age = ageCenterAt5 + 5)
+
+
+```
+
+# Make 4 plots and arrange them
+
+```{r}
+accPlot = accRaw %>%
+  ggplot(., aes(x = Age, y = outcome)) +
+  geom_point(size = 1, alpha = .5) + 
+  geom_hline(yintercept = .5, lty = 2) +
+  geom_line(aes(group = Subject), alpha = .2) +
+  geom_ribbon(data = accFits, aes(x = Age, y = Estimate, ymin = Q2.5, ymax = Q97.5), alpha = .3, fill = 'red') +
+  geom_line(data = accFits, aes(x = Age, y = Estimate), lwd = 2, color = 'red') +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        text = element_text(face = 'bold')) +
+  annotate('text', x = 18, y = .52, label = 'Chance = 0.5') +
+  labs(y = 'P(Accurate)', title = 'Accuracy') +
+  ylim(.4, 1)
+
+hitPlot = hitsRaw %>%
+  ggplot(., aes(x = Age, y = outcome)) +
+  geom_point(size = 1, alpha = .5) + 
+  geom_hline(yintercept = .5, lty = 2) +
+  geom_line(aes(group = Subject), alpha = .2) +
+  geom_ribbon(data = hitsFits, aes(x = Age, y = Estimate, ymin = Q2.5, ymax = Q97.5), alpha = .3, fill = 'red') +
+  geom_line(data = hitsFits, aes(x = Age, y = Estimate), lwd = 2, color = 'red') +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        text = element_text(face = 'bold')) +
+  labs(y = 'P(Hit | Go Trials)', title = 'Hits') +
+  ylim(.4, 1)
+
+falseAlarmPlot = falseAlarmRaw %>%
+  ggplot(., aes(x = Age, y = outcome)) +
+  geom_point(size = 1, alpha = .5) + 
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_line(aes(group = Subject), alpha = .2) +
+  geom_ribbon(data = falseAlarmFits, aes(x = Age, y = Estimate, ymin = Q2.5, ymax = Q97.5), alpha = .3, fill = 'red') +
+  geom_line(data = falseAlarmFits, aes(x = Age, y = Estimate), lwd = 2, color = 'red') +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        text = element_text(face = 'bold')) +
+  labs(y = 'P(False Alarm | No-Go Trial)', title = 'False Alarms')
+
+
+
+allFitsRT = rbind(rtFits, rtFits2, rtFits3)
+
+rtPlot = rtRaw %>%
+  ggplot(., aes(x = Age, y = outcome)) +
+  geom_point(size = 1, alpha = .5) + 
+  geom_line(aes(group = Subject), alpha = .2) +
+  geom_ribbon(data = allFitsRT, aes(x = Age, y = Estimate, ymin = Q2.5, ymax = Q97.5, fill = model), alpha = .2) +
+  geom_line(data = allFitsRT, aes(x = Age, y = Estimate, color = model), lwd = 1) +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        text = element_text(face = 'bold'),
+        legend.title = element_blank(),
+        legend.position = c(.8, .65), 
+        legend.background = element_blank()) +
+  labs(y = 'RT (ms)', title = 'Reaction Times - Hit Trials')
+
+
+
+rtPlot
+plotPanel = grid.arrange(accPlot, hitPlot, falseAlarmPlot, rtPlot, ncol = 2)
+save(accPlot, hitPlot, falseAlarmPlot, rtPlot, file = '../../../communications/longitudinalAmygGrowth/plots/compsFearBehavPlots.rda', compress = 'xz')
+ggsave(plotPanel, file = 'plots/compsFearPlotPanel.png', width = 12, height = 12)
+```
+
+# Dprime analysis
+```{r}
+load('master_behav.rda')
+
+comp_beh = master %>%
+  dplyr::filter(group != 'PI', group != 'Foster Care')
+
+# calculate dprime
+comb_beh_dprime = comp_beh %>%
+  group_by(Subject, wave, Age) %>%
+  summarise(n =n(), 
+            hits = sum(tr_result == 'hit'),
+            fa = sum(tr_result == 'false_alarm'),
+            hit_rate = (hits + .5)/(sum(cresp == 1) + 1),
+            fa_rate = (fa + .5) / (sum(cresp == 0) + 1),
+            dprime = sdt_dprime(hit_rate, fa_rate))
+
+
+# run models (1  = linear, 2 = quadratic, 3 = cubic)
+dprime_m1 = brm(data = comb_beh_dprime, dprime ~ Age + (Age | Subject), cores = 4)
+dprime_m2 = brm(data = comb_beh_dprime, dprime ~ poly(Age, 2, raw = TRUE) + (Age | Subject), cores = 4)
+dprime_m3 = brm(data = comb_beh_dprime, dprime ~ poly(Age, 3, raw = TRUE) + (Age | Subject), cores = 4)
+
+# extract predictions with regards to age
+preds_m1 = conditional_effects(dprime_m1)$Age %>% dplyr::mutate(model = 'linear')
+preds_m2 = conditional_effects(dprime_m2)$Age %>% dplyr::mutate(model = 'quadratic')
+preds_m3 = conditional_effects(dprime_m3)$Age %>% dplyr::mutate(model = 'cubic')
+
+# combind preds
+preds_all = rbind(preds_m1, preds_m2, preds_m3)
+
+
+# plot
+dprime_plot = ggplot(preds_all, aes(x = Age, y = estimate__, color = model)) +
+  geom_point(comb_beh_dprime, mapping = aes(x = Age, y = dprime), color = 'black', alpha = .5) +
+  geom_line(comb_beh_dprime, mapping = aes(x = Age, y = dprime, group = Subject), color = 'black', alpha = .3) +
+  geom_ribbon(aes(ymin = lower__, ymax = upper__, fill = model), alpha = .2, color = NA) +
+  geom_line(lwd = 1) +
+  labs(y = "d'") +
+  theme(legend.title = element_blank())
+
+# save plot
+ggsave(dprime_plot, file = 'plots/supplement/dprime_age.pdf', height = 4, width = 6)
+```
+
+# Variance decomposition for dprime
+
+```{r}
+performance::variance_decomposition(dprime_m1, robust = TRUE)
+```
