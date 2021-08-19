@@ -2,6 +2,8 @@
 
 *Scripts for the initial [preregistered](https://osf.io/8nyj7/) FSL preprocessing pipeline*
 
+These scripts dictate the preprocessing for the preregistered pipeline and level-1 generalized linear model (GLM) for *each individual* fMRI scan run. No *group-level* modeling is done here yet. Preprocessing here is done using [FEAT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FEAT/UserGuide) from FSL. 
+
 ## `feat_template_24motion_no_errors.fsf`
 
 This is a template feat file for preprocessing and level1 GLM for which all scan-specific feat (`V6.00`) files are based. 
