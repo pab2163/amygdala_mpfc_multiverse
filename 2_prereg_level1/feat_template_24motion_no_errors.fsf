@@ -30,7 +30,7 @@ set fmri(featwatcher_yn) 1
 set fmri(sscleanup_yn) 0
 
 # Output directory
-set fmri(outputdir) "/danl/SB/PaulCompileTGNG/data/SUBNUM/model/fearNeutModel/24motion_no_errors"
+set fmri(outputdir) "/danl/SB/PaulCompileTGNG/data/SUBNUM/model/fearNeutModel/24motion"
 
 # TR(s)
 set fmri(tr) 2.000000

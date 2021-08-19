@@ -35,20 +35,20 @@ GLM Specifics
 * Contrasts of interest here are `fear faces > baseline`, `neutral faces > baseline`, and `fear faces > neutral faces`, although we also have contrasts for `neutral > fear`, `all faces > baseline`, and `baseline > fear` & `baseline > neutral` (although these last two are the inverse of the first two)
 
 
-The GSLM design matrix is stored in a `design.mat` file after feat is run, and can be visualized as below, where columns are regressors. The first 4 are task (1 = fear, 2 = fear temporal derivative, 3 = neutral, 4 = neutral temporal derivative), while the rest are nuisance regressors for motion.  The text at the bottom indicates the coding for each of the 7 contrasts used. 
+The GLM design matrix is stored in a `design.mat` file after feat is run, and can be visualized as below, where columns are regressors. The first 4 are task (1 = fear, 2 = fear temporal derivative, 3 = neutral, 4 = neutral temporal derivative), while the rest are nuisance regressors for motion.  The text at the bottom indicates the coding for each of the 7 contrasts used. 
 <img src='images/design.png' width = '800'/>
 
 ## `1_make_fsfs_for_haba.py`
 
-This script loops through all available BOLD runs and makes a separate feat script from `feat_template_24motion_no_errors.fsf` specific to that scan. 
+This script loops through all available BOLD runs and makes a separate feat script from `feat_template_24motion_no_errors.fsf` specific to that scan. `no_errors` indicates that the GLM does not include a regressor for task 'errors' made by the participants (missed button presses or false alarms)
 
 **Note:** there are a few specific scan runs (4 of them) where BBR or nonlinear anatomical-->standard registration are turned off, because these steps resulted in large distortions initially. These alterations are at the bottom of the script
 
 ## `run_level1_haba.sh`
 
-This script runs 1 `feat` job for preprocessing + level1 GLM for 1 scan run on Habanero, using 4 cores and with time allotted up to 11 hours 55 minutes. It takes 1 command line argument denoting which `.fsf` to run
+This script runs 1 `feat` job for preprocessing + level1 GLM for 1 scan run on Habanero, using 4 cores and with time allotted up to 11 hours 55 minutes (usually this took about 4-6 hours to run per scan). It takes 1 command line argument denoting which `.fsf` to run
 
 ## `2_submit_level1_jobs.haba.py`
 
-Loops through all scan runs to submit jobs to run `feat` on Columbia's Habanero cluster using the `sbatch` command (launching `run_level1_haba.sh` in parallel for each scan). After this is run, we get `feat` directories with preprocessed data and level-1 GLM outputs for each scan! These are labled `24motion_no_errors.feat`
+Loops through all scan runs to submit jobs to run `feat` on Columbia's Habanero cluster using the `sbatch` command (launching `run_level1_haba.sh` in parallel for each scan). After this is run, we get `feat` directories with preprocessed data and level-1 GLM outputs for each scan! These are labled `24motion.feat`
 
