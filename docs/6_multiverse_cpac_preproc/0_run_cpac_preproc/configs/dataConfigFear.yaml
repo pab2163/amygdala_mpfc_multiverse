@@ -1,0 +1,2338 @@
+- anat: /bids_dataset/SB001/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB001/BOLD/fear/SB001_tgng_fear_bold.nii.gz
+  subject_id: 'SB001'
+  unique_id: 'SB001'
+- anat: /bids_dataset/SB001_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB001_fu1/BOLD/fear/SB001_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB001_fu1'
+  unique_id: 'SB001_fu1'
+- anat: /bids_dataset/SB002/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB002/BOLD/fear/SB002_tgng_fear_bold.nii.gz
+  subject_id: 'SB002'
+  unique_id: 'SB002'
+- anat: /bids_dataset/SB002_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB002_fu1/BOLD/fear/SB002_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB002_fu1'
+  unique_id: 'SB002_fu1'
+- anat: /bids_dataset/SB002_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB002_fu2/BOLD/fear/SB002_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB002_fu2'
+  unique_id: 'SB002_fu2'
+- anat: /bids_dataset/SB003/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB003/BOLD/fear/SB003_tgng_fear_bold.nii.gz
+  subject_id: 'SB003'
+  unique_id: 'SB003'
+- anat: /bids_dataset/SB007/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB007/BOLD/fear/SB007_tgng_fear_bold.nii.gz
+  subject_id: 'SB007'
+  unique_id: 'SB007'
+- anat: /bids_dataset/SB007_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB007_fu1/BOLD/fear/SB007_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB007_fu1'
+  unique_id: 'SB007_fu1'
+- anat: /bids_dataset/SB008/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB008/BOLD/fear/SB008_tgng_fear_bold.nii.gz
+  subject_id: 'SB008'
+  unique_id: 'SB008'
+- anat: /bids_dataset/SB011_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB011_fu1/BOLD/fear/SB011_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB011_fu1'
+  unique_id: 'SB011_fu1'
+- anat: /bids_dataset/SB013/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB013/BOLD/fear/SB013_tgng_fear_bold.nii.gz
+  subject_id: 'SB013'
+  unique_id: 'SB013'
+- anat: /bids_dataset/SB013_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB013_fu1/BOLD/fear/SB013_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB013_fu1'
+  unique_id: 'SB013_fu1'
+- anat: /bids_dataset/SB014/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB014/BOLD/fear/SB014_tgng_fear_bold.nii.gz
+  subject_id: 'SB014'
+  unique_id: 'SB014'
+- anat: /bids_dataset/SB015/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB015/BOLD/fear/SB015_tgng_fear_bold.nii.gz
+  subject_id: 'SB015'
+  unique_id: 'SB015'
+- anat: /bids_dataset/SB017/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB017/BOLD/fear/SB017_tgng_fear_bold.nii.gz
+  subject_id: 'SB017'
+  unique_id: 'SB017'
+- anat: /bids_dataset/SB018/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB018/BOLD/fear/SB018_tgng_fear_bold.nii.gz
+  subject_id: 'SB018'
+  unique_id: 'SB018'
+- anat: /bids_dataset/SB018_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB018_fu1/BOLD/fear/SB018_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB018_fu1'
+  unique_id: 'SB018_fu1'
+- anat: /bids_dataset/SB018_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB018_fu2/BOLD/fear/SB018_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB018_fu2'
+  unique_id: 'SB018_fu2'
+- anat: /bids_dataset/SB019_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB019_fu2/BOLD/fear/SB019_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB019_fu2'
+  unique_id: 'SB019_fu2'
+- anat: /bids_dataset/SB020/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB020/BOLD/fear/SB020_tgng_fear_bold.nii.gz
+  subject_id: 'SB020'
+  unique_id: 'SB020'
+- anat: /bids_dataset/SB020_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB020_fu1/BOLD/fear/SB020_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB020_fu1'
+  unique_id: 'SB020_fu1'
+- anat: /bids_dataset/SB020_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB020_fu2/BOLD/fear/SB020_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB020_fu2'
+  unique_id: 'SB020_fu2'
+- anat: /bids_dataset/SB021/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB021/BOLD/fear/SB021_tgng_fear_bold.nii.gz
+  subject_id: 'SB021'
+  unique_id: 'SB021'
+- anat: /bids_dataset/SB021_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB021_fu1/BOLD/fear/SB021_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB021_fu1'
+  unique_id: 'SB021_fu1'
+- anat: /bids_dataset/SB025_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB025_fu1/BOLD/fear/SB025_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB025_fu1'
+  unique_id: 'SB025_fu1'
+- anat: /bids_dataset/SB025_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB025_fu2/BOLD/fear/SB025_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB025_fu2'
+  unique_id: 'SB025_fu2'
+- anat: /bids_dataset/SB026_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB026_fu1/BOLD/fear/SB026_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB026_fu1'
+  unique_id: 'SB026_fu1'
+- anat: /bids_dataset/SB026_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB026_fu2/BOLD/fear/SB026_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB026_fu2'
+  unique_id: 'SB026_fu2'
+- anat: /bids_dataset/SB027/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB027/BOLD/fear/SB027_tgng_fear_bold.nii.gz
+  subject_id: 'SB027'
+  unique_id: 'SB027'
+- anat: /bids_dataset/SB027_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB027_fu1/BOLD/fear/SB027_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB027_fu1'
+  unique_id: 'SB027_fu1'
+- anat: /bids_dataset/SB027_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB027_fu2/BOLD/fear/SB027_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB027_fu2'
+  unique_id: 'SB027_fu2'
+- anat: /bids_dataset/SB028/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB028/BOLD/fear/SB028_tgng_fear_bold.nii.gz
+  subject_id: 'SB028'
+  unique_id: 'SB028'
+- anat: /bids_dataset/SB029_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB029_fu1/BOLD/fear/SB029_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB029_fu1'
+  unique_id: 'SB029_fu1'
+- anat: /bids_dataset/SB029_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB029_fu2/BOLD/fear/SB029_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB029_fu2'
+  unique_id: 'SB029_fu2'
+- anat: /bids_dataset/SB030/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB030/BOLD/fear/SB030_tgng_fear_bold.nii.gz
+  subject_id: 'SB030'
+  unique_id: 'SB030'
+- anat: /bids_dataset/SB030_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB030_fu1/BOLD/fear/SB030_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB030_fu1'
+  unique_id: 'SB030_fu1'
+- anat: /bids_dataset/SB030_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB030_fu2/BOLD/fear/SB030_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB030_fu2'
+  unique_id: 'SB030_fu2'
+- anat: /bids_dataset/SB031/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB031/BOLD/fear/SB031_tgng_fear_bold.nii.gz
+  subject_id: 'SB031'
+  unique_id: 'SB031'
+- anat: /bids_dataset/SB031_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB031_fu1/BOLD/fear/SB031_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB031_fu1'
+  unique_id: 'SB031_fu1'
+- anat: /bids_dataset/SB031_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB031_fu2/BOLD/fear/SB031_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB031_fu2'
+  unique_id: 'SB031_fu2'
+- anat: /bids_dataset/SB033/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB033/BOLD/fear/SB033_tgng_fear_bold.nii.gz
+  subject_id: 'SB033'
+  unique_id: 'SB033'
+- anat: /bids_dataset/SB033_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB033_fu2/BOLD/fear/SB033_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB033_fu2'
+  unique_id: 'SB033_fu2'
+- anat: /bids_dataset/SB034/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB034/BOLD/fear/SB034_tgng_fear_bold.nii.gz
+  subject_id: 'SB034'
+  unique_id: 'SB034'
+- anat: /bids_dataset/SB034_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB034_fu1/BOLD/fear/SB034_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB034_fu1'
+  unique_id: 'SB034_fu1'
+- anat: /bids_dataset/SB034_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB034_fu2/BOLD/fear/SB034_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB034_fu2'
+  unique_id: 'SB034_fu2'
+- anat: /bids_dataset/SB036/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB036/BOLD/fear/SB036_tgng_fear_bold.nii.gz
+  subject_id: 'SB036'
+  unique_id: 'SB036'
+- anat: /bids_dataset/SB036_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB036_fu1/BOLD/fear/SB036_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB036_fu1'
+  unique_id: 'SB036_fu1'
+- anat: /bids_dataset/SB036_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB036_fu2/BOLD/fear/SB036_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB036_fu2'
+  unique_id: 'SB036_fu2'
+- anat: /bids_dataset/SB041/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB041/BOLD/fear/SB041_tgng_fear_bold.nii.gz
+  subject_id: 'SB041'
+  unique_id: 'SB041'
+- anat: /bids_dataset/SB041_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB041_fu1/BOLD/fear/SB041_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB041_fu1'
+  unique_id: 'SB041_fu1'
+- anat: /bids_dataset/SB046_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB046_fu1/BOLD/fear/SB046_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB046_fu1'
+  unique_id: 'SB046_fu1'
+- anat: /bids_dataset/SB046_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB046_fu2/BOLD/fear/SB046_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB046_fu2'
+  unique_id: 'SB046_fu2'
+- anat: /bids_dataset/SB047_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB047_fu1/BOLD/fear/SB047_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB047_fu1'
+  unique_id: 'SB047_fu1'
+- anat: /bids_dataset/SB047_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB047_fu2/BOLD/fear/SB047_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB047_fu2'
+  unique_id: 'SB047_fu2'
+- anat: /bids_dataset/SB048_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB048_fu1/BOLD/fear/SB048_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB048_fu1'
+  unique_id: 'SB048_fu1'
+- anat: /bids_dataset/SB048_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB048_fu2/BOLD/fear/SB048_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB048_fu2'
+  unique_id: 'SB048_fu2'
+- anat: /bids_dataset/SB050_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB050_fu1/BOLD/fear/SB050_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB050_fu1'
+  unique_id: 'SB050_fu1'
+- anat: /bids_dataset/SB051_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB051_fu1/BOLD/fear/SB051_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB051_fu1'
+  unique_id: 'SB051_fu1'
+- anat: /bids_dataset/SB054_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB054_fu2/BOLD/fear/SB054_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB054_fu2'
+  unique_id: 'SB054_fu2'
+- anat: /bids_dataset/SB058/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB058/BOLD/fear/SB058_tgng_fear_bold.nii.gz
+  subject_id: 'SB058'
+  unique_id: 'SB058'
+- anat: /bids_dataset/SB058_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB058_fu1/BOLD/fear/SB058_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB058_fu1'
+  unique_id: 'SB058_fu1'
+- anat: /bids_dataset/SB058_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB058_fu2/BOLD/fear/SB058_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB058_fu2'
+  unique_id: 'SB058_fu2'
+- anat: /bids_dataset/SB059/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB059/BOLD/fear/SB059_tgng_fear_bold.nii.gz
+  subject_id: 'SB059'
+  unique_id: 'SB059'
+- anat: /bids_dataset/SB059_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB059_fu1/BOLD/fear/SB059_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB059_fu1'
+  unique_id: 'SB059_fu1'
+- anat: /bids_dataset/SB059_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB059_fu2/BOLD/fear/SB059_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB059_fu2'
+  unique_id: 'SB059_fu2'
+- anat: /bids_dataset/SB061/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB061/BOLD/fear/SB061_tgng_fear_bold.nii.gz
+  subject_id: 'SB061'
+  unique_id: 'SB061'
+- anat: /bids_dataset/SB061_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB061_fu2/BOLD/fear/SB061_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB061_fu2'
+  unique_id: 'SB061_fu2'
+- anat: /bids_dataset/SB064/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB064/BOLD/fear/SB064_tgng_fear_bold.nii.gz
+  subject_id: 'SB064'
+  unique_id: 'SB064'
+- anat: /bids_dataset/SB064_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB064_fu2/BOLD/fear/SB064_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB064_fu2'
+  unique_id: 'SB064_fu2'
+- anat: /bids_dataset/SB065/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB065/BOLD/fear/SB065_tgng_fear_bold.nii.gz
+  subject_id: 'SB065'
+  unique_id: 'SB065'
+- anat: /bids_dataset/SB066/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB066/BOLD/fear/SB066_tgng_fear_bold.nii.gz
+  subject_id: 'SB066'
+  unique_id: 'SB066'
+- anat: /bids_dataset/SB067/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB067/BOLD/fear/SB067_tgng_fear_bold.nii.gz
+  subject_id: 'SB067'
+  unique_id: 'SB067'
+- anat: /bids_dataset/SB067_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB067_fu1/BOLD/fear/SB067_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB067_fu1'
+  unique_id: 'SB067_fu1'
+- anat: /bids_dataset/SB067_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB067_fu2/BOLD/fear/SB067_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB067_fu2'
+  unique_id: 'SB067_fu2'
+- anat: /bids_dataset/SB068/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB068/BOLD/fear/SB068_tgng_fear_bold.nii.gz
+  subject_id: 'SB068'
+  unique_id: 'SB068'
+- anat: /bids_dataset/SB069/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB069/BOLD/fear/SB069_tgng_fear_bold.nii.gz
+  subject_id: 'SB069'
+  unique_id: 'SB069'
+- anat: /bids_dataset/SB070/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB070/BOLD/fear/SB070_tgng_fear_bold.nii.gz
+  subject_id: 'SB070'
+  unique_id: 'SB070'
+- anat: /bids_dataset/SB071/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB071/BOLD/fear/SB071_tgng_fear_bold.nii.gz
+  subject_id: 'SB071'
+  unique_id: 'SB071'
+- anat: /bids_dataset/SB071_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB071_fu1/BOLD/fear/SB071_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB071_fu1'
+  unique_id: 'SB071_fu1'
+- anat: /bids_dataset/SB072/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB072/BOLD/fear/SB072_tgng_fear_bold.nii.gz
+  subject_id: 'SB072'
+  unique_id: 'SB072'
+- anat: /bids_dataset/SB072_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB072_fu1/BOLD/fear/SB072_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB072_fu1'
+  unique_id: 'SB072_fu1'
+- anat: /bids_dataset/SB072_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB072_fu2/BOLD/fear/SB072_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB072_fu2'
+  unique_id: 'SB072_fu2'
+- anat: /bids_dataset/SB075/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB075/BOLD/fear/SB075_tgng_fear_bold.nii.gz
+  subject_id: 'SB075'
+  unique_id: 'SB075'
+- anat: /bids_dataset/SB075_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB075_fu1/BOLD/fear/SB075_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB075_fu1'
+  unique_id: 'SB075_fu1'
+- anat: /bids_dataset/SB076_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB076_fu2/BOLD/fear/SB076_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB076_fu2'
+  unique_id: 'SB076_fu2'
+- anat: /bids_dataset/SB079/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB079/BOLD/fear/SB079_tgng_fear_bold.nii.gz
+  subject_id: 'SB079'
+  unique_id: 'SB079'
+- anat: /bids_dataset/SB079_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB079_fu1/BOLD/fear/SB079_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB079_fu1'
+  unique_id: 'SB079_fu1'
+- anat: /bids_dataset/SB079_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB079_fu2/BOLD/fear/SB079_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB079_fu2'
+  unique_id: 'SB079_fu2'
+- anat: /bids_dataset/SB080/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB080/BOLD/fear/SB080_tgng_fear_bold.nii.gz
+  subject_id: 'SB080'
+  unique_id: 'SB080'
+- anat: /bids_dataset/SB080_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB080_fu1/BOLD/fear/SB080_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB080_fu1'
+  unique_id: 'SB080_fu1'
+- anat: /bids_dataset/SB080_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB080_fu2/BOLD/fear/SB080_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB080_fu2'
+  unique_id: 'SB080_fu2'
+- anat: /bids_dataset/SB081/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB081/BOLD/fear/SB081_tgng_fear_bold.nii.gz
+  subject_id: 'SB081'
+  unique_id: 'SB081'
+- anat: /bids_dataset/SB081_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB081_fu1/BOLD/fear/SB081_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB081_fu1'
+  unique_id: 'SB081_fu1'
+- anat: /bids_dataset/SB082/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB082/BOLD/fear/SB082_tgng_fear_bold.nii.gz
+  subject_id: 'SB082'
+  unique_id: 'SB082'
+- anat: /bids_dataset/SB085/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB085/BOLD/fear/SB085_tgng_fear_bold.nii.gz
+  subject_id: 'SB085'
+  unique_id: 'SB085'
+- anat: /bids_dataset/SB085_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB085_fu1/BOLD/fear/SB085_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB085_fu1'
+  unique_id: 'SB085_fu1'
+- anat: /bids_dataset/SB085_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB085_fu2/BOLD/fear/SB085_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB085_fu2'
+  unique_id: 'SB085_fu2'
+- anat: /bids_dataset/SB087/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB087/BOLD/fear/SB087_tgng_fear_bold.nii.gz
+  subject_id: 'SB087'
+  unique_id: 'SB087'
+- anat: /bids_dataset/SB087_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB087_fu1/BOLD/fear/SB087_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB087_fu1'
+  unique_id: 'SB087_fu1'
+- anat: /bids_dataset/SB087_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB087_fu2/BOLD/fear/SB087_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB087_fu2'
+  unique_id: 'SB087_fu2'
+- anat: /bids_dataset/SB088/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB088/BOLD/fear/SB088_tgng_fear_bold.nii.gz
+  subject_id: 'SB088'
+  unique_id: 'SB088'
+- anat: /bids_dataset/SB088_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB088_fu1/BOLD/fear/SB088_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB088_fu1'
+  unique_id: 'SB088_fu1'
+- anat: /bids_dataset/SB088_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB088_fu2/BOLD/fear/SB088_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB088_fu2'
+  unique_id: 'SB088_fu2'
+- anat: /bids_dataset/SB091/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB091/BOLD/fear/SB091_tgng_fear_bold.nii.gz
+  subject_id: 'SB091'
+  unique_id: 'SB091'
+- anat: /bids_dataset/SB091_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB091_fu1/BOLD/fear/SB091_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB091_fu1'
+  unique_id: 'SB091_fu1'
+- anat: /bids_dataset/SB092_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB092_fu1/BOLD/fear/SB092_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB092_fu1'
+  unique_id: 'SB092_fu1'
+- anat: /bids_dataset/SB094/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB094/BOLD/fear/SB094_tgng_fear_bold.nii.gz
+  subject_id: 'SB094'
+  unique_id: 'SB094'
+- anat: /bids_dataset/SB094_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB094_fu1/BOLD/fear/SB094_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB094_fu1'
+  unique_id: 'SB094_fu1'
+- anat: /bids_dataset/SB097_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB097_fu1/BOLD/fear/SB097_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB097_fu1'
+  unique_id: 'SB097_fu1'
+- anat: /bids_dataset/SB098/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB098/BOLD/fear/SB098_tgng_fear_bold.nii.gz
+  subject_id: 'SB098'
+  unique_id: 'SB098'
+- anat: /bids_dataset/SB098_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB098_fu1/BOLD/fear/SB098_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB098_fu1'
+  unique_id: 'SB098_fu1'
+- anat: /bids_dataset/SB099/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB099/BOLD/fear/SB099_tgng_fear_bold.nii.gz
+  subject_id: 'SB099'
+  unique_id: 'SB099'
+- anat: /bids_dataset/SB102/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB102/BOLD/fear/SB102_tgng_fear_bold.nii.gz
+  subject_id: 'SB102'
+  unique_id: 'SB102'
+- anat: /bids_dataset/SB102_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB102_fu1/BOLD/fear/SB102_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB102_fu1'
+  unique_id: 'SB102_fu1'
+- anat: /bids_dataset/SB102_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB102_fu2/BOLD/fear/SB102_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB102_fu2'
+  unique_id: 'SB102_fu2'
+- anat: /bids_dataset/SB103_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB103_fu1/BOLD/fear/SB103_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB103_fu1'
+  unique_id: 'SB103_fu1'
+- anat: /bids_dataset/SB103_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB103_fu2/BOLD/fear/SB103_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB103_fu2'
+  unique_id: 'SB103_fu2'
+- anat: /bids_dataset/SB105/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB105/BOLD/fear/SB105_tgng_fear_bold.nii.gz
+  subject_id: 'SB105'
+  unique_id: 'SB105'
+- anat: /bids_dataset/SB105_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB105_fu1/BOLD/fear/SB105_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB105_fu1'
+  unique_id: 'SB105_fu1'
+- anat: /bids_dataset/SB107/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB107/BOLD/fear/SB107_tgng_fear_bold.nii.gz
+  subject_id: 'SB107'
+  unique_id: 'SB107'
+- anat: /bids_dataset/SB107_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB107_fu1/BOLD/fear/SB107_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB107_fu1'
+  unique_id: 'SB107_fu1'
+- anat: /bids_dataset/SB108/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB108/BOLD/fear/SB108_tgng_fear_bold.nii.gz
+  subject_id: 'SB108'
+  unique_id: 'SB108'
+- anat: /bids_dataset/SB108_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB108_fu1/BOLD/fear/SB108_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB108_fu1'
+  unique_id: 'SB108_fu1'
+- anat: /bids_dataset/SB112/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB112/BOLD/fear/SB112_tgng_fear_bold.nii.gz
+  subject_id: 'SB112'
+  unique_id: 'SB112'
+- anat: /bids_dataset/SB115_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB115_fu1/BOLD/fear/SB115_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB115_fu1'
+  unique_id: 'SB115_fu1'
+- anat: /bids_dataset/SB115_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB115_fu2/BOLD/fear/SB115_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB115_fu2'
+  unique_id: 'SB115_fu2'
+- anat: /bids_dataset/SB116_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB116_fu1/BOLD/fear/SB116_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB116_fu1'
+  unique_id: 'SB116_fu1'
+- anat: /bids_dataset/SB117_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB117_fu1/BOLD/fear/SB117_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB117_fu1'
+  unique_id: 'SB117_fu1'
+- anat: /bids_dataset/SB117_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB117_fu2/BOLD/fear/SB117_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB117_fu2'
+  unique_id: 'SB117_fu2'
+- anat: /bids_dataset/SB118/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB118/BOLD/fear/SB118_tgng_fear_bold.nii.gz
+  subject_id: 'SB118'
+  unique_id: 'SB118'
+- anat: /bids_dataset/SB118_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB118_fu1/BOLD/fear/SB118_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB118_fu1'
+  unique_id: 'SB118_fu1'
+- anat: /bids_dataset/SB118_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB118_fu2/BOLD/fear/SB118_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB118_fu2'
+  unique_id: 'SB118_fu2'
+- anat: /bids_dataset/SB123_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB123_fu1/BOLD/fear/SB123_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB123_fu1'
+  unique_id: 'SB123_fu1'
+- anat: /bids_dataset/SB123_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB123_fu2/BOLD/fear/SB123_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB123_fu2'
+  unique_id: 'SB123_fu2'
+- anat: /bids_dataset/SB124_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB124_fu1/BOLD/fear/SB124_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB124_fu1'
+  unique_id: 'SB124_fu1'
+- anat: /bids_dataset/SB124_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB124_fu2/BOLD/fear/SB124_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB124_fu2'
+  unique_id: 'SB124_fu2'
+- anat: /bids_dataset/SB126_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB126_fu1/BOLD/fear/SB126_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB126_fu1'
+  unique_id: 'SB126_fu1'
+- anat: /bids_dataset/SB126_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB126_fu2/BOLD/fear/SB126_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB126_fu2'
+  unique_id: 'SB126_fu2'
+- anat: /bids_dataset/SB127_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB127_fu1/BOLD/fear/SB127_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB127_fu1'
+  unique_id: 'SB127_fu1'
+- anat: /bids_dataset/SB127_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB127_fu2/BOLD/fear/SB127_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB127_fu2'
+  unique_id: 'SB127_fu2'
+- anat: /bids_dataset/SB128/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB128/BOLD/fear/SB128_tgng_fear_bold.nii.gz
+  subject_id: 'SB128'
+  unique_id: 'SB128'
+- anat: /bids_dataset/SB128_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB128_fu1/BOLD/fear/SB128_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB128_fu1'
+  unique_id: 'SB128_fu1'
+- anat: /bids_dataset/SB130/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB130/BOLD/fear/SB130_tgng_fear_bold.nii.gz
+  subject_id: 'SB130'
+  unique_id: 'SB130'
+- anat: /bids_dataset/SB131/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB131/BOLD/fear/SB131_tgng_fear_bold.nii.gz
+  subject_id: 'SB131'
+  unique_id: 'SB131'
+- anat: /bids_dataset/SB131_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB131_fu1/BOLD/fear/SB131_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB131_fu1'
+  unique_id: 'SB131_fu1'
+- anat: /bids_dataset/SB131_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB131_fu2/BOLD/fear/SB131_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB131_fu2'
+  unique_id: 'SB131_fu2'
+- anat: /bids_dataset/SB132_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB132_fu1/BOLD/fear/SB132_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB132_fu1'
+  unique_id: 'SB132_fu1'
+- anat: /bids_dataset/SB132_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB132_fu2/BOLD/fear/SB132_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB132_fu2'
+  unique_id: 'SB132_fu2'
+- anat: /bids_dataset/SB133_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB133_fu1/BOLD/fear/SB133_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB133_fu1'
+  unique_id: 'SB133_fu1'
+- anat: /bids_dataset/SB133_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB133_fu2/BOLD/fear/SB133_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB133_fu2'
+  unique_id: 'SB133_fu2'
+- anat: /bids_dataset/SB134_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB134_fu1/BOLD/fear/SB134_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB134_fu1'
+  unique_id: 'SB134_fu1'
+- anat: /bids_dataset/SB135_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB135_fu1/BOLD/fear/SB135_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB135_fu1'
+  unique_id: 'SB135_fu1'
+- anat: /bids_dataset/SB135_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB135_fu2/BOLD/fear/SB135_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB135_fu2'
+  unique_id: 'SB135_fu2'
+- anat: /bids_dataset/SB136/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB136/BOLD/fear/SB136_tgng_fear_bold.nii.gz
+  subject_id: 'SB136'
+  unique_id: 'SB136'
+- anat: /bids_dataset/SB136_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB136_fu1/BOLD/fear/SB136_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB136_fu1'
+  unique_id: 'SB136_fu1'
+- anat: /bids_dataset/SB136_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB136_fu2/BOLD/fear/SB136_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB136_fu2'
+  unique_id: 'SB136_fu2'
+- anat: /bids_dataset/SB139/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB139/BOLD/fear/SB139_tgng_fear_bold.nii.gz
+  subject_id: 'SB139'
+  unique_id: 'SB139'
+- anat: /bids_dataset/SB139_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB139_fu1/BOLD/fear/SB139_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB139_fu1'
+  unique_id: 'SB139_fu1'
+- anat: /bids_dataset/SB140/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB140/BOLD/fear/SB140_tgng_fear_bold.nii.gz
+  subject_id: 'SB140'
+  unique_id: 'SB140'
+- anat: /bids_dataset/SB140_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB140_fu1/BOLD/fear/SB140_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB140_fu1'
+  unique_id: 'SB140_fu1'
+- anat: /bids_dataset/SB142/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB142/BOLD/fear/SB142_tgng_fear_bold.nii.gz
+  subject_id: 'SB142'
+  unique_id: 'SB142'
+- anat: /bids_dataset/SB142_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB142_fu1/BOLD/fear/SB142_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB142_fu1'
+  unique_id: 'SB142_fu1'
+- anat: /bids_dataset/SB143/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB143/BOLD/fear/SB143_tgng_fear_bold.nii.gz
+  subject_id: 'SB143'
+  unique_id: 'SB143'
+- anat: /bids_dataset/SB143_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB143_fu1/BOLD/fear/SB143_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB143_fu1'
+  unique_id: 'SB143_fu1'
+- anat: /bids_dataset/SB143_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB143_fu2/BOLD/fear/SB143_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB143_fu2'
+  unique_id: 'SB143_fu2'
+- anat: /bids_dataset/SB144/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB144/BOLD/fear/SB144_tgng_fear_bold.nii.gz
+  subject_id: 'SB144'
+  unique_id: 'SB144'
+- anat: /bids_dataset/SB145/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB145/BOLD/fear/SB145_tgng_fear_bold.nii.gz
+  subject_id: 'SB145'
+  unique_id: 'SB145'
+- anat: /bids_dataset/SB146/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB146/BOLD/fear/SB146_tgng_fear_bold.nii.gz
+  subject_id: 'SB146'
+  unique_id: 'SB146'
+- anat: /bids_dataset/SB147/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB147/BOLD/fear/SB147_tgng_fear_bold.nii.gz
+  subject_id: 'SB147'
+  unique_id: 'SB147'
+- anat: /bids_dataset/SB147_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB147_fu1/BOLD/fear/SB147_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB147_fu1'
+  unique_id: 'SB147_fu1'
+- anat: /bids_dataset/SB147_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB147_fu2/BOLD/fear/SB147_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB147_fu2'
+  unique_id: 'SB147_fu2'
+- anat: /bids_dataset/SB148/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB148/BOLD/fear/SB148_tgng_fear_bold.nii.gz
+  subject_id: 'SB148'
+  unique_id: 'SB148'
+- anat: /bids_dataset/SB148_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB148_fu1/BOLD/fear/SB148_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB148_fu1'
+  unique_id: 'SB148_fu1'
+- anat: /bids_dataset/SB150_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB150_fu1/BOLD/fear/SB150_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB150_fu1'
+  unique_id: 'SB150_fu1'
+- anat: /bids_dataset/SB151/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB151/BOLD/fear/SB151_tgng_fear_bold.nii.gz
+  subject_id: 'SB151'
+  unique_id: 'SB151'
+- anat: /bids_dataset/SB151_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB151_fu1/BOLD/fear/SB151_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB151_fu1'
+  unique_id: 'SB151_fu1'
+- anat: /bids_dataset/SB151_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB151_fu2/BOLD/fear/SB151_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB151_fu2'
+  unique_id: 'SB151_fu2'
+- anat: /bids_dataset/SB152/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB152/BOLD/fear/SB152_tgng_fear_bold.nii.gz
+  subject_id: 'SB152'
+  unique_id: 'SB152'
+- anat: /bids_dataset/SB152_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB152_fu1/BOLD/fear/SB152_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB152_fu1'
+  unique_id: 'SB152_fu1'
+- anat: /bids_dataset/SB152_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB152_fu2/BOLD/fear/SB152_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB152_fu2'
+  unique_id: 'SB152_fu2'
+- anat: /bids_dataset/SB154_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB154_fu2/BOLD/fear/SB154_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB154_fu2'
+  unique_id: 'SB154_fu2'
+- anat: /bids_dataset/SB155/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB155/BOLD/fear/SB155_tgng_fear_bold.nii.gz
+  subject_id: 'SB155'
+  unique_id: 'SB155'
+- anat: /bids_dataset/SB156/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB156/BOLD/fear/SB156_tgng_fear_bold.nii.gz
+  subject_id: 'SB156'
+  unique_id: 'SB156'
+- anat: /bids_dataset/SB156_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB156_fu1/BOLD/fear/SB156_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB156_fu1'
+  unique_id: 'SB156_fu1'
+- anat: /bids_dataset/SB162_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB162_fu1/BOLD/fear/SB162_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB162_fu1'
+  unique_id: 'SB162_fu1'
+- anat: /bids_dataset/SB163/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB163/BOLD/fear/SB163_tgng_fear_bold.nii.gz
+  subject_id: 'SB163'
+  unique_id: 'SB163'
+- anat: /bids_dataset/SB163_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB163_fu1/BOLD/fear/SB163_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB163_fu1'
+  unique_id: 'SB163_fu1'
+- anat: /bids_dataset/SB163_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB163_fu2/BOLD/fear/SB163_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB163_fu2'
+  unique_id: 'SB163_fu2'
+- anat: /bids_dataset/SB164/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB164/BOLD/fear/SB164_tgng_fear_bold.nii.gz
+  subject_id: 'SB164'
+  unique_id: 'SB164'
+- anat: /bids_dataset/SB164_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB164_fu1/BOLD/fear/SB164_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB164_fu1'
+  unique_id: 'SB164_fu1'
+- anat: /bids_dataset/SB164_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB164_fu2/BOLD/fear/SB164_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB164_fu2'
+  unique_id: 'SB164_fu2'
+- anat: /bids_dataset/SB169/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB169/BOLD/fear/SB169_tgng_fear_bold.nii.gz
+  subject_id: 'SB169'
+  unique_id: 'SB169'
+- anat: /bids_dataset/SB169_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB169_fu1/BOLD/fear/SB169_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB169_fu1'
+  unique_id: 'SB169_fu1'
+- anat: /bids_dataset/SB169_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB169_fu2/BOLD/fear/SB169_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB169_fu2'
+  unique_id: 'SB169_fu2'
+- anat: /bids_dataset/SB170_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB170_fu2/BOLD/fear/SB170_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB170_fu2'
+  unique_id: 'SB170_fu2'
+- anat: /bids_dataset/SB171/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB171/BOLD/fear/SB171_tgng_fear_bold.nii.gz
+  subject_id: 'SB171'
+  unique_id: 'SB171'
+- anat: /bids_dataset/SB171_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB171_fu1/BOLD/fear/SB171_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB171_fu1'
+  unique_id: 'SB171_fu1'
+- anat: /bids_dataset/SB177_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB177_fu1/BOLD/fear/SB177_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB177_fu1'
+  unique_id: 'SB177_fu1'
+- anat: /bids_dataset/SB177_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB177_fu2/BOLD/fear/SB177_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB177_fu2'
+  unique_id: 'SB177_fu2'
+- anat: /bids_dataset/SB178/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB178/BOLD/fear/SB178_tgng_fear_bold.nii.gz
+  subject_id: 'SB178'
+  unique_id: 'SB178'
+- anat: /bids_dataset/SB178_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB178_fu1/BOLD/fear/SB178_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB178_fu1'
+  unique_id: 'SB178_fu1'
+- anat: /bids_dataset/SB178_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB178_fu2/BOLD/fear/SB178_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB178_fu2'
+  unique_id: 'SB178_fu2'
+- anat: /bids_dataset/SB181/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB181/BOLD/fear/SB181_tgng_fear_bold.nii.gz
+  subject_id: 'SB181'
+  unique_id: 'SB181'
+- anat: /bids_dataset/SB181_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB181_fu1/BOLD/fear/SB181_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB181_fu1'
+  unique_id: 'SB181_fu1'
+- anat: /bids_dataset/SB181_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB181_fu2/BOLD/fear/SB181_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB181_fu2'
+  unique_id: 'SB181_fu2'
+- anat: /bids_dataset/SB182/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB182/BOLD/fear/SB182_tgng_fear_bold.nii.gz
+  subject_id: 'SB182'
+  unique_id: 'SB182'
+- anat: /bids_dataset/SB182_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB182_fu1/BOLD/fear/SB182_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB182_fu1'
+  unique_id: 'SB182_fu1'
+- anat: /bids_dataset/SB182_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB182_fu2/BOLD/fear/SB182_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB182_fu2'
+  unique_id: 'SB182_fu2'
+- anat: /bids_dataset/SB184/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB184/BOLD/fear/SB184_tgng_fear_bold.nii.gz
+  subject_id: 'SB184'
+  unique_id: 'SB184'
+- anat: /bids_dataset/SB186/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB186/BOLD/fear/SB186_tgng_fear_bold.nii.gz
+  subject_id: 'SB186'
+  unique_id: 'SB186'
+- anat: /bids_dataset/SB186_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB186_fu1/BOLD/fear/SB186_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB186_fu1'
+  unique_id: 'SB186_fu1'
+- anat: /bids_dataset/SB186_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB186_fu2/BOLD/fear/SB186_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB186_fu2'
+  unique_id: 'SB186_fu2'
+- anat: /bids_dataset/SB188/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB188/BOLD/fear/SB188_tgng_fear_bold.nii.gz
+  subject_id: 'SB188'
+  unique_id: 'SB188'
+- anat: /bids_dataset/SB188_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB188_fu1/BOLD/fear/SB188_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB188_fu1'
+  unique_id: 'SB188_fu1'
+- anat: /bids_dataset/SB190/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB190/BOLD/fear/SB190_tgng_fear_bold.nii.gz
+  subject_id: 'SB190'
+  unique_id: 'SB190'
+- anat: /bids_dataset/SB190_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB190_fu1/BOLD/fear/SB190_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB190_fu1'
+  unique_id: 'SB190_fu1'
+- anat: /bids_dataset/SB190_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB190_fu2/BOLD/fear/SB190_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB190_fu2'
+  unique_id: 'SB190_fu2'
+- anat: /bids_dataset/SB191/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB191/BOLD/fear/SB191_tgng_fear_bold.nii.gz
+  subject_id: 'SB191'
+  unique_id: 'SB191'
+- anat: /bids_dataset/SB191_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB191_fu1/BOLD/fear/SB191_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB191_fu1'
+  unique_id: 'SB191_fu1'
+- anat: /bids_dataset/SB192/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB192/BOLD/fear/SB192_tgng_fear_bold.nii.gz
+  subject_id: 'SB192'
+  unique_id: 'SB192'
+- anat: /bids_dataset/SB192_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB192_fu1/BOLD/fear/SB192_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB192_fu1'
+  unique_id: 'SB192_fu1'
+- anat: /bids_dataset/SB196/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB196/BOLD/fear/SB196_tgng_fear_bold.nii.gz
+  subject_id: 'SB196'
+  unique_id: 'SB196'
+- anat: /bids_dataset/SB197/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB197/BOLD/fear/SB197_tgng_fear_bold.nii.gz
+  subject_id: 'SB197'
+  unique_id: 'SB197'
+- anat: /bids_dataset/SB197_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB197_fu1/BOLD/fear/SB197_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB197_fu1'
+  unique_id: 'SB197_fu1'
+- anat: /bids_dataset/SB197_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB197_fu2/BOLD/fear/SB197_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB197_fu2'
+  unique_id: 'SB197_fu2'
+- anat: /bids_dataset/SB198/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB198/BOLD/fear/SB198_tgng_fear_bold.nii.gz
+  subject_id: 'SB198'
+  unique_id: 'SB198'
+- anat: /bids_dataset/SB198_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB198_fu1/BOLD/fear/SB198_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB198_fu1'
+  unique_id: 'SB198_fu1'
+- anat: /bids_dataset/SB198_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB198_fu2/BOLD/fear/SB198_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB198_fu2'
+  unique_id: 'SB198_fu2'
+- anat: /bids_dataset/SB199/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB199/BOLD/fear/SB199_tgng_fear_bold.nii.gz
+  subject_id: 'SB199'
+  unique_id: 'SB199'
+- anat: /bids_dataset/SB199_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB199_fu1/BOLD/fear/SB199_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB199_fu1'
+  unique_id: 'SB199_fu1'
+- anat: /bids_dataset/SB199_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB199_fu2/BOLD/fear/SB199_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB199_fu2'
+  unique_id: 'SB199_fu2'
+- anat: /bids_dataset/SB201/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB201/BOLD/fear/SB201_tgng_fear_bold.nii.gz
+  subject_id: 'SB201'
+  unique_id: 'SB201'
+- anat: /bids_dataset/SB202/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB202/BOLD/fear/SB202_tgng_fear_bold.nii.gz
+  subject_id: 'SB202'
+  unique_id: 'SB202'
+- anat: /bids_dataset/SB205/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB205/BOLD/fear/SB205_tgng_fear_bold.nii.gz
+  subject_id: 'SB205'
+  unique_id: 'SB205'
+- anat: /bids_dataset/SB205_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB205_fu1/BOLD/fear/SB205_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB205_fu1'
+  unique_id: 'SB205_fu1'
+- anat: /bids_dataset/SB205_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB205_fu2/BOLD/fear/SB205_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB205_fu2'
+  unique_id: 'SB205_fu2'
+- anat: /bids_dataset/SB206/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB206/BOLD/fear/SB206_tgng_fear_bold.nii.gz
+  subject_id: 'SB206'
+  unique_id: 'SB206'
+- anat: /bids_dataset/SB207/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB207/BOLD/fear/SB207_tgng_fear_bold.nii.gz
+  subject_id: 'SB207'
+  unique_id: 'SB207'
+- anat: /bids_dataset/SB207_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB207_fu1/BOLD/fear/SB207_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB207_fu1'
+  unique_id: 'SB207_fu1'
+- anat: /bids_dataset/SB217/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB217/BOLD/fear/SB217_tgng_fear_bold.nii.gz
+  subject_id: 'SB217'
+  unique_id: 'SB217'
+- anat: /bids_dataset/SB218/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB218/BOLD/fear/SB218_tgng_fear_bold.nii.gz
+  subject_id: 'SB218'
+  unique_id: 'SB218'
+- anat: /bids_dataset/SB220_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB220_fu1/BOLD/fear/SB220_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB220_fu1'
+  unique_id: 'SB220_fu1'
+- anat: /bids_dataset/SB220_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB220_fu2/BOLD/fear/SB220_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB220_fu2'
+  unique_id: 'SB220_fu2'
+- anat: /bids_dataset/SB227/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB227/BOLD/fear/SB227_tgng_fear_bold.nii.gz
+  subject_id: 'SB227'
+  unique_id: 'SB227'
+- anat: /bids_dataset/SB228/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB228/BOLD/fear/SB228_tgng_fear_bold.nii.gz
+  subject_id: 'SB228'
+  unique_id: 'SB228'
+- anat: /bids_dataset/SB234/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB234/BOLD/fear/SB234_tgng_fear_bold.nii.gz
+  subject_id: 'SB234'
+  unique_id: 'SB234'
+- anat: /bids_dataset/SB234_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB234_fu1/BOLD/fear/SB234_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB234_fu1'
+  unique_id: 'SB234_fu1'
+- anat: /bids_dataset/SB234_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB234_fu2/BOLD/fear/SB234_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB234_fu2'
+  unique_id: 'SB234_fu2'
+- anat: /bids_dataset/SB235_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB235_fu1/BOLD/fear/SB235_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB235_fu1'
+  unique_id: 'SB235_fu1'
+- anat: /bids_dataset/SB235_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB235_fu2/BOLD/fear/SB235_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB235_fu2'
+  unique_id: 'SB235_fu2'
+- anat: /bids_dataset/SB236/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB236/BOLD/fear/SB236_tgng_fear_bold.nii.gz
+  subject_id: 'SB236'
+  unique_id: 'SB236'
+- anat: /bids_dataset/SB236_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB236_fu1/BOLD/fear/SB236_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB236_fu1'
+  unique_id: 'SB236_fu1'
+- anat: /bids_dataset/SB236_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB236_fu2/BOLD/fear/SB236_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB236_fu2'
+  unique_id: 'SB236_fu2'
+- anat: /bids_dataset/SB239/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB239/BOLD/fear/SB239_tgng_fear_bold.nii.gz
+  subject_id: 'SB239'
+  unique_id: 'SB239'
+- anat: /bids_dataset/SB239_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB239_fu1/BOLD/fear/SB239_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB239_fu1'
+  unique_id: 'SB239_fu1'
+- anat: /bids_dataset/SB239_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB239_fu2/BOLD/fear/SB239_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB239_fu2'
+  unique_id: 'SB239_fu2'
+- anat: /bids_dataset/SB240/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB240/BOLD/fear/SB240_tgng_fear_bold.nii.gz
+  subject_id: 'SB240'
+  unique_id: 'SB240'
+- anat: /bids_dataset/SB240_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB240_fu1/BOLD/fear/SB240_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB240_fu1'
+  unique_id: 'SB240_fu1'
+- anat: /bids_dataset/SB240_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB240_fu2/BOLD/fear/SB240_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB240_fu2'
+  unique_id: 'SB240_fu2'
+- anat: /bids_dataset/SB242_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB242_fu1/BOLD/fear/SB242_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB242_fu1'
+  unique_id: 'SB242_fu1'
+- anat: /bids_dataset/SB242_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB242_fu2/BOLD/fear/SB242_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB242_fu2'
+  unique_id: 'SB242_fu2'
+- anat: /bids_dataset/SB245_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB245_fu1/BOLD/fear/SB245_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB245_fu1'
+  unique_id: 'SB245_fu1'
+- anat: /bids_dataset/SB245_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB245_fu2/BOLD/fear/SB245_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB245_fu2'
+  unique_id: 'SB245_fu2'
+- anat: /bids_dataset/SB256/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB256/BOLD/fear/SB256_tgng_fear_bold.nii.gz
+  subject_id: 'SB256'
+  unique_id: 'SB256'
+- anat: /bids_dataset/SB256_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB256_fu1/BOLD/fear/SB256_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB256_fu1'
+  unique_id: 'SB256_fu1'
+- anat: /bids_dataset/SB256_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB256_fu2/BOLD/fear/SB256_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB256_fu2'
+  unique_id: 'SB256_fu2'
+- anat: /bids_dataset/SB258/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB258/BOLD/fear/SB258_tgng_fear_bold.nii.gz
+  subject_id: 'SB258'
+  unique_id: 'SB258'
+- anat: /bids_dataset/SB264/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB264/BOLD/fear/SB264_tgng_fear_bold.nii.gz
+  subject_id: 'SB264'
+  unique_id: 'SB264'
+- anat: /bids_dataset/SB264_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB264_fu1/BOLD/fear/SB264_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB264_fu1'
+  unique_id: 'SB264_fu1'
+- anat: /bids_dataset/SB268/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB268/BOLD/fear/SB268_tgng_fear_bold.nii.gz
+  subject_id: 'SB268'
+  unique_id: 'SB268'
+- anat: /bids_dataset/SB271_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB271_fu1/BOLD/fear/SB271_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB271_fu1'
+  unique_id: 'SB271_fu1'
+- anat: /bids_dataset/SB271_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB271_fu2/BOLD/fear/SB271_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB271_fu2'
+  unique_id: 'SB271_fu2'
+- anat: /bids_dataset/SB273/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB273/BOLD/fear/SB273_tgng_fear_bold.nii.gz
+  subject_id: 'SB273'
+  unique_id: 'SB273'
+- anat: /bids_dataset/SB274/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB274/BOLD/fear/SB274_tgng_fear_bold.nii.gz
+  subject_id: 'SB274'
+  unique_id: 'SB274'
+- anat: /bids_dataset/SB276/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB276/BOLD/fear/SB276_tgng_fear_bold.nii.gz
+  subject_id: 'SB276'
+  unique_id: 'SB276'
+- anat: /bids_dataset/SB276_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB276_fu2/BOLD/fear/SB276_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB276_fu2'
+  unique_id: 'SB276_fu2'
+- anat: /bids_dataset/SB277/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB277/BOLD/fear/SB277_tgng_fear_bold.nii.gz
+  subject_id: 'SB277'
+  unique_id: 'SB277'
+- anat: /bids_dataset/SB277_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB277_fu1/BOLD/fear/SB277_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB277_fu1'
+  unique_id: 'SB277_fu1'
+- anat: /bids_dataset/SB277_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB277_fu2/BOLD/fear/SB277_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB277_fu2'
+  unique_id: 'SB277_fu2'
+- anat: /bids_dataset/SB278/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB278/BOLD/fear/SB278_tgng_fear_bold.nii.gz
+  subject_id: 'SB278'
+  unique_id: 'SB278'
+- anat: /bids_dataset/SB278_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB278_fu1/BOLD/fear/SB278_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB278_fu1'
+  unique_id: 'SB278_fu1'
+- anat: /bids_dataset/SB278_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB278_fu2/BOLD/fear/SB278_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB278_fu2'
+  unique_id: 'SB278_fu2'
+- anat: /bids_dataset/SB282/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB282/BOLD/fear/SB282_tgng_fear_bold.nii.gz
+  subject_id: 'SB282'
+  unique_id: 'SB282'
+- anat: /bids_dataset/SB282_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB282_fu1/BOLD/fear/SB282_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB282_fu1'
+  unique_id: 'SB282_fu1'
+- anat: /bids_dataset/SB282_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB282_fu2/BOLD/fear/SB282_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB282_fu2'
+  unique_id: 'SB282_fu2'
+- anat: /bids_dataset/SB283/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB283/BOLD/fear/SB283_tgng_fear_bold.nii.gz
+  subject_id: 'SB283'
+  unique_id: 'SB283'
+- anat: /bids_dataset/SB283_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB283_fu1/BOLD/fear/SB283_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB283_fu1'
+  unique_id: 'SB283_fu1'
+- anat: /bids_dataset/SB283_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB283_fu2/BOLD/fear/SB283_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB283_fu2'
+  unique_id: 'SB283_fu2'
+- anat: /bids_dataset/SB286/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB286/BOLD/fear/SB286_tgng_fear_bold.nii.gz
+  subject_id: 'SB286'
+  unique_id: 'SB286'
+- anat: /bids_dataset/SB291_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB291_fu1/BOLD/fear/SB291_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB291_fu1'
+  unique_id: 'SB291_fu1'
+- anat: /bids_dataset/SB291_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB291_fu2/BOLD/fear/SB291_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB291_fu2'
+  unique_id: 'SB291_fu2'
+- anat: /bids_dataset/SB297/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB297/BOLD/fear/SB297_tgng_fear_bold.nii.gz
+  subject_id: 'SB297'
+  unique_id: 'SB297'
+- anat: /bids_dataset/SB297_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB297_fu1/BOLD/fear/SB297_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB297_fu1'
+  unique_id: 'SB297_fu1'
+- anat: /bids_dataset/SB298/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB298/BOLD/fear/SB298_tgng_fear_bold.nii.gz
+  subject_id: 'SB298'
+  unique_id: 'SB298'
+- anat: /bids_dataset/SB298_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB298_fu1/BOLD/fear/SB298_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB298_fu1'
+  unique_id: 'SB298_fu1'
+- anat: /bids_dataset/SB299/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB299/BOLD/fear/SB299_tgng_fear_bold.nii.gz
+  subject_id: 'SB299'
+  unique_id: 'SB299'
+- anat: /bids_dataset/SB299_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB299_fu1/BOLD/fear/SB299_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB299_fu1'
+  unique_id: 'SB299_fu1'
+- anat: /bids_dataset/SB300/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB300/BOLD/fear/SB300_tgng_fear_bold.nii.gz
+  subject_id: 'SB300'
+  unique_id: 'SB300'
+- anat: /bids_dataset/SB300_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB300_fu1/BOLD/fear/SB300_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB300_fu1'
+  unique_id: 'SB300_fu1'
+- anat: /bids_dataset/SB300_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB300_fu2/BOLD/fear/SB300_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB300_fu2'
+  unique_id: 'SB300_fu2'
+- anat: /bids_dataset/SB303_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB303_fu1/BOLD/fear/SB303_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB303_fu1'
+  unique_id: 'SB303_fu1'
+- anat: /bids_dataset/SB306_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB306_fu1/BOLD/fear/SB306_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB306_fu1'
+  unique_id: 'SB306_fu1'
+- anat: /bids_dataset/SB306_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB306_fu2/BOLD/fear/SB306_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB306_fu2'
+  unique_id: 'SB306_fu2'
+- anat: /bids_dataset/SB307_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB307_fu1/BOLD/fear/SB307_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB307_fu1'
+  unique_id: 'SB307_fu1'
+- anat: /bids_dataset/SB308_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB308_fu1/BOLD/fear/SB308_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB308_fu1'
+  unique_id: 'SB308_fu1'
+- anat: /bids_dataset/SB308_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB308_fu2/BOLD/fear/SB308_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB308_fu2'
+  unique_id: 'SB308_fu2'
+- anat: /bids_dataset/SB312_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB312_fu1/BOLD/fear/SB312_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB312_fu1'
+  unique_id: 'SB312_fu1'
+- anat: /bids_dataset/SB313_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB313_fu1/BOLD/fear/SB313_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB313_fu1'
+  unique_id: 'SB313_fu1'
+- anat: /bids_dataset/SB316_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB316_fu1/BOLD/fear/SB316_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB316_fu1'
+  unique_id: 'SB316_fu1'
+- anat: /bids_dataset/SB317/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB317/BOLD/fear/SB317_tgng_fear_bold.nii.gz
+  subject_id: 'SB317'
+  unique_id: 'SB317'
+- anat: /bids_dataset/SB317_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB317_fu1/BOLD/fear/SB317_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB317_fu1'
+  unique_id: 'SB317_fu1'
+- anat: /bids_dataset/SB317_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB317_fu2/BOLD/fear/SB317_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB317_fu2'
+  unique_id: 'SB317_fu2'
+- anat: /bids_dataset/SB320/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB320/BOLD/fear/SB320_tgng_fear_bold.nii.gz
+  subject_id: 'SB320'
+  unique_id: 'SB320'
+- anat: /bids_dataset/SB322/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB322/BOLD/fear/SB322_tgng_fear_bold.nii.gz
+  subject_id: 'SB322'
+  unique_id: 'SB322'
+- anat: /bids_dataset/SB327/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB327/BOLD/fear/SB327_tgng_fear_bold.nii.gz
+  subject_id: 'SB327'
+  unique_id: 'SB327'
+- anat: /bids_dataset/SB328/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB328/BOLD/fear/SB328_tgng_fear_bold.nii.gz
+  subject_id: 'SB328'
+  unique_id: 'SB328'
+- anat: /bids_dataset/SB330/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB330/BOLD/fear/SB330_tgng_fear_bold.nii.gz
+  subject_id: 'SB330'
+  unique_id: 'SB330'
+- anat: /bids_dataset/SB330_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB330_fu1/BOLD/fear/SB330_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB330_fu1'
+  unique_id: 'SB330_fu1'
+- anat: /bids_dataset/SB330_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB330_fu2/BOLD/fear/SB330_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB330_fu2'
+  unique_id: 'SB330_fu2'
+- anat: /bids_dataset/SB332_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB332_fu2/BOLD/fear/SB332_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB332_fu2'
+  unique_id: 'SB332_fu2'
+- anat: /bids_dataset/SB334_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB334_fu2/BOLD/fear/SB334_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB334_fu2'
+  unique_id: 'SB334_fu2'
+- anat: /bids_dataset/SB335_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB335_fu2/BOLD/fear/SB335_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB335_fu2'
+  unique_id: 'SB335_fu2'
+- anat: /bids_dataset/SB336_fu1/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB336_fu1/BOLD/fear/SB336_fu1_tgng_fear_bold.nii.gz
+  subject_id: 'SB336_fu1'
+  unique_id: 'SB336_fu1'
+- anat: /bids_dataset/SB336_fu2/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB336_fu2/BOLD/fear/SB336_fu2_tgng_fear_bold.nii.gz
+  subject_id: 'SB336_fu2'
+  unique_id: 'SB336_fu2'
+- anat: /bids_dataset/SB400/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB400/BOLD/fear/SB400_tgng_fear_bold.nii.gz
+  subject_id: 'SB400'
+  unique_id: 'SB400'
+- anat: /bids_dataset/SB401/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB401/BOLD/fear/SB401_tgng_fear_bold.nii.gz
+  subject_id: 'SB401'
+  unique_id: 'SB401'
+- anat: /bids_dataset/SB403/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB403/BOLD/fear/SB403_tgng_fear_bold.nii.gz
+  subject_id: 'SB403'
+  unique_id: 'SB403'
+- anat: /bids_dataset/SB404/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB404/BOLD/fear/SB404_tgng_fear_bold.nii.gz
+  subject_id: 'SB404'
+  unique_id: 'SB404'
+- anat: /bids_dataset/SB405/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB405/BOLD/fear/SB405_tgng_fear_bold.nii.gz
+  subject_id: 'SB405'
+  unique_id: 'SB405'
+- anat: /bids_dataset/SB407/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB407/BOLD/fear/SB407_tgng_fear_bold.nii.gz
+  subject_id: 'SB407'
+  unique_id: 'SB407'
+- anat: /bids_dataset/SB408/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB408/BOLD/fear/SB408_tgng_fear_bold.nii.gz
+  subject_id: 'SB408'
+  unique_id: 'SB408'
+- anat: /bids_dataset/SB410/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB410/BOLD/fear/SB410_tgng_fear_bold.nii.gz
+  subject_id: 'SB410'
+  unique_id: 'SB410'
+- anat: /bids_dataset/SB411/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB411/BOLD/fear/SB411_tgng_fear_bold.nii.gz
+  subject_id: 'SB411'
+  unique_id: 'SB411'
+- anat: /bids_dataset/SB412/anatomy/mprage_deoblique.nii.gz
+  creds_path: null
+  func: 
+    rest:
+      scan: /bids_dataset/SB412/BOLD/fear/SB412_tgng_fear_bold.nii.gz
+  subject_id: 'SB412'
+  unique_id: 'SB412'

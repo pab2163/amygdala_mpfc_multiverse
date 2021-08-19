@@ -1,0 +1,199 @@
+---
+title: "Intra-person comparison of amygdala connectivity with the brain across gPPI/BSC pipelines"
+author: "Paul A. Bloom"
+date: "October 28, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(psych)
+library(lme4)
+library(broom)
+theme_set(theme_bw())
+library(brms)
+source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
+
+```
+
+# Pull in data
+
+
+All data for fear > neutral contrast. Why this contrast? Di et al. 2020 find that for contrasts between conditions, gPPI / BSC gave similar answers. Not for condition > baseline though -- that might look more like 'resting' connectivity for BSC.
+
+* BSC with/without global signal subtraction
+* gPPI with/without deconvolution
+
+
+
+```{r}
+bsc = read.csv('../8_betaSeries/betaSeriesCopesReg_bsc_bilateral_amyg_brain.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(., -errMessage) %>%
+  dplyr::filter(., complete.cases(.), group %in% c('Comp', 'Adult')) %>%
+  tidyr::gather(., key = 'roi', value = 'bsc', contains('harvardox')) %>%
+  mutate(., roi = gsub('fearMinusNeut_','', roi)) 
+
+
+bscG = read.csv('../8_betaSeries/betaSeriesCopesGlobalSignalSubtract_bsc_bilateral_amyg_brain.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(., -errMessage) %>%
+  dplyr::filter(., complete.cases(.), group %in% c('Comp', 'Adult')) %>%
+  tidyr::gather(., key = 'roi', value = 'bscG', contains('harvardox')) %>%
+  mutate(., roi = gsub('fearMinusNeut_','', roi)) 
+
+ppiDeconv = read.csv('../7_ppi_fsl/gppi_afni_style_seed_harvardoxfordsubcortical_bilateralamyg_ALL_HO_REGIONS.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(., -errMessage) %>%
+  dplyr::filter(., complete.cases(.), group %in% c('Comp', 'Adult')) %>%
+  dplyr::select(name, contains('emotMinusNeutral')) %>%
+  tidyr::gather(., key = 'roi', value = 'ppiDeconv', contains('harvardox')) %>%
+  mutate(., roi = gsub('_tstat', '', gsub('emotMinusNeutralPpi_','', roi)))
+
+ppiNoDeconv = read.csv('../7_ppi_fsl/gppi_fsl_style_seed_harvardoxfordsubcortical_bilateralamyg_ALL_HO_REGIONS.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(., -errMessage) %>%
+  dplyr::filter(., complete.cases(.), group %in% c('Comp', 'Adult')) %>%
+  dplyr::select(name, contains('emotMinusNeutral')) %>%
+  tidyr::gather(., key = 'roi', value = 'ppiNoDeconv', contains('harvardox')) %>%
+  mutate(., roi = gsub('_tstat', '', gsub('emotMinusNeutralPpi_','', roi)))
+
+
+```
+
+
+```{r}
+# remove subcortical junk ROIs
+junkroi = c('harvardox_subcortical_1', 'harvardox_subcortical_2', 'harvardox_subcortical_3', 
+            'harvardox_subcortical_14', 'harvardox_subcortical_12', 'harvardox_subcortical_13', 'harvardox_subcortical_8')
+
+compframe_raw = left_join(ppiDeconv, bsc, by = c('name', 'roi')) %>%
+  left_join(., ppiNoDeconv, by = c('name','roi')) %>%
+  left_join(., bscG, by = c('name', 'roi')) %>%
+  dplyr::filter(., ! roi %in% junkroi) %>%
+  dplyr::select(contains('bsc'), contains('ppi'), name) 
+
+
+compframe = compframe_raw %>%
+  dplyr::group_by(name) %>%
+  summarise(corBscPpiNoDeconv = cor(bsc, ppiNoDeconv),
+            corBscGPpiDeconv = cor(bscG, ppiDeconv),
+            corBscGPpiNoDeconv = cor(bscG, ppiNoDeconv),
+            corBscPpiDeconv = cor(bsc, ppiDeconv),
+            corsPpi = cor(ppiDeconv, ppiNoDeconv),
+            corsBsc = cor(bsc, bscG)) 
+
+
+key = read.csv('../Parcellations/ho_key.csv', stringsAsFactors = FALSE)
+
+
+compGroupMean = left_join(ppiDeconv, bsc, by = c('name', 'roi')) %>%
+  left_join(., ppiNoDeconv, by = c('name','roi')) %>%
+  left_join(., bscG, by = c('name', 'roi')) %>%
+  dplyr::filter(., ! roi %in% junkroi) %>%
+  dplyr::group_by(roi) %>%
+  summarise(meanBsc = t.test(bsc)$statistic,
+            meanBscGlobalSignal = t.test(bscG)$statistic,
+            meanPpiNoDeconv = t.test(ppiNoDeconv)$statistic,
+            meanPpiDeconv = t.test(ppiDeconv)$statistic,
+            median_bsc = median(bsc)) %>%
+  mutate(., within = parse_number(roi),
+         type = ifelse(grepl('subcortical', roi), 'subcortical', 'cortical')) %>%
+  left_join(., key)
+```
+
+```{r}
+compframe %>%
+  tidyr::gather(., key = 'pipeline', value = 'cors', contains('cor')) %>%
+  ggplot(., aes(x = pipeline, y = cors)) +
+  geom_line(aes(group = name), alpha = .1) +
+  geom_jitter(width = .05, height = 0, alpha = .4) +
+  stat_summary(fun.data = 'mean_cl_boot', color = 'red')
+
+```
+
+
+```{r}
+library(GGally)
+
+
+ggpairs(compGroupMean, columns = 2:5)
+
+
+ggplot(compframe, aes(x = corBscPpiNoDeconv, y = corBscPpiDeconv)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1)
+
+ggplot(compframe, aes(x = corBscGPpiNoDeconv, y = corBscGPpiDeconv)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1)
+
+
+compframe %>%
+  tidyr::gather(., key = 'pipeline', value = 'cors', contains('cor')) %>%
+  ggplot(., aes(x = pipeline, y = cors)) +
+  geom_jitter(width = .05, height = 0, alpha = .4) +
+  stat_summary(fun.data = 'mean_cl_boot', color = 'red')
+
+
+
+compFrameLong = compframe %>%
+  tidyr::gather(., key = 'pipeline', value = 'cors', contains('cor')) %>%
+  left_join(., read.csv('../7_ppi_fsl/bilateral_amyg_gppi_fsl_style_seed_harvardoxfordsubcortical_bilateralamyg.feat_ppi_roi.csv', stringsAsFactors = FALSE)) %>%
+  dplyr::select(name, pipeline, cors, group) %>%
+  dplyr::filter(group != 'PI', group != 'Foster') %>%
+  mutate(type = ifelse(pipeline %in% c('corsPpi', 'corsBsc'), 'Within-Method', 'Between-Method'),
+         deconv = ifelse(grepl('NoDeconv', pipeline), 'PPI - No Deconv', 'PPI - Deconv'),
+         pipeline_name = case_when(
+           pipeline == 'corsPpi' ~ 'gPPI +Deconv : gPPI -Deconv',
+           pipeline == 'corsBsc' ~ 'BSC -GSS : BSC +GSS',
+           pipeline == 'corBscPpiDeconv' ~ 'BSC -GSS : gPPI +Deconv',
+           pipeline == 'corBscPpiNoDeconv' ~ 'BSC -GSS : gPPI -Deconv',
+           pipeline == 'corBscGPpiDeconv' ~ 'BSC +GSS : gPPI +Deconv',
+           pipeline == 'corBscGPpiNoDeconv' ~ 'BSC +GSS : gPPI -Deconv',
+         ))
+
+
+mod_between = compFrameLong %>%
+  dplyr::filter(., !pipeline %in% c('corsPpi', 'corsBsc')) %>%
+  brms::brm(data = ., cors ~ pipeline + (pipeline|name), cores = 4)
+
+mod_within = compFrameLong %>%
+  dplyr::filter(., pipeline %in% c('corsPpi', 'corsBsc')) %>%
+  brms::brm(data = ., cors ~ pipeline + (pipeline|name), cores = 4)
+
+
+pred_grid_betwen = data.frame(pipeline = c('corBscPpiDeconv', 'corBscPpiNoDeconv', 'corBscGPpiDeconv', 'corBscGPpiNoDeconv'))
+pred_grid_within = data.frame(pipeline = c('corsPpi', 'corsBsc'))
+
+
+preds_between = fitted(mod_between, newdata = pred_grid_betwen, re_formula = NA) %>%
+  cbind(pred_grid_betwen, .) 
+
+preds_within = fitted(mod_within, newdata = pred_grid_within, re_formula = NA) %>%
+  cbind(pred_grid_within, .) 
+
+allPreds = rbind(preds_between, preds_within) %>%
+  mutate(type = ifelse(pipeline %in% c('corsPpi', 'corsBsc'), 'Within-Method', 'Between-Method'),
+         deconv = ifelse(grepl('NoDeconv', pipeline), 'PPI - No Deconv', 'PPI - Deconv'),
+         pipeline_name = case_when(
+           pipeline == 'corsPpi' ~ 'gPPI +Deconv : gPPI -Deconv',
+           pipeline == 'corsBsc' ~ 'BSC -GSS : BSC +GSS',
+           pipeline == 'corBscPpiDeconv' ~ 'BSC -GSS : gPPI +Deconv',
+           pipeline == 'corBscPpiNoDeconv' ~ 'BSC -GSS : gPPI -Deconv',
+           pipeline == 'corBscGPpiDeconv' ~ 'BSC +GSS : gPPI +Deconv',
+           pipeline == 'corBscGPpiNoDeconv' ~ 'BSC +GSS : gPPI -Deconv',
+         ))
+
+
+bsc_ppi_intra = ggplot(allPreds, aes(x = pipeline_name, y = Estimate)) +
+  geom_hline(yintercept = 0, lty = 2, color = 'red') +
+  geom_errorbar(aes(ymin = Q2.5, ymax = Q97.5), width = .15, lwd = 1) +
+  geom_point() + 
+  facet_grid(cols = vars(type), scales = 'free_x', space = 'free_x') +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_jitter(data = compFrameLong, aes(x = pipeline_name, y = cors), alpha = .1, width = .1, height = 0) +
+  geom_flat_violin(data = compFrameLong, aes(x = pipeline_name, y = cors), 
+                   position = position_nudge(x = .15, y = 0), alpha = 0) +
+  labs(y = 'amygdala FC similarity aross pipelines\nproduct-moment correlation', x = '')
+
+ggsave(bsc_ppi_intra, file = 'plots/supplement/intra_participant_bsc_ppi.pdf', height = 4, width = 6)
+```
+

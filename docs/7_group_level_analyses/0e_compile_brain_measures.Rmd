@@ -1,0 +1,46 @@
+---
+title: "Compile habit"
+author: "Paul A. Bloom"
+date: "March 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(lme4)
+library(corrplot)
+library(psych)
+source('helper_functions.R')
+```
+
+# Read in the data and pull together
+
+```{r}
+
+repeat_cols = c('Subject', 'wave', 'Block', 'Age', 'group', 'gender', 'meanFdIncluded', 'censoredTR', 'meanAge', 'motion', 'ageCenter', 'prev_studied', 'scanner', 'blockBin')
+
+reactivity = read.csv('compiled_data/comps_amyg_fear_reactivity_master.csv', stringsAsFactors = FALSE)
+ppi = read.csv('compiled_data/comps_amyg_fear_ppi_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(-all_of(repeat_cols))
+bsc = read.csv('compiled_data/comps_amyg_fear_bsc_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(-all_of(repeat_cols))
+habit = read.csv('compiled_data/comps_amyg_fear_habit_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(-all_of(repeat_cols))
+
+
+
+all_brain = left_join(reactivity, ppi, by = 'name') %>%
+  left_join(., bsc, by = 'name') %>%
+  left_join(., habit, by = 'name')
+```
+
+
+# Check correlations in all metrics
+```{r}
+all_cors = cor(dplyr::select(all_brain, contains('amyg'), contains('conv'), contains('gsr'), contains('tstat'), contains('beta')), use = 'complete.obs')
+pdf('plots/multi_metric//all_brain_correlations.pdf', height = 10, width = 10)
+corrplot(all_cors, method = 'color', tl.cex = .3)
+dev.off()
+```

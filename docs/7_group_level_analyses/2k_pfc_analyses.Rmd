@@ -1,0 +1,305 @@
+---
+title: "2k_mpfc_analyses"
+author: "Paul Bloom"
+date: "4/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(psych)
+library(lme4)
+library(broom)
+theme_set(theme_bw())
+library(brms)
+source('helper_functions.R')
+```
+
+```{r}
+pfc = read_csv('../cpacPipelines/groupAnalysis/data/pfcTstats.csv')
+sub_info = read_csv('compiled_data/comps_amyg_fear_reactivity_master.csv')
+
+pfc = dplyr::left_join(sub_info, pfc, by = 'name') %>%
+  dplyr::filter(censoredTR <= 40)
+
+
+pred_frame = expand.grid(motion = 0, ageCenter = -5:10)
+
+pfc_nest = pfc %>%
+  dplyr::select(-contains('amyg'), -contains('Amyg')) %>%
+  pivot_longer(contains('mni'), names_to = 'pipeline', values_to = 'beta') %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  mutate(model = map(data, ~lmer(data = ., beta ~ motion + ageCenter + (1|Subject)))) %>%
+  mutate(coefs = map(model, ~broom.mixed::tidy(.))) %>%
+  unnest(coefs) %>%
+  dplyr::select(-model, -data) %>%
+  dplyr::filter(term == 'ageCenter') %>%
+  dplyr::mutate(lwr = estimate - 2*std.error, 
+                upr = estimate + 2*std.error, 
+                roi = case_when(
+                  grepl('vmpfc', pipeline) ~ 'Large vmPFC',
+                  grepl('mPFC_sphere_5mm_mni2mm', pipeline) ~ 'mPFC 1',
+                  grepl('mPFC_sphere_5mm_anterior_mni2mm', pipeline) ~ 'mPFC 2',
+                  grepl('mPFC_sphere_5mm_anterior_down_mni2mm', pipeline) ~ 'mPFC 3',
+                ),
+                preproc = parse_number(pipeline),
+                preproc_info = dplyr::recode(preproc,
+                                             '1'='FSL GLM: 6motion: 2G HRF: highpass',
+                                             '2'='FSL GLM: 18motion+WM+CSF: 2G HRF: highpass',
+                                             '3'='FSL GLM: 6motion: 1G HRF: highpass',
+                                             '4'='FSL GLM: 18motion+WM+CSF: 1G HRF: highpass',
+                                             '5'='AFNI GLM: 6motion: 1G HRF: highpass',
+                                             '6'='AFNI GLM: 6motion: 1G HRF: quadratic detrend',
+                                             '7'='AFNI GLM: 18motion+WM+CSF: 1G HRF: highpass',
+                                             '8'='AFNI GLM: 18motion+WM+CSF: 1G HRF: quadratic detrend'))
+                     
+
+pfc_pred = pfc %>%
+  dplyr::select(-contains('amyg'), -contains('Amyg')) %>%
+  pivot_longer(contains('mni'), names_to = 'pipeline', values_to = 'beta') %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  mutate(model = map(data, ~lmer(data = ., beta ~ motion + ageCenter + (1|Subject)))) %>%
+  mutate(preds = map(model, ~predict(., newdata = pred_frame, re.form = ~0))) %>%
+  dplyr::select(-model, -data) %>%
+  dplyr::mutate(roi = case_when(
+                  grepl('vmpfc', pipeline) ~ 'Large vmPFC',
+                  grepl('mPFC_sphere_5mm_mni2mm', pipeline) ~ 'mPFC 1',
+                  grepl('mPFC_sphere_5mm_anterior_mni2mm', pipeline) ~ 'mPFC 2',
+                  grepl('mPFC_sphere_5mm_anterior_down_mni2mm', pipeline) ~ 'mPFC 3',
+                ),
+                preproc = parse_number(pipeline),
+                preproc_info = dplyr::recode(preproc,
+                                             '1'='FSL GLM: 6motion: 2G HRF: highpass',
+                                             '2'='FSL GLM: 18motion+WM+CSF: 2G HRF: highpass',
+                                             '3'='FSL GLM: 6motion: 1G HRF: highpass',
+                                             '4'='FSL GLM: 18motion+WM+CSF: 1G HRF: highpass',
+                                             '5'='AFNI GLM: 6motion: 1G HRF: highpass',
+                                             '6'='AFNI GLM: 6motion: 1G HRF: quadratic detrend',
+                                             '7'='AFNI GLM: 18motion+WM+CSF: 1G HRF: highpass',
+                                             '8'='AFNI GLM: 18motion+WM+CSF: 1G HRF: quadratic detrend'))
+                     
+
+
+pfc_nest_group_mean = pfc %>%
+  dplyr::select(-contains('amyg'), -contains('Amyg')) %>%
+  pivot_longer(contains('mni'), names_to = 'pipeline', values_to = 'beta') %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  mutate(model = map(data, ~lmer(data = ., beta ~ motion + (1|Subject)))) %>%
+  mutate(coefs = map(model, ~broom.mixed::tidy(.))) %>%
+  unnest(coefs) %>%
+  dplyr::select(-model, -data) %>%
+  dplyr::filter(term == '(Intercept)') %>%
+  dplyr::mutate(lwr = estimate - 2*std.error, 
+                upr = estimate + 2*std.error, 
+                roi = case_when(
+                  grepl('vmpfc', pipeline) ~ 'Large vmPFC',
+                  grepl('mPFC_sphere_5mm_mni2mm', pipeline) ~ 'mPFC 1',
+                  grepl('mPFC_sphere_5mm_anterior_mni2mm', pipeline) ~ 'mPFC 2',
+                  grepl('mPFC_sphere_5mm_anterior_down_mni2mm', pipeline) ~ 'mPFC 3',
+                ),
+                preproc = parse_number(pipeline),
+                preproc_info = dplyr::recode(preproc,
+                                             '1'='FSL GLM: 6motion: 2G HRF: highpass',
+                                             '2'='FSL GLM: 18motion+WM+CSF: 2G HRF: highpass',
+                                             '3'='FSL GLM: 6motion: 1G HRF: highpass',
+                                             '4'='FSL GLM: 18motion+WM+CSF: 1G HRF: highpass',
+                                             '5'='AFNI GLM: 6motion: 1G HRF: highpass',
+                                             '6'='AFNI GLM: 6motion: 1G HRF: quadratic detrend',
+                                             '7'='AFNI GLM: 18motion+WM+CSF: 1G HRF: highpass',
+                                             '8'='AFNI GLM: 18motion+WM+CSF: 1G HRF: quadratic detrend'))
+
+for (i in 1:nrow(pfc_pred)){
+  pred_grid = pfc_pred$preds[[i]] %>%
+    cbind(pred_frame, .)
+  pred_grid$roi = pfc_pred$roi[i]
+  pred_grid$preproc_info = pfc_pred$preproc_info[i]
+  print(pred_grid)
+  
+  if (i == 1){
+    combined_preds = pred_grid
+  }else{
+    combined_preds = rbind(combined_preds, pred_grid)
+  }
+}
+
+
+pred_plt_pfc = ggplot(combined_preds, aes(x = ageCenter + sub_info$meanAge[1], y = `.`)) +
+  geom_hline(yintercept = 0, lty = 2) + 
+  geom_line(aes(group = preproc_info)) +
+  facet_grid(~roi) +
+  labs(x = 'Age', y = 'Estimated Reactivity\nFear > Baseline') +
+  ylim(-.6, .6)
+
+
+coef_plt_pfc = ggplot(pfc_nest, aes(x = preproc_info, y = estimate)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0) +
+  coord_flip() +
+  facet_grid(~roi) +
+  labs(y = 'Estimated Age-Related Change\nFear > Baseline', x = '') +
+  theme(axis.text.x = element_text(size = 6))
+
+
+coef_plt_pfc_mean = ggplot(pfc_nest_group_mean, aes(x = preproc_info, y = estimate)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0) +
+  coord_flip() +
+  facet_grid(~roi) +
+  labs(y = 'Estimated Average Reactivity\nFear > Baseline', x = '') 
+
+
+pfc_age_grid = cowplot::plot_grid(coef_plt_pfc_mean, coef_plt_pfc, pred_plt_pfc, align = 'v', axis = 'lr', nrow = 3, labels = c('A','B', 'C'))
+
+cowplot::save_plot(pfc_age_grid, filename = 'plots/supplement/pfc_age_grid.png', base_height = 6, base_width = 12)
+
+```
+
+
+
+```{r}
+pfc_amyg = pfc %>%
+  dplyr::select(-contains('beta'), -contains('LowSignal'), -contains('HighSignal'), 
+                -contains('bilateral'), -contains('og_ho'), -contains('og_native'))
+
+
+long = pfc_amyg %>%
+  pivot_longer(cols = c(contains('fsl'), contains('afni')), names_to = 'variable', values_to = 'beta') %>%
+  dplyr::mutate(pipeline_num = parse_number(variable),
+                a_p = ifelse(grepl('mm', variable), 'pfc', 'amyg'),
+                roi = case_when(
+                  grepl('vmpfc', variable) ~ 'Large vmPFC',
+                  grepl('mPFC_sphere_5mm_mni2mm', variable) ~ 'mPFC 1',
+                  grepl('mPFC_sphere_5mm_anterior_mni2mm', variable) ~ 'mPFC 2',
+                  grepl('mPFC_sphere_5mm_anterior_down_mni2mm', variable) ~ 'mPFC 3',
+                  grepl('left', variable) ~ 'Left Amygdala', 
+                  grepl('right', variable) ~ 'Right Amygdala', 
+                )) %>%
+  pivot_wider(id_cols = c('name', 'Subject', 'ageCenter', 'motion', 'pipeline_num'), names_from = 'roi', values_from = 'beta') %>%
+  pivot_longer(contains('PFC'), names_to = 'pfc_var', values_to = 'pfc_tstat') 
+
+
+long_nest = long %>%
+  group_by(pfc_var, pipeline_num) %>%
+  nest() %>%
+  mutate(model_right = map(data, ~lmer(data = ., pfc_tstat ~ `Right Amygdala` + motion + ageCenter + (1|Subject))),
+         model_left = map(data, ~lmer(data = ., pfc_tstat ~ `Left Amygdala` + motion + ageCenter + (1|Subject)))) %>%
+  pivot_longer(contains('model'), names_to = 'hemisphere', values_to = 'model_obj') 
+
+long_nest_interaction = long %>%
+  group_by(pfc_var, pipeline_num) %>%
+  nest() %>%
+  mutate(model_right = map(data, ~lmer(data = ., pfc_tstat ~ scale(`Right Amygdala`)*ageCenter + motion + (1|Subject))),
+         model_left = map(data, ~lmer(data = ., pfc_tstat ~ scale(`Left Amygdala`)*ageCenter + motion + (1|Subject)))) %>%
+  pivot_longer(contains('model'), names_to = 'hemisphere', values_to = 'model_obj') 
+
+
+
+long_nest_coefs = long_nest %>%
+  mutate(coefs = map(model_obj, ~broom.mixed::tidy(.))) %>%
+  dplyr::select(-model_obj, -data) %>%
+  unnest(coefs) %>%
+  dplyr::filter(grepl('Amygdala', term)) %>%
+  dplyr::mutate(lwr = estimate-2*std.error,
+                upr = estimate + 2*std.error,
+                preproc_info = dplyr::recode(pipeline_num,
+                                             '1'='FSL GLM: 6motion: 2G HRF: highpass',
+                                             '2'='FSL GLM: 18motion+WM+CSF: 2G HRF: highpass',
+                                             '3'='FSL GLM: 6motion: 1G HRF: highpass',
+                                             '4'='FSL GLM: 18motion+WM+CSF: 1G HRF: highpass',
+                                             '5'='AFNI GLM: 6motion: 1G HRF: highpass',
+                                             '6'='AFNI GLM: 6motion: 1G HRF: quadratic detrend',
+                                             '7'='AFNI GLM: 18motion+WM+CSF: 1G HRF: highpass',
+                                             '8'='AFNI GLM: 18motion+WM+CSF: 1G HRF: quadratic detrend'),
+                term = gsub('`', '', term))
+
+amyg_pfc_pred_grid = expand.grid(motion = 0, ageCenter = 0, `Right Amygdala` = seq(from = -2, to = 2, by = .2)) %>%
+  dplyr::mutate(`Left Amygdala` = `Right Amygdala`)
+
+long_nest_preds = long_nest %>%
+  dplyr::mutate(preds = map(model_obj, ~predict(., newdata = amyg_pfc_pred_grid, re.form = ~0)))
+
+
+for (i in 1:nrow(long_nest_preds)){
+  pred_grid = long_nest_preds$preds[[i]] %>%
+    cbind(amyg_pfc_pred_grid, .)
+  pred_grid$pipeline_num = long_nest_preds$pipeline_num[i]
+  pred_grid$pfc_var = long_nest_preds$pfc_var[i]
+  pred_grid$hemisphere = long_nest_preds$hemisphere[i]
+  print(pred_grid)
+  
+  if (i == 1){
+    combined_preds_amyg_pfc = pred_grid
+  }else{
+    combined_preds_amyg_pfc = rbind(combined_preds_amyg_pfc, pred_grid)
+  }
+}
+
+
+long_nest_coefs_interaction = long_nest_interaction %>%
+  mutate(coefs = map(model_obj, ~broom.mixed::tidy(.))) %>%
+  dplyr::select(-model_obj, -data) %>%
+  unnest(coefs) %>%
+  dplyr::filter(grepl(':', term)) %>%
+  dplyr::mutate(lwr = estimate-2*std.error,
+                upr = estimate + 2*std.error,
+                preproc_info = dplyr::recode(pipeline_num,
+                                             '1'='FSL GLM: 6motion: 2G HRF: highpass',
+                                             '2'='FSL GLM: 18motion+WM+CSF: 2G HRF: highpass',
+                                             '3'='FSL GLM: 6motion: 1G HRF: highpass',
+                                             '4'='FSL GLM: 18motion+WM+CSF: 1G HRF: highpass',
+                                             '5'='AFNI GLM: 6motion: 1G HRF: highpass',
+                                             '6'='AFNI GLM: 6motion: 1G HRF: quadratic detrend',
+                                             '7'='AFNI GLM: 18motion+WM+CSF: 1G HRF: highpass',
+                                             '8'='AFNI GLM: 18motion+WM+CSF: 1G HRF: quadratic detrend'),
+                term = gsub('`', '', term))
+
+
+amyg_pfc_slopes = ggplot(combined_preds_amyg_pfc, 
+                          aes(x = `Right Amygdala`, y = ., group = interaction(pipeline_num, hemisphere), color = hemisphere)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_line() +
+  facet_grid(~pfc_var) +
+  theme(legend.position = 'none') +
+  scale_color_brewer(palette = 'Set1') +
+  labs(x = 'Amygdala Reactivity: Fear > Baseline', y = 'mPFC Reactivity\nFear > Baseline')
+
+
+
+
+
+amyg_pfc_1 = ggplot(long_nest_coefs, aes(x = preproc_info, y = estimate, color = term)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point(position = position_dodge(.3)) +
+  geom_errorbar(aes(ymin = lwr, ymax= upr), width = 0, position = position_dodge(.3)) +
+  facet_grid(~pfc_var) +
+  coord_flip() +
+  labs(y = 'Estimated between-scan association between amygdala & mPFC reactivity (beta coefficient)', x='') +
+  theme(legend.title = element_blank(), legend.position = 'top') +
+  scale_color_brewer(palette = 'Set1')
+
+amyg_pfc_2 = ggplot(long_nest_coefs_interaction, aes(x = preproc_info, y = estimate, color = term)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point(position = position_dodge(.3)) +
+  geom_errorbar(aes(ymin = lwr, ymax= upr), width = 0, position = position_dodge(.3)) +
+  facet_grid(~pfc_var) +
+  coord_flip() +
+  labs(y = 'Age-related change in associations between amygdala & mPFC reactivity\nCoefficients represent the estimated mean difference in amygdala~mPFC associations for participants differing by 1 year in age', x ='') +
+  theme(legend.position = 'none') +
+  scale_color_brewer(palette = 'Set1')
+
+
+amyg_pfc_associations_plot = cowplot::plot_grid(amyg_pfc_slopes, amyg_pfc_1, amyg_pfc_2, ncol = 1, align = 'v', axis = 'lr', labels = c('A', 'B', 'C'))
+
+
+cowplot::save_plot(amyg_pfc_associations_plot, filename = 'plots/supplement/amyg_pfc_reactivity_associations.png', base_height = 8, base_width = 15)
+```
+

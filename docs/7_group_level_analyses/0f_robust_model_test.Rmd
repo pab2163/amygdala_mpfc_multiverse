@@ -1,0 +1,125 @@
+---
+title: "Compile Amyg Reactivity"
+author: "Paul A. Bloom"
+date: "March 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(lme4)
+library(corrplot)
+library(robustlmm)
+library(brms)
+source('helper_functions.R')
+```
+
+
+```{r}
+master_comps = read.csv('compiled_data/comps_amyg_fear_reactivity_master.csv', stringsAsFactors = FALSE)
+```
+
+
+```{r}
+master_comps_test = master_comps
+
+master_comps_test$fsl_1_rightAmygLowSignal_beta[master_comps_test$name == 'SB151'] = 25
+```
+
+# Make an EXTREME outlier
+
+Here I've taken some real data but added an extreme outlier at the youngest end of the age range. Without any robust estimation, this artifically makes the slope of age-related change seem steeper
+
+```{r}
+ggplot(master_comps_test, aes(x = Age, y = fsl_1_rightAmygLowSignal_beta)) +
+  geom_point() +
+  stat_smooth(method = 'lm') +
+  stat_smooth(data = master_comps, method = 'lm', color = 'red') +
+  labs(title = 'Blue = correlation with artificial outlier\nRed = correlation with no artificial outlier')
+```
+
+```{r}
+mod_og = brm(data = master_comps, fsl_1_rightAmygLowSignal_beta ~ ageCenter + motion + (1|ageCenter))
+mod1= lme4::lmer(data = master_comps_test, fsl_1_rightAmygLowSignal_beta ~ ageCenter + motion + (1|ageCenter))
+mod2 = robustlmm::rlmer(data = master_comps_test, fsl_1_rightAmygLowSignal_beta ~ ageCenter + motion + (1|ageCenter))
+
+mod3 = brms::brm(data = master_comps_test, fsl_1_rightAmygLowSignal_beta ~ ageCenter + motion + (1|ageCenter),
+                 family = 'gaussian')
+mod4 = brms::brm(data = master_comps_test, fsl_1_rightAmygLowSignal_beta ~ ageCenter + motion + (1|ageCenter),
+                 family = 'student', prior = prior(gamma(2, 0.1), class = nu))
+
+weak_t_prior = prior_summary(mod4)
+strong_t_prior = weak_t_prior
+strong_t_prior$prior[5] = "gamma(4, 1)"
+
+
+prior_summary(mod3)
+prior_summary(mod4)
+```
+
+```{r}
+mod5 = update(mod4, prior = strong_t_prior, seed = 1)
+
+
+summary(mod1)
+summary(mod2)
+summary(mod3)
+summary(mod4)
+summary(mod5)
+
+grid = expand.grid(ageCenter = seq(from = -7, to = 12, by = .1), motion = 0)
+
+mod1_preds = predict(mod1, newdata = grid, allow.new.levels = TRUE) 
+mod2_preds = predict(mod2, newdata = grid, allow.new.levels = TRUE)
+mod3_preds = fitted(mod3, newdata = grid, re_formula = NA)
+mod4_preds = fitted(mod4, newdata = grid, re_formula = NA)
+mod5_preds = fitted(mod4, newdata = grid, re_formula = NA)
+
+pred_frame = data.frame(grid) %>%
+  mutate(., 'lmer' = mod1_preds,
+         'robust_lmer' = mod2_preds,
+         'brms' = mod3_preds[,1],
+         'brms_robust_weak_prior' = mod4_preds[,1],
+         'brms_robust_strong_prior' = mod5_preds[,1]) %>%
+  tidyr::pivot_longer(cols = -c(ageCenter, motion), names_to = 'model_type')
+
+
+
+ggplot(pred_frame, aes(x = ageCenter, y = value, color = model_type)) +
+  geom_point(data = master_comps_test, aes(x = ageCenter, y = fsl_1_rightAmygLowSignal_beta), color = 'black') +
+  geom_line() +
+  facet_grid(~model_type) +
+  theme_bw()
+
+mod_og_summary = broom.mixed::tidy(mod_og) %>%
+  mutate(., model = 'brms_without_outlier')
+mod1_summary = broom.mixed::tidy(mod1) %>%
+  mutate(., model = 'lmer')
+mod2_summary = broom.mixed::tidy(mod2) %>%
+  mutate(., model = 'lmer_robust')
+mod3_summary = broom.mixed::tidy(mod3) %>%
+  mutate(., model = 'brms')
+mod4_summary = broom.mixed::tidy(mod4) %>%
+  mutate(., model = 'brms_robust_weak_prior')
+mod5_summary = broom.mixed::tidy(mod5) %>%
+  mutate(., model = 'brms_robust_strong_prior')
+
+model_summaries = plyr::rbind.fill(mod1_summary, mod2_summary, mod3_summary, mod4_summary, mod5_summary, mod_og_summary) %>%
+  mutate(., conf.low = ifelse(is.na(conf.low), estimate - 2*std.error, conf.low),
+            conf.high = ifelse(is.na(conf.high), estimate + 2*std.error, conf.high),
+         type = ifelse(grepl('outlier', model), 'Artificial Outlier Excluded', 'Artificial Outlier In Model')) 
+
+
+
+ggplot(dplyr::filter(model_summaries, !grepl('sd', term)), aes(x = model, y = estimate, color = type)) + 
+  geom_hline(yintercept = 0) +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0) +
+  geom_point() +
+  facet_wrap('term', scales = 'free_y') +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
