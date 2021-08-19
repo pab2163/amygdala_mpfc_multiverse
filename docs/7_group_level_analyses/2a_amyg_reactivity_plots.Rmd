@@ -1,0 +1,569 @@
+---
+title: "Amygdala Reactivity Plots"
+author: "Paul A. Bloom"
+date: "March 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+library(lme4)
+library(rstanarm)
+library(kableExtra)
+library(specr)
+source('helper_functions.R')
+```
+
+# Pull in and bind together multiverse outputs
+
+Model Coefficients
+```{r}
+coef_files = paste0('output/reactivity/', dir('output/reactivity/', pattern = 'reactivity_coefs*'))
+
+# break files up by contrast
+coef_files_neutral = coef_files[grepl('neut', coef_files) & !grepl('fear', coef_files)]
+coef_files_fear = coef_files[!grepl('neut', coef_files)]
+coef_files_fear_minus_neutral =  coef_files[grepl('neut', coef_files) & grepl('fear', coef_files)]
+
+
+# fear
+for (ii in 1:length(coef_files_fear)){
+  temp_frame = read.csv(coef_files_fear[ii], stringsAsFactors = FALSE)
+  if (grepl('robust',coef_files_fear[ii])){
+    temp_frame$robust = '|'
+  }else{
+    temp_frame$robust = ''
+  }
+  if (ii == 1){
+    reactivity_coefs_fear = temp_frame
+  }else{
+    reactivity_coefs_fear = rbind(reactivity_coefs_fear, temp_frame)
+  }
+  rm(temp_frame)
+}
+
+# neutral
+for (ii in 1:length(coef_files_neutral)){
+  temp_frame = read.csv(coef_files_neutral[ii], stringsAsFactors = FALSE)
+    if (grepl('robust',coef_files_neutral[ii])){
+    temp_frame$robust = '|'
+  }else{
+    temp_frame$robust = ''
+  }
+  if (ii == 1){
+    reactivity_coefs_neut = temp_frame
+  }else{
+    reactivity_coefs_neut = rbind(reactivity_coefs_neut, temp_frame)
+  }
+  rm(temp_frame)
+}
+
+#fear > neutral
+for (ii in 1:length(coef_files_fear_minus_neutral)){
+  temp_frame = read.csv(coef_files_fear_minus_neutral[ii], stringsAsFactors = FALSE)
+    if (grepl('robust',coef_files_fear_minus_neutral[ii])){
+    temp_frame$robust = '|'
+  }else{
+    temp_frame$robust = ''
+  }
+  if (ii == 1){
+    reactivity_coefs_fear_minus_neut = temp_frame
+  }else{
+    reactivity_coefs_fear_minus_neut = rbind(reactivity_coefs_fear_minus_neut, temp_frame)
+  }
+  rm(temp_frame)
+}
+```
+
+Filter only select coefficients
+```{r}
+# make sure age coefs are named the same thing for quadratic models
+
+# fear
+reactivity_coefs_fear = mutate(reactivity_coefs_fear, 
+                          term = ifelse(term == 'polyageCenter2rawEQTRUE1', 'ageCenter', term)) %>%
+  dplyr::filter(!grepl('r_', term))
+
+# neutral
+reactivity_coefs_neut = mutate(reactivity_coefs_neut, 
+                          term = ifelse(term == 'polyageCenter2rawEQTRUE1', 'ageCenter', term)) %>%
+  dplyr::filter(!grepl('r_', term))
+
+# fear > neutral
+reactivity_coefs_fear_minus_neut = mutate(reactivity_coefs_fear_minus_neut,
+                          term = ifelse(term == 'polyageCenter2rawEQTRUE1', 'ageCenter', term)) %>%
+  dplyr::filter(!grepl('r_', term))
+```
+
+Model Predictions
+```{r}
+pred_files = paste0('output/reactivity/', dir('output/reactivity/', pattern = 'pred*'))
+
+# break up by contrast
+pred_files_fear = pred_files[!grepl('neut', pred_files)]
+pred_files_neutral = pred_files[grepl('neut', pred_files) & !grepl('fear', pred_files)]
+pred_files_fear_minus_neutral =  pred_files[grepl('neut', pred_files) & grepl('fear', pred_files)]
+
+# fear
+for (ii in 1:length(pred_files_fear)){
+  temp_frame_pred = read.csv(pred_files_fear[ii], stringsAsFactors = FALSE)
+  if (grepl('robust',pred_files_fear[ii])){
+    temp_frame_pred$robust = '|'
+  }else{
+    temp_frame_pred$robust = ''
+  }
+  if (ii == 1){
+    reactivity_preds_fear = temp_frame_pred
+  }else{
+    reactivity_preds_fear = rbind(reactivity_preds_fear, temp_frame_pred)
+  }
+}
+
+
+# neut
+for (ii in 1:length(pred_files_neutral)){
+  temp_frame_pred = read.csv(pred_files_neutral[ii], stringsAsFactors = FALSE)
+  if (grepl('robust',pred_files_neutral[ii])){
+    temp_frame_pred$robust = '|'
+  }else{
+    temp_frame_pred$robust = ''
+  }
+  if (ii == 1){
+    reactivity_preds_neut = temp_frame_pred
+  }else{
+    reactivity_preds_neut= rbind(reactivity_preds_neut, temp_frame_pred)
+  }
+}
+
+# fear > neutral
+for (ii in 1:length(pred_files_fear_minus_neutral)){
+  temp_frame_pred = read.csv(pred_files_fear_minus_neutral[ii], stringsAsFactors = FALSE)
+  if (grepl('robust',pred_files_fear_minus_neutral[ii])){
+    temp_frame_pred$robust = '|'
+  }else{
+    temp_frame_pred$robust = ''
+  }
+  if (ii == 1){
+    reactivity_preds_fear_minus_neut = temp_frame_pred
+  }else{
+    reactivity_preds_fear_minus_neut = rbind(reactivity_preds_fear_minus_neut, temp_frame_pred)
+  }
+}
+```
+
+```{r}
+# Load in raw data
+amyg_fear = read.csv('compiled_data/comps_amyg_fear_reactivity_master.csv', stringsAsFactors = FALSE)
+amyg_neut = read.csv('compiled_data/comps_amyg_neut_reactivity_master.csv', stringsAsFactors = FALSE)
+amyg_fear_minus_neut = read.csv('compiled_data/comps_amyg_fear_minus_neut_reactivity_master.csv', stringsAsFactors = FALSE)
+
+# Tidy it
+amyg_fear_long = amyg_fear %>%
+  tidyr::gather(., key = 'pipeline', value = 'reactivity', contains('amyg'),contains('Amyg'))
+
+amyg_neut_long = amyg_neut %>%
+  tidyr::gather(., key = 'pipeline', value = 'reactivity', contains('amyg'),contains('Amyg'))
+
+amyg_fear_minus_neut_long = amyg_fear_minus_neut %>%
+  tidyr::gather(., key = 'pipeline', value = 'reactivity', contains('amyg'),contains('Amyg'))
+
+# Nest and set indices
+reactivity_fear_raw_data = amyg_fear_long %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  ungroup() %>%
+  mutate(., index = 1:nrow(.)) %>%
+  unnest(data)
+
+reactivity_neut_raw_data = amyg_neut_long %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  ungroup() %>%
+  mutate(., index = 1:nrow(.)) %>%
+  unnest(data)
+
+reactivity_fear_minus_neut_raw_data = amyg_fear_minus_neut_long %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  ungroup() %>%
+  mutate(., index = 1:nrow(.)) %>%
+  unnest(data)
+
+ggplot(data = amyg_fear, aes(x = fsl_1_bilateralAmyg_beta, y = fsl_2_bilateralAmyg_beta)) + geom_point() +
+  geom_smooth(method = 'lm') +
+  geom_line(aes(group = Subject), alpha = .2) +
+  labs(x = 'Amygdala Betas - FSL Native Space', y = 'Amygdala Betas - FSL MNI Space')
+```
+
+# SCA Plot
+
+Run function to make sca plots!
+```{r}
+fork_list = c('tstat', 'quadratic', 'random_slopes', 'ctrl_scanner', 'ctrl_block', 'exclude_prev',
+              'amyg_right', 'amyg_left', 'amyg_bilateral', 'amyg_low_sig', 'amyg_high_sig', 'native_space',
+              'glm_fsl', 'highpass','robust',
+              'motion_reg6', 'motion_reg18', 'motion_reg24', 'hrf_2gamma')
+
+# fork list for looking at quadratic terms
+fork_list_quadratic = c('tstat', 'random_slopes', 'ctrl_scanner', 'ctrl_block', 'exclude_prev',
+              'amyg_right', 'amyg_left', 'amyg_bilateral', 'amyg_low_sig', 'amyg_high_sig', 'native_space',
+              'glm_fsl', 'highpass','robust',
+              'motion_reg6', 'motion_reg18', 'motion_reg24', 'hrf_2gamma')
+
+
+fear_sca = make_sca_plot(coefs = reactivity_coefs_fear, fork_list = fork_list, contrast_type = 'fear',
+                         plot_title = 'Fear > Baseline', 
+                         term_choice = 'ageCenter',
+                         y_label = 'Estimated Age-Related Change\nFear > Baseline Contrast')
+
+fear_minus_neut_sca = make_sca_plot(coefs = reactivity_coefs_fear_minus_neut, fork_list = fork_list, contrast_type = 'fear_minus_neut',
+                                    plot_title = 'Age-Related Changes in Amyg. Reactivity\nFear > Neutral', 
+                                    term_choice = 'ageCenter',
+                         y_label = 'Estimated Age-Related Change\nFear > Neutral Contrast')
+
+
+neut_sca = make_sca_plot(coefs = reactivity_coefs_neut, fork_list = fork_list, contrast_type = 'neut', 
+                         plot_title = 'Age-Related Changes in Amyg. Reactivity\nNeutral > Baseline', 
+                         term_choice = 'ageCenter',
+                         y_label = 'Estimated Age-Related Change\nNeutral > Baseline Contrast')
+
+cowplot::save_plot(neut_sca$sca_panel, 
+                   filename = 'plots/supplement/reactivity_neut_amyg_sca_linear_terms.png', base_height =8, base_width = 9)
+
+cowplot::save_plot(fear_minus_neut_sca$sca_panel, 
+                   filename = 'plots/supplement/reactivity_fear_minus_neut_amyg_sca_linear_terms.png', base_height =8, base_width = 9)
+```
+ 
+ 
+
+# Quadratic SCAs
+```{r}
+fear_sca_quadratic = make_sca_plot(coefs = reactivity_coefs_fear, fork_list = fork_list_quadratic, contrast_type = 'fear',
+                         plot_title = 'Fear > Baseline', 
+                         term_choice = 'polyageCenter2rawEQTRUE2',
+                         y_label = 'Estimated Quadratic Term for Age\nFear > Baseline Contrast')
+
+
+neut_sca_quadratic = make_sca_plot(coefs = reactivity_coefs_neut, fork_list = fork_list_quadratic, contrast_type = 'fear',
+                         plot_title = 'Neutral > Baseline', 
+                         term_choice = 'polyageCenter2rawEQTRUE2',
+                         y_label = 'Estimated Quadratic Term for Age\nNeutral > Baseline Contrast')
+
+
+fear_minus_neut_sca_quadratic = make_sca_plot(coefs = reactivity_coefs_fear_minus_neut, fork_list = fork_list_quadratic, contrast_type = 'fear',
+                         plot_title = 'Neutral > Baseline', 
+                         term_choice = 'polyageCenter2rawEQTRUE2',
+                         y_label = 'Estimated Quadratic Term for Age\nNeutral > Baseline Contrast')
+
+
+cowplot::save_plot(fear_sca_quadratic$sca_panel, 
+                   filename = 'plots/supplement/reactivity_fear_amyg_quadratic_terms.png', base_height =8, base_width = 10)
+
+cowplot::save_plot(neut_sca_quadratic$sca_panel, 
+                   filename = 'plots/supplement/reactivity_neut_amyg_quadratic_terms.png', base_height =8, base_width = 7)
+
+cowplot::save_plot(fear_minus_neut_sca_quadratic$sca_panel, 
+                   filename = 'plots/supplement/reactivity_fear_minus_neut_amyg_quadratic_terms.png', base_height =8, base_width = 7)
+```
+# Save out information summary
+```{r}
+save(reactivity_preds_fear, reactivity_fear_raw_data, reactivity_coefs_fear, fear_sca, 
+     reactivity_preds_neut, reactivity_neut_raw_data, reactivity_coefs_neut, neut_sca, 
+     reactivity_preds_fear_minus_neut, reactivity_fear_minus_neut_raw_data, reactivity_coefs_fear_minus_neut, fear_minus_neut_sca,
+     file = 'output/reactivity/reactivity_summary_outputs.rda')
+```
+
+
+
+# Prereg Model Plot
+```{r}
+prereg_model_fear = dplyr::filter(reactivity_preds_fear, model_type == 'modLinear', pipeline == 'og_native_amyg_bilateral_tstat', robust == '|') %>%
+  mutate(`Face Emotion` = 'Fear')
+
+prereg_model_neut = dplyr::filter(reactivity_preds_neut, model_type == 'modLinear', pipeline == 'og_native_amyg_bilateral_tstat', robust == '|') %>%
+  mutate(`Face Emotion` = 'Neutral')
+
+prereg_preds = rbind(prereg_model_fear, prereg_model_neut) %>%
+  mutate(., Age = ageCenter + amyg_fear$meanAge[1])
+
+
+prereg_data = dplyr::select(amyg_fear, Fear = og_native_amyg_bilateral_tstat, 
+                            Age, meanAge, ageCenter, name, Subject) %>%
+  left_join(., dplyr::select(amyg_neut, Neutral = og_native_amyg_bilateral_tstat, name)) %>%
+  tidyr::gather(key = 'Face Emotion', value = 'Estimate', Fear, Neutral)
+
+
+prereg_model_plot = ggplot(prereg_preds, aes(x = Age, y = Estimate, color = `Face Emotion`, fill=`Face Emotion`)) +
+  geom_point(data = prereg_data, alpha = .3) +
+  geom_line(data = prereg_data, aes(group = interaction(Subject, `Face Emotion`)), alpha = .2) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), alpha = .3, color = NA) +
+  geom_line(lwd = 1) +
+  scale_color_brewer(palette = 'Set2') +
+  scale_fill_brewer(palette = 'Set2') +
+  theme_classic() +
+  labs(y = 'Estimated Amygdala Reactivity', x = 'Age (in years)') +
+  theme(legend.position = 'top')
+
+```
+
+
+# Spaghetti Pred Plots To Visualize Linear & Quadratic Multiverse Predictions
+
+```{r}
+reactivity_preds_fear = dplyr::mutate(reactivity_preds_fear, age = ageCenter + amyg_fear$meanAge[1]) %>%
+  dplyr::filter(blockBin == 'first', scanner == '1') %>%
+  dplyr::group_by(ageCenter) %>%
+  mutate(m_id = 1:n(), contrast = 'Fear > Baseline') %>%
+  ungroup()
+
+reactivity_preds_neut = dplyr::mutate(reactivity_preds_neut, age = ageCenter + amyg_fear$meanAge[1]) %>%
+  dplyr::filter(blockBin == 'first', scanner == '1') %>%
+  dplyr::group_by(ageCenter) %>%
+  mutate(m_id = 1:n(), contrast = 'Neutral > Baseline') %>%
+  ungroup()
+
+
+reactivity_preds_fear_minus_neut = dplyr::mutate(reactivity_preds_fear_minus_neut, age = ageCenter + amyg_fear$meanAge[1]) %>%
+  dplyr::filter(blockBin == 'first', scanner == '1') %>%
+  dplyr::group_by(ageCenter) %>%
+  mutate(m_id = 1:n(), contrast = 'Fear > Neutral') %>%
+  ungroup()
+
+
+reactivity_preds_spaghetti_all = rbind(reactivity_preds_fear, reactivity_preds_neut, reactivity_preds_fear_minus_neut) %>%
+  dplyr::mutate(quadratic = ifelse(grepl('Quadratic', model_type), 'Quadratic', 'Linear')) %>%
+  ggplot(data = ., aes(x = age, y = Estimate)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_line(alpha = .03, aes(group = m_id), color = 'blue') +
+  theme_bw() +
+  facet_grid(contrast~quadratic, scales = 'free_y') +
+  labs(x = 'Age (in years)', y = 'Estimated Amygdala Reactivity')
+
+
+
+ggsave(reactivity_preds_spaghetti_all, filename = 'plots/supplement/reactivity_preds_spaghetti_all.png', height = 8, width = 8)
+```
+
+
+Make reactivity fig1
+```{r}
+load('output/reactivity/between_within.rda')
+
+right_plot = cowplot::plot_grid(prereg_model_plot, 
+                                between_within + 
+                                  labs(x = 'Analysis specifications ranked by beta estimates\n(color indicates face emotion)') +
+                                  theme(panel.grid.minor = element_blank(),
+                                        panel.grid.major.x = element_blank()), 
+                                ncol = 1, labels = c('C', 'D'))
+
+reactivity_fig = cowplot::plot_grid(fear_sca$sca_panel, right_plot, rel_widths = c(2,1))
+
+cowplot::save_plot(reactivity_fig, filename = 'plots/reactivity/reactivity_fig1.pdf',
+                   base_height = 8, base_width = 12)
+```
+
+# Spec calcs
+```{r}
+table(fear_sca$sca_decision_frame$overlap_0)
+table(fear_sca$sca_decision_frame$overlap_0)/nrow(fear_sca$sca_decision_frame)
+
+fear_sca$sca_decision_frame %>% dplyr::filter(exclude_prev == '|') %>%
+  group_by(overlap_0) %>%
+  summarise(n = n(), prop = n/nrow(.), prop_m = 1-prop)
+
+
+table(neut_sca$sca_decision_frame$overlap_0)
+table(neut_sca$sca_decision_frame$overlap_0)/nrow(neut_sca$sca_decision_frame)
+
+neut_sca$sca_decision_frame %>% dplyr::filter(exclude_prev == '|') %>%
+  group_by(overlap_0) %>%
+  summarise(n = n(), prop = n/nrow(.), prop_m = 1-prop)
+```
+
+# Mean Reactivity Spec Curves
+
+* Lmer models to estimate mean reactivity across all participants (random intercepts)
+
+```{r}
+fear_mean = read.csv('compiled_data/comps_amyg_fear_reactivity_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::filter(censoredTR <= 40) %>% 
+  tidyr::gather(., key = 'pipeline', value = 'reactivity', contains('amyg'),contains('Amyg')) %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  ungroup() %>%
+  mutate(., index = 1:nrow(.)) %>%
+  mutate(., model = map(data, 
+            ~lmer(reactivity ~ 1  + (1|Subject), data = .))) %>%
+  mutate(., coefs = map(model, ~broom.mixed::tidy(.))) %>%
+  dplyr::select(., -data, -model) %>%
+  unnest(coefs) %>%
+  dplyr::filter(term == '(Intercept)') %>%
+  dplyr::mutate(lwr = estimate - 2*std.error,
+                upr = estimate + 2*std.error,
+                rank = rank(estimate)) 
+
+
+
+neut_mean = read.csv('compiled_data/comps_amyg_neut_reactivity_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::filter(censoredTR <= 40) %>% 
+  tidyr::gather(., key = 'pipeline', value = 'reactivity', contains('amyg'),contains('Amyg')) %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  ungroup() %>%
+  mutate(., index = 1:nrow(.)) %>%
+  mutate(., model = map(data, 
+                             ~lmer(reactivity ~ 1  + (1|Subject), data = .))) %>%
+  mutate(., coefs = map(model, ~broom.mixed::tidy(.))) %>%
+  dplyr::select(., -data, -model) %>%
+  unnest(coefs) %>%
+  dplyr::filter(term == '(Intercept)') %>%
+  dplyr::mutate(lwr = estimate - 2*std.error,
+                upr = estimate + 2*std.error,
+                rank = rank(estimate)) 
+
+
+fear_minus_neut_mean = read.csv('compiled_data/comps_amyg_fear_minus_neut_reactivity_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::filter(censoredTR <= 40) %>% 
+  tidyr::gather(., key = 'pipeline', value = 'reactivity', contains('amyg'),contains('Amyg')) %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  ungroup() %>%
+  mutate(., index = 1:nrow(.)) %>%
+  mutate(., model = map(data, 
+                             ~lmer(reactivity ~ 1  + (1|Subject), data = .))) %>%
+  mutate(., coefs = map(model, ~broom.mixed::tidy(.))) %>%
+  dplyr::select(., -data, -model) %>%
+  unnest(coefs) %>%
+  dplyr::filter(term == '(Intercept)') %>%
+  dplyr::mutate(lwr = estimate - 2*std.error,
+                upr = estimate + 2*std.error,
+                rank = rank(estimate)) 
+
+
+
+
+fear_mean = fear_mean %>% mutate(., 
+                     conf.low = lwr, conf.high = upr, model_type = '', robust = '')
+
+neut_mean = neut_mean %>% mutate(., 
+                     conf.low = lwr, conf.high = upr, model_type = '', robust = '')
+
+fear_minus_neut_mean = fear_minus_neut_mean %>% mutate(., 
+                     conf.low = lwr, conf.high = upr, model_type = '', robust = '')
+
+
+fear_int_sca = make_sca_plot(coefs =fear_mean, fork_list = c('tstat', 'amyg_right', 'amyg_left', 'amyg_bilateral', 'amyg_low_sig', 'amyg_high_sig',
+                                             'native_space','glm_fsl', 'highpass','robust', 'motion_reg6', 'motion_reg18',
+                                             'motion_reg24', 'hrf_2gamma'), contrast_type = 'fear_intercept', 
+                             plot_title = '', y_label = 'Estimated Average Reactivity\nFear > Baseline', 
+              term_choice = '(Intercept)')
+
+neut_int_sca = make_sca_plot(coefs =neut_mean, fork_list = c('tstat', 'amyg_right', 'amyg_left', 'amyg_bilateral', 'amyg_low_sig', 'amyg_high_sig',
+                                             'native_space','glm_fsl', 'highpass','robust', 'motion_reg6', 'motion_reg18',
+                                             'motion_reg24', 'hrf_2gamma'), contrast_type = 'neut_intercept', 
+                             plot_title = '', y_label = 'Estimated Average Reactivity\nNeutral > Baseline', 
+              term_choice = '(Intercept)')
+
+fear_minus_neut_int_sca = make_sca_plot(coefs =fear_minus_neut_mean, fork_list = c('tstat', 'amyg_right', 'amyg_left', 'amyg_bilateral', 'amyg_low_sig', 'amyg_high_sig',
+                                             'native_space','glm_fsl', 'highpass','robust', 'motion_reg6', 'motion_reg18',
+                                             'motion_reg24', 'hrf_2gamma'), contrast_type = 'fear_minus_neut_intercept', 
+                                        plot_title = '', y_label = 'Estimated Average Reactivity\nFear > Neutral', 
+              term_choice = '(Intercept)')
+
+
+
+cowplot::save_plot(fear_int_sca$sca_panel, filename = 'plots/supplement/reactivity_fear_mean_sca.png', base_height = 6, base_width = 6)
+cowplot::save_plot(neut_int_sca$sca_panel, filename = 'plots/supplement/reactivity_neut_mean_sca.png', base_height = 6, base_width = 6)
+cowplot::save_plot(fear_minus_neut_int_sca$sca_panel, filename = 'plots/supplement/reactivity_fear_minus_neut_mean_sca.png', base_height = 6, base_width = 6)
+```
+
+# Between-scan correlations of estimates across pipelines
+
+
+Fear
+```{r}
+make_spec_cor_plot = function(input_df, contrast_name){
+    input_df = input_df %>%
+      dplyr::filter(censoredTR <= 40) %>%
+      dplyr::select(contains('amyg'), -contains('Signal'), 
+                  -contains('right'), 
+                  -contains('left'),
+                  -contains('beta'))
+  
+  names(input_df) = gsub('_tstat', '', names(input_df))
+  names(input_df)= gsub('og_ho_amyg_bilateral', 'Prereg FSL: MNI Space' ,names(input_df))
+  names(input_df) = gsub('og_native_amyg_bilateral', 'Prereg FSL: Native Space' ,names(input_df))
+  names(input_df) = gsub('afni_', 'C-PAC + AFNI: ', names(input_df))
+  names(input_df) = gsub('fsl_', 'C-PAC + FSL: ', names(input_df))
+  names(input_df) = gsub('5_bilateralAmyg', '6motion: 1G HRF: highpass' ,names(input_df))
+  names(input_df) = gsub('6_bilateralAmyg', '6motion: 1G HRF: quadratic detrend' ,names(input_df))
+  names(input_df) = gsub('7_bilateralAmyg', '18motion+WM+CSF: 1G HRF: highpass' ,names(input_df))
+  names(input_df) = gsub('8_bilateralAmyg', '18motion+WM+CSF: 1G HRF: quadratic detrend' ,names(input_df))
+  names(input_df) = gsub('1_bilateralAmyg', '6motion: 2G HRF: highpass' ,names(input_df))
+  names(input_df) = gsub('2_bilateralAmyg', '18motion+WM+CSF: 2G HRF:  highpass' ,names(input_df))
+  names(input_df) = gsub('3_bilateralAmyg', '6motion: 1G HRF: highpass' ,names(input_df))
+  names(input_df) = gsub('4_bilateralAmyg', '18motion+WM+CSF: 1G HRF: highpass' ,names(input_df))
+  
+  cor_plt  = input_df %>%
+    dplyr::select(sort(names(.))) %>%
+    cor(use = 'pairwise') %>%
+    ggcorrplot::ggcorrplot() +
+    scale_fill_viridis_c(limits = c(.4,1)) +
+    scale_x_discrete(limits = rev) +
+    theme(axis.text.x = element_text(size = 7),
+          axis.text.y = element_text(size = 7)) +
+    labs(fill = 'Between-scan correlation', title = contrast_name)
+  
+  return(cor_plt)
+}
+
+
+amyg_fear_cor_plot = make_spec_cor_plot(amyg_fear, contrast_name = 'Fear > Baseline') 
+amyg_neut_cor_plot = make_spec_cor_plot(amyg_neut, contrast_name = 'Neutral > Baseline') 
+amyg_fear_minus_neut_cor_plot = make_spec_cor_plot(amyg_fear_minus_neut, contrast_name = 'Fear > Neutral') 
+
+ggsave(amyg_fear_cor_plot, file = 'plots/supplement/reactivity_fear_between_scan_pipeline_cors.png')
+ggsave(amyg_neut_cor_plot, file = 'plots/supplement/reactivity_neut_between_scan_pipeline_cors.png')
+ggsave(amyg_fear_minus_neut_cor_plot, file = 'plots/supplement/reactivity_fear__minus_neutbetween_scan_pipeline_cors.png')
+
+```
+
+```{r}
+ggplot(amyg_fear, aes(x =factor(prev_studied), y = Age)) +
+  geom_point() +
+  stat_summary(fun.data = 'mean_cl_boot', color = 'red')
+
+
+
+prev_studied_model = amyg_fear %>%
+  mutate(prev_studied = ifelse(is.na(prev_studied), 'no', 'yes')) %>%
+  stan_glm(data = ., Age ~ prev_studied)
+
+summary(prev_studied_model, probs = c(.025, .975), digits = 3)
+```
+
+
+
+
+# Model the estimates by decision point
+```{r}
+# Effect of decisions on age-related change slopes
+fear_fork_fx = make_decision_plot(sca_frame = fear_sca$sca_decision_frame, fork_list = fork_list, contrast_type = 'fear_age', plot_title = 'Impacts of pipeline choices')
+
+neut_fork_fx = make_decision_plot(sca_frame = neut_sca$sca_decision_frame, fork_list = fork_list, contrast_type = 'neut_age', plot_title = 'Impacts of pipeline choices')
+
+fear_minus_neut_fork_fx = make_decision_plot(sca_frame = fear_minus_neut_sca$sca_decision_frame, fork_list = fork_list, contrast_type = 'fear_minus_neut_age', plot_title = 'Impacts of pipeline choices')
+
+
+# Effect of decisions on intercepts
+fear_fork_fx_intercept = make_decision_plot(sca_frame = fear_sca$sca_decision_frame, fork_list = fork_list, contrast_type = 'fear_intercept', plot_title = 'Impacts of pipeline choices')
+
+neut_fork_fx_intercept = make_decision_plot(sca_frame = neut_sca$sca_decision_frame, fork_list = fork_list, contrast_type = 'neut_intercept', plot_title = 'Impacts of pipeline choices')
+
+fear_minus_neut_fork_fx_intercept = make_decision_plot(sca_frame = fear_minus_neut_sca$sca_decision_frame, fork_list = fork_list, contrast_type = 'fear_minus_neut_intercept', plot_title = 'Impacts of pipeline choices')
+
+```

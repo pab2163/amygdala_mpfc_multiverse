@@ -1,0 +1,593 @@
+---
+title: "Amygdala BSC Plots"
+author: "Paul A. Bloom"
+date: "March 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+library(rstanarm)
+library(brms)
+library(ggcorrplot)
+source('helper_functions.R')
+library(heatmap3)
+library(lme4)
+```
+
+# Pull in and bind together multiverse outputs
+
+Model Coefficients
+```{r}
+coef_files = paste0('output/bsc/', dir('output/bsc/', pattern = 'bsc_coefs*'))
+
+for (ii in 1:length(coef_files)){
+  temp_frame = read.csv(coef_files[ii], stringsAsFactors = FALSE)
+  if (ii == 1){
+    bsc_coefs = temp_frame
+  }else{
+    bsc_coefs = rbind(bsc_coefs, temp_frame)
+  }
+}
+```
+
+Model Predictions
+```{r}
+pred_files = paste0('output/bsc/', dir('output/bsc/', pattern = 'pred*'))
+
+for (ii in 1:length(pred_files)){
+  temp_frame_pred = read.csv(pred_files[ii], stringsAsFactors = FALSE)
+  if (ii == 1){
+    bsc_preds = temp_frame_pred
+  }else{
+    bsc_preds = rbind(bsc_preds, temp_frame_pred)
+  }
+}
+
+# Load in raw data
+bsc = read.csv('compiled_data/comps_amyg_fear_bsc_master.csv', stringsAsFactors = FALSE)
+
+# Tidy it
+bsc_long = bsc %>%
+  tidyr::gather(., key = 'pipeline', value = 'bsc', contains('pfc'))
+
+# Nest and set indices
+bsc_raw_data = bsc_long %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  ungroup() %>%
+  mutate(., index = 1:nrow(.)) %>%
+  unnest(data)
+
+```
+
+```{r}
+# make sure age coefs are named the same thing for quadratic models
+bsc_coefs = mutate(bsc_coefs, 
+                          term = ifelse(term == 'b_polyageCenter2rawEQTRUE1', 'b_ageCenter', term)) %>%
+  dplyr::filter(!grepl('r_', term)) %>%
+  mutate(tmp_index = 1:nrow(.)) %>%
+  group_by(tmp_index) %>%
+  mutate(., condition = case_when(endsWith(pipeline, 'fear') ~ 'fear',
+                               endsWith(pipeline, 'neut') & !grepl('fear_minus_neut', pipeline) ~ 'neut',
+                               grepl('fear_minus_neut', pipeline) ~ 'fear_minus_neut')) %>%
+  ungroup() %>%
+  dplyr::select(-tmp_index)
+```
+
+
+
+# SCA Plot
+```{r}
+fork_list = c('quadratic', 'random_slopes', 
+              'ctrl_scanner', 'ctrl_block',
+              'gsr', 'mpfc1', 'mpfc2', 'mpfc3', 'mpfc_big',
+              'amyg_left', 'amyg_right', 'amyg_bilateral')
+
+fear_bsc_sca = make_bsc_sca_plot(dplyr::filter(bsc_coefs, condition =='fear'),
+                  fork_list = fork_list,
+                  contrast_type = 'fear', 
+                  y_label = 'Estimated Amyg-mPFC BSC\nAge-Related Change\nFear > Baseline', 
+                  term_choice = 'b_ageCenter')
+
+fear_minus_neut_bsc_sca = make_bsc_sca_plot(dplyr::filter(bsc_coefs, condition =='fear_minus_neut'),
+                  fork_list = fork_list,
+                  contrast_type = 'fear_minus_neutral', 
+                  y_label = 'Estimated Amyg-mPFC BSC\nAge-Related Change\nFear > Neutral', 
+                  term_choice = 'b_ageCenter')
+
+neut_bsc_sca = make_bsc_sca_plot(dplyr::filter(bsc_coefs, condition =='neut'),
+                  fork_list = fork_list,
+                  contrast_type = 'neut', 
+                  y_label = 'Estimated Amyg-mPFC BSC\nAge-Related Change\nNeutral > Baseline', 
+                  term_choice = 'b_ageCenter')
+
+
+
+table(fear_bsc_sca$sca_decision_frame$overlap_0)/nrow(fear_bsc_sca$sca_decision_frame)
+1- table(fear_bsc_sca$sca_decision_frame$overlap_0)/nrow(fear_bsc_sca$sca_decision_frame)
+
+
+table(neut_bsc_sca$sca_decision_frame$overlap_0)/nrow(neut_bsc_sca$sca_decision_frame)
+1 - table(neut_bsc_sca$sca_decision_frame$overlap_0)/nrow(neut_bsc_sca$sca_decision_frame)
+
+
+table(fear_minus_neut_bsc_sca$sca_decision_frame$overlap_0)/nrow(neut_bsc_sca$sca_decision_frame)
+1 - table(neut_bsc_sca$sca_decision_frame$overlap_0)/nrow(neut_bsc_sca$sca_decision_frame)
+
+```
+
+# Quadratic BSC SCA
+```{r}
+fear_bsc_sca_quadratic = make_bsc_sca_plot(dplyr::filter(bsc_coefs, condition =='fear'),
+                  fork_list = fork_list,
+                  contrast_type = 'fear_quadratic', 
+                  y_label = 'Estimated Amyg-mPFC BSC\nQuadratic Age-Related Change\nFear > Baseline', 
+                  term_choice = 'b_polyageCenter2rawEQTRUE2')
+
+neut_bsc_sca_quadratic = make_bsc_sca_plot(dplyr::filter(bsc_coefs, condition =='neut'),
+                  fork_list = fork_list,
+                  contrast_type = 'neut_quadratic', 
+                  y_label = 'Estimated Amyg-mPFC BSC\nQuadratic Age-Related Change\nNeutral > Baseline', 
+                  term_choice = 'b_polyageCenter2rawEQTRUE2')
+
+
+fear_minus_neut_bsc_sca_quadratic = make_bsc_sca_plot(dplyr::filter(bsc_coefs, condition =='fear_minus_neut'),
+                  fork_list = fork_list,
+                  contrast_type = 'fear_minus_neut_quadratic', 
+                  y_label = 'Estimated Amyg-mPFC BSC\nQuadratic Age-Related Change\nFear > Neutral', 
+                  term_choice = 'b_polyageCenter2rawEQTRUE2')
+
+```
+# Make correlation matrix for FC fear estimates
+
+## Fear correlation matrix
+```{r}
+ppi_fear = read.csv('compiled_data/comps_amyg_fear_ppi_master.csv', stringsAsFactors = TRUE) %>%
+  dplyr::select(name, contains('deconv'), -contains('beta'))
+
+bsc_ppi = left_join(bsc, ppi_fear, by = 'name') %>%
+  dplyr::select((contains('gsr') & contains('bilateral')),(contains('deconv')))
+
+
+names(bsc_ppi) = c(
+  'large vmPFC',
+  'mPFC 1',
+  'mPFC 2', 
+  'mPFC 3',
+  ' large vmPFC ',
+  ' mPFC 1 ',
+  ' mPFC 2 ', 
+  ' mPFC 3 ',
+  '  mPFC 1',
+  '  mPFC 2', 
+  '  mPFC 3',
+  '  large vmPFC',
+  '    mPFC 1 ',
+  '    mPFC 2 ', 
+  '    mPFC 3 ',
+  '    large vmPFC '
+)
+
+
+bsc_ppi = dplyr::select(bsc_ppi,
+  `mPFC 1`,
+  `mPFC 2`, 
+  `mPFC 3`,
+  `large vmPFC`,
+  ` mPFC 1 `,
+  ` mPFC 2 `, 
+  ` mPFC 3 `,
+  ` large vmPFC `,
+  `  mPFC 1`,
+  `  mPFC 2`, 
+  `  mPFC 3`,
+  `  large vmPFC`,
+  `    mPFC 1 `,
+  `    mPFC 2 `, 
+  `    mPFC 3 `,
+  `    large vmPFC `)
+
+# make correlation matrix
+cor_mat = bsc_ppi %>%
+  cor(use = 'complete.obs', method = 'spearman') 
+
+cor_mat %>%
+  ggcorrplot()
+
+bsc_ppi_corplot = ggcorrplot(cor_mat, legend.title = "Rank-order correlation", 
+                             tl.cex=8) +
+  geom_segment(aes(x=.4,xend=4.5,y=.4,yend=.4, color = 'BSC-GSS'), lwd = 2) +
+  geom_segment(aes(x=4.5,xend=8.5,y=.4,yend=.4, color = 'BSC-No GSS'), lwd = 2) +
+  geom_segment(aes(x=8.5,xend=12.5,y=.4,yend=.4, color = 'PPI-Deconv.'), lwd = 2) +
+  geom_segment(aes(x=12.5,xend=16.5,y=.4,yend=.4, color = 'PPI-No Deconv.'), lwd = 2) +
+  geom_segment(aes(y=.4,yend=4.5,x=.4,xend=.4, color = 'BSC-GSS'), lwd = 2) +
+  geom_segment(aes(y=4.5,yend=8.5,x=.4,xend=.4, color = 'BSC-No GSS'), lwd = 2) +
+  geom_segment(aes(y=8.5,yend=12.5,x=.4,xend=.4, color = 'PPI-Deconv.'), lwd = 2) +
+  geom_segment(aes(y=12.5,yend=16.5,x=.4,xend=.4, color = 'PPI-No Deconv.'), lwd = 2) +
+  scale_color_manual(values = c('#8B008B', '#FF00FF', 'green', 'green4')) +
+  labs(fill="Rank-order correlation", color="") +
+  theme(legend.position = 'right') +
+  guides(color = guide_legend(order=1)) 
+
+bsc_ppi_corplot_fear = ggcorrplot(cor_mat, legend.title = "Rank-order correlation", 
+                             tl.cex=8, lab = TRUE, lab_size = 2) +
+  geom_segment(aes(x=.4,xend=4.5,y=.4,yend=.4, color = 'BSC-GSS'), lwd = 2) +
+  geom_segment(aes(x=4.5,xend=8.5,y=.4,yend=.4, color = 'BSC-No GSS'), lwd = 2) +
+  geom_segment(aes(x=8.5,xend=12.5,y=.4,yend=.4, color = 'PPI-Deconv.'), lwd = 2) +
+  geom_segment(aes(x=12.5,xend=16.5,y=.4,yend=.4, color = 'PPI-No Deconv.'), lwd = 2) +
+  geom_segment(aes(y=.4,yend=4.5,x=.4,xend=.4, color = 'BSC-GSS'), lwd = 2) +
+  geom_segment(aes(y=4.5,yend=8.5,x=.4,xend=.4, color = 'BSC-No GSS'), lwd = 2) +
+  geom_segment(aes(y=8.5,yend=12.5,x=.4,xend=.4, color = 'PPI-Deconv.'), lwd = 2) +
+  geom_segment(aes(y=12.5,yend=16.5,x=.4,xend=.4, color = 'PPI-No Deconv.'), lwd = 2) +
+  scale_color_manual(values = c('#8B008B', '#FF00FF', 'green', 'green4')) +
+  labs(fill="Rank-order correlation", color="", title = 'Fear > Baseline') +
+  theme(legend.position = 'right') +
+  guides(color = guide_legend(order=1)) 
+
+
+
+ggsave(bsc_ppi_corplot_fear, file = 'plots/supplement/bsc_ppi_corplot_fear.pdf', width = 8, height = 8)
+```
+
+## Neut correlation matrix
+```{r}
+bsc_neut = read.csv('compiled_data/comps_amyg_all_contrasts_bsc_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(-contains('fear'))
+
+ppi_neut = read.csv('compiled_data/comps_amyg_all_contrasts_ppi_master.csv', stringsAsFactors = TRUE) %>%
+  dplyr::select(name, contains('deconv'), -contains('beta'))
+
+bsc_ppi_neut = left_join(bsc_neut, ppi_neut, by = 'name') %>%
+  dplyr::select((contains('gsr') & contains('bilateral')),(contains('deconv')), -contains('fear'))
+
+
+names(bsc_ppi_neut) = c(
+  'large vmPFC',
+  'mPFC 1',
+  'mPFC 2', 
+  'mPFC 3',
+  ' large vmPFC ',
+  ' mPFC 1 ',
+  ' mPFC 2 ', 
+  ' mPFC 3 ',
+  '  mPFC 1',
+  '  mPFC 2', 
+  '  mPFC 3',
+  '  large vmPFC',
+  '    mPFC 1 ',
+  '    mPFC 2 ', 
+  '    mPFC 3 ',
+  '    large vmPFC '
+)
+
+
+bsc_ppi_neut = dplyr::select(bsc_ppi_neut,
+  `mPFC 1`,
+  `mPFC 2`, 
+  `mPFC 3`,
+  `large vmPFC`,
+  ` mPFC 1 `,
+  ` mPFC 2 `, 
+  ` mPFC 3 `,
+  ` large vmPFC `,
+  `  mPFC 1`,
+  `  mPFC 2`, 
+  `  mPFC 3`,
+  `  large vmPFC`,
+  `    mPFC 1 `,
+  `    mPFC 2 `, 
+  `    mPFC 3 `,
+  `    large vmPFC `)
+
+# make correlation matrix
+cor_mat_neut = bsc_ppi_neut %>%
+  cor(use = 'complete.obs', method = 'spearman') 
+
+
+bsc_ppi_corplot_neut = ggcorrplot(cor_mat_neut, legend.title = "Rank-order correlation", 
+                             tl.cex=8, lab = TRUE, lab_size = 2) +
+  geom_segment(aes(x=.4,xend=4.5,y=.4,yend=.4, color = 'BSC-GSS'), lwd = 2) +
+  geom_segment(aes(x=4.5,xend=8.5,y=.4,yend=.4, color = 'BSC-No GSS'), lwd = 2) +
+  geom_segment(aes(x=8.5,xend=12.5,y=.4,yend=.4, color = 'PPI-Deconv.'), lwd = 2) +
+  geom_segment(aes(x=12.5,xend=16.5,y=.4,yend=.4, color = 'PPI-No Deconv.'), lwd = 2) +
+  geom_segment(aes(y=.4,yend=4.5,x=.4,xend=.4, color = 'BSC-GSS'), lwd = 2) +
+  geom_segment(aes(y=4.5,yend=8.5,x=.4,xend=.4, color = 'BSC-No GSS'), lwd = 2) +
+  geom_segment(aes(y=8.5,yend=12.5,x=.4,xend=.4, color = 'PPI-Deconv.'), lwd = 2) +
+  geom_segment(aes(y=12.5,yend=16.5,x=.4,xend=.4, color = 'PPI-No Deconv.'), lwd = 2) +
+  scale_color_manual(values = c('#8B008B', '#FF00FF', 'green', 'green4')) +
+  labs(fill="Rank-order correlation", color="", title = 'Neutral > Baseline') +
+  theme(legend.position = 'right') +
+  guides(color = guide_legend(order=1)) 
+
+
+ggsave(bsc_ppi_corplot_neut, file = 'plots/supplement/bsc_ppi_corplot_neutral.pdf', width = 8, height = 8)
+```
+
+# Fear > neutral correlation matrix
+
+```{r}
+
+bsc_fear_minus_neut = read.csv('compiled_data/comps_amyg_all_contrasts_bsc_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(contains('fear_minus_neut'), name)
+
+ppi_fear_minus_neut = read.csv('compiled_data/comps_amyg_all_contrasts_ppi_master.csv', stringsAsFactors = TRUE) %>%
+  dplyr::select(name, contains('deconv'), -contains('fear'), -contains('neut'), contains('fear_minus_neut'),  -contains('beta'),)
+
+bsc_ppi_fear_minus_neut = left_join(bsc_fear_minus_neut, ppi_fear_minus_neut, by = 'name') %>%
+  dplyr::select((contains('gsr') & contains('bilateral')),(contains('deconv')))
+
+
+names(bsc_ppi_fear_minus_neut) = c(
+  'large vmPFC',
+  'mPFC 1',
+  'mPFC 2', 
+  'mPFC 3',
+  ' large vmPFC ',
+  ' mPFC 1 ',
+  ' mPFC 2 ', 
+  ' mPFC 3 ',
+  '  mPFC 1',
+  '  mPFC 2', 
+  '  mPFC 3',
+  '  large vmPFC',
+  '    mPFC 1 ',
+  '    mPFC 2 ', 
+  '    mPFC 3 ',
+  '    large vmPFC '
+)
+
+
+bsc_ppi_fear_minus_neut = dplyr::select(bsc_ppi_fear_minus_neut,
+  `mPFC 1`,
+  `mPFC 2`, 
+  `mPFC 3`,
+  `large vmPFC`,
+  ` mPFC 1 `,
+  ` mPFC 2 `, 
+  ` mPFC 3 `,
+  ` large vmPFC `,
+  `  mPFC 1`,
+  `  mPFC 2`, 
+  `  mPFC 3`,
+  `  large vmPFC`,
+  `    mPFC 1 `,
+  `    mPFC 2 `, 
+  `    mPFC 3 `,
+  `    large vmPFC `)
+
+# make correlation matrix
+cor_mat_fear_minus_neut = bsc_ppi_fear_minus_neut %>%
+  cor(use = 'complete.obs', method = 'spearman') 
+
+
+bsc_ppi_corplot_fear_minus_neut = ggcorrplot(cor_mat_fear_minus_neut, legend.title = "Rank-order correlation", 
+                             tl.cex=8, lab = TRUE, lab_size = 2) +
+  geom_segment(aes(x=.4,xend=4.5,y=.4,yend=.4, color = 'BSC-GSS'), lwd = 2) +
+  geom_segment(aes(x=4.5,xend=8.5,y=.4,yend=.4, color = 'BSC-No GSS'), lwd = 2) +
+  geom_segment(aes(x=8.5,xend=12.5,y=.4,yend=.4, color = 'PPI-Deconv.'), lwd = 2) +
+  geom_segment(aes(x=12.5,xend=16.5,y=.4,yend=.4, color = 'PPI-No Deconv.'), lwd = 2) +
+  geom_segment(aes(y=.4,yend=4.5,x=.4,xend=.4, color = 'BSC-GSS'), lwd = 2) +
+  geom_segment(aes(y=4.5,yend=8.5,x=.4,xend=.4, color = 'BSC-No GSS'), lwd = 2) +
+  geom_segment(aes(y=8.5,yend=12.5,x=.4,xend=.4, color = 'PPI-Deconv.'), lwd = 2) +
+  geom_segment(aes(y=12.5,yend=16.5,x=.4,xend=.4, color = 'PPI-No Deconv.'), lwd = 2) +
+  scale_color_manual(values = c('#8B008B', '#FF00FF', 'green', 'green4')) +
+  labs(fill="Rank-order correlation", color="", title = 'Fear > Neutral') +
+  theme(legend.position = 'right') +
+  guides(color = guide_legend(order=1)) 
+
+
+ggsave(bsc_ppi_corplot_fear_minus_neut, file = 'plots/supplement/bsc_ppi_corplot_fear_minus_neutral.pdf', width = 8, height = 8)
+```
+
+
+
+
+# BSC preds plot
+```{r}
+bsc_preds_for_plot = dplyr::filter(bsc_preds, !grepl('bilateral', pipeline),
+                                   model_type == 'modLinear', blockBin == 'first', scanner ==1,
+                                   !grepl('neut', pipeline)) %>%
+  mutate(`mPFC ROI` = case_when(
+           grepl('mpfc1', pipeline) ~ 'mPFC 1',
+           grepl('mpfc2', pipeline) ~ 'mPFC 2',
+           grepl('mpfc3', pipeline) ~ 'mPFC 3',
+           grepl('vmpfc', pipeline) ~ 'large vmPFC',
+         ),
+         GSS = ifelse(grepl('no_gsr', pipeline),'No GSS', 'GSS'),
+         Amyg = ifelse(grepl('right', pipeline), 'Right Amyg', 'Left Amyg'),
+         Age = ageCenter + bsc_raw_data$meanAge[1])
+
+
+bsc_raw_for_plot = dplyr::filter(bsc_raw_data, !grepl('bilateral', pipeline),
+                                   !grepl('neut', pipeline)) %>%
+  mutate(`mPFC ROI` = case_when(
+           grepl('mpfc1', pipeline) ~ 'mPFC 1',
+           grepl('mpfc2', pipeline) ~ 'mPFC 2',
+           grepl('mpfc3', pipeline) ~ 'mPFC 3',
+           grepl('vmpfc', pipeline) ~ 'large vmPFC',
+         ),
+        Amyg = ifelse(grepl('right', pipeline), 'Right Amyg', 'Left Amyg'),
+         GSS = ifelse(grepl('no_gsr', pipeline),'No GSS', 'GSS'),
+         Age = ageCenter + bsc_raw_data$meanAge[1])
+
+
+
+bsc_pred_plot = ggplot(bsc_preds_for_plot, aes(x = Age, y = Estimate, color = GSS, fill = GSS)) +
+  geom_hline(yintercept = 0, lty = 2) + 
+  geom_line(lwd = 1) +
+  geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), color = NA, alpha = .3) +
+  facet_grid(Amyg~`mPFC ROI`) +
+  labs(y = 'Estimated BSC', x = 'Age (in years)', color = '', fill = '') +
+  theme_bw() +
+  theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank())
+
+```
+
+
+
+# BSC plot formatting for manuscript figure 4
+```{r}
+left_panel = cowplot::plot_grid(fear_bsc_sca$sca_top, fear_bsc_sca$sca_bottom, ncol = 1, align = 'v', axis='lr', labels = c('A', 'B'))
+
+right_panel = cowplot::plot_grid(bsc_pred_plot, bsc_ppi_corplot, ncol = 1,labels = c('C', 'D'))
+bsc_fig4 = cowplot::plot_grid(left_panel, right_panel)
+
+cowplot::save_plot(bsc_fig4, file = 'plots/bsc/bsc_fig4.png', base_width = 14, base_height = 7)
+```
+
+# Group mean BSC
+```{r}
+bsc_all_contrasts = read.csv('compiled_data/comps_amyg_all_contrasts_bsc_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(-contains('left'), -contains('right'))
+
+
+
+bsc_mean_models = bsc_all_contrasts %>%
+  dplyr::filter(censoredTR <=40) %>%
+  pivot_longer(contains('pfc'), names_to = 'pipeline', values_to = 'bsc') %>%
+  group_by(pipeline) %>%
+  nest() %>%
+  mutate(., model = map(data, 
+            ~lmer(bsc ~ 1  + (1|Subject), data = .))) %>%
+  mutate(., coefs = map(model, ~broom.mixed::tidy(.))) %>%
+  dplyr::select(., -data, -model) %>%
+  unnest(coefs) %>%
+  dplyr::filter(term == '(Intercept)') %>%
+  dplyr::mutate(lwr = estimate - 2*std.error,
+                upr = estimate + 2*std.error) 
+
+
+bsc_mean_models = mutate(bsc_mean_models, contrast = case_when(
+  grepl('fear', pipeline) & !grepl('neut', pipeline) ~ 'Fear > Baseline',
+  grepl('neut', pipeline) & !grepl('fear', pipeline) ~ 'Neutral > Baseline',
+  grepl('fear', pipeline) & grepl('neut', pipeline) ~ 'Fear > Neutral'),
+  `gsr` = ifelse(grepl('no_gsr', pipeline), 'No Correction', 'Global Signal Correction'),
+  roi = parse_number(pipeline),
+  roi = case_when(is.na(roi) ~ 'large vmPFC',
+                  roi == 1 ~ 'mPFC 1',
+                  roi == 2 ~ 'mPFC 2',
+                  roi == 3 ~ 'mPFC 3'
+                  )) %>%
+  ungroup() %>%
+  group_by(contrast) %>%
+  mutate(rank = rank(estimate))
+
+
+bsc_mean_group_plt = ggplot(bsc_mean_models, aes(x = roi, y = estimate, 
+                                                 color = gsr)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point(position = position_dodge(0.4)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0, position = position_dodge(0.4)) +
+  facet_grid(~contrast) +
+  labs(y = 'Estimated Group Average BSC\nBilateral amygdala with mPFC', x = 'mPFC ROI') +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+
+  
+ggsave(bsc_mean_group_plt, filename = 'plots/supplement/bsc_mean_group_plt.png', height = 4, width = 9)
+```
+
+# BSC decision point plots
+
+```{r}
+# Model the estimates by decision point
+
+bsc_sca_fear_frame = fear_bsc_sca$sca_decision_frame
+bsc_sca_fear_frame[is.na(bsc_sca_fear_frame)] <- '0'
+bsc_sca_fear_frame[bsc_sca_fear_frame == '|'] <- '1'
+
+bsc_sca_neut_frame = neut_bsc_sca$sca_decision_frame
+bsc_sca_neut_frame[is.na(bsc_sca_neut_frame)] <- '0'
+bsc_sca_neut_frame[bsc_sca_neut_frame == '|'] <- '1'
+
+bsc_sca_fear_minus_neut_frame = fear_minus_neut_bsc_sca$sca_decision_frame
+bsc_sca_fear_minus_neut_frame[is.na(bsc_sca_fear_minus_neut_frame)] <- '0'
+bsc_sca_fear_minus_neut_frame[bsc_sca_fear_minus_neut_frame == '|'] <- '1'
+
+
+make_decision_plot_bsc = function(df, contrast){
+
+  meta_model = stan_glm(data = df, estimate ~ quadratic +
+                          random_slopes + ctrl_scanner + ctrl_block +
+                          amyg_left + amyg_right  + gsr + 
+                          mpfc_big + mpfc2 + mpfc3, cores = 4, chains = 4)
+  
+  summary(meta_model)
+  
+  fork_fx = brms::posterior_samples(meta_model, pars = fork_list) %>%
+    mutate(., index = 1:nrow(.)) %>%
+    tidyr::gather(., key = 'fork', value = 'effect', -index) %>%
+    mutate(., fork = gsub('1', '', fork)) %>%
+    group_by(fork) %>%
+    mutate(mean_effect = -1*mean(effect)) %>%
+    ungroup() %>%
+     mutate(decisiontype = case_when(
+        grepl('amyg', fork) ~ 'amyg ROI',
+        fork %in% c('quadratic', 'random_slopes', 'ctrl_scanner','ctrl_block') ~ 'Group-Level\nModel',
+        fork %in% c('gsr') ~ 'GSS',
+        grepl('pfc', fork) ~ 'mPFC ROI'
+      ))
+    
+  fork_fx$fork  = dplyr::recode(fork_fx$fork, 
+                                  'quadratic' = 'quadratic age term (vs. none)',
+                                  'random_slopes' = 'random intercepts only (vs. random slopes)',
+                                  'ctrl_block' = 'covariate for task block (vs. none)',
+                                  'ctrl_scanner' = 'covariate for scanner used (vs. none)',
+                                  'mpfc3' = 'mPFC #3 (vs. mPFC #1)',
+                                  'mpfc_big' = 'large vmPFC (vs. mPFC #1)',
+                                  'mpfc2' = 'mPFC #2 (vs. mPFC #1)',
+                                  'gsr' = 'global signal correction (vs none)',
+                                  'amyg_right' = 'right amygdala (vs. bilateral)',
+                                  'amyg_left' = 'left amygdala (vs. bilateral)'
+                                )
+  
+  fork_fx$fork_ordered = reorder(fork_fx$fork,  fork_fx$mean_effect)
+    
+  fork_fx_summary = fork_fx %>%
+      group_by(fork_ordered, decisiontype) %>%
+      summarise(median = median(effect),
+                lwr_95 = quantile(effect, probs = .025),
+                upr_95 = quantile(effect, probs = .975))
+  
+  decision_plot = ggplot(data = fork_fx, aes(x = fork_ordered, y = effect, fill = decisiontype)) +
+      geom_hline(yintercept = 0, lty = 2) +
+      geom_flat_violin(color = NA) +
+      geom_point(data = fork_fx_summary, aes(x = fork_ordered, y = median)) +
+      geom_errorbar(data = fork_fx_summary, aes(x = fork_ordered, y = median, ymin = lwr_95, ymax = upr_95), width = 0) +
+      theme_bw() +
+      coord_flip() +
+      theme(legend.position = 'none') +
+      labs(y = 'Difference in age-related change estimate relative to alternative choice\nConditional on all other decision points', 
+           x = 'Analysis Choice',
+           title = contrast) +
+      facet_grid(rows = vars(decisiontype), drop = TRUE, scales = 'free_y', space = 'free_y')
+  
+  return(decision_plot)
+}
+
+fear_decision_plot = make_decision_plot_bsc(df = bsc_sca_fear_frame, contrast = 'Fear > Baseline')
+neut_decision_plot = make_decision_plot_bsc(df = bsc_sca_neut_frame, contrast = 'Neutral > Baseline')
+fear_minus_neut_decision_plot = make_decision_plot_bsc(df = bsc_sca_fear_minus_neut_frame, contrast = 'Fear > Neutral')
+
+
+cowplot::save_plot(fear_decision_plot, filename = 'plots/supplement/bsc_fear_age_decision_plot.png', base_height = 5, base_width = 8)
+cowplot::save_plot(neut_decision_plot, filename = 'plots/supplement/bsc_neutral_age_decision_plot.png', base_height = 5, base_width = 8)
+cowplot::save_plot(fear_minus_neut_decision_plot, filename = 'plots/supplement/bsc_fear_minus_neut_age_decision_plot.png', base_height = 5, base_width = 8)
+
+```
+
+## Outputs for shiny
+
+```{r}
+bsc_raw = read.csv('compiled_data/comps_amyg_all_contrasts_bsc_master.csv', stringsAsFactors = FALSE) %>%
+  dplyr::select(., -name, -wave, -group, -gender)
+
+save(bsc_raw, fear_bsc_sca, fear_minus_neut_bsc_sca, neut_bsc_sca,
+     bsc_coefs, bsc_preds, file = '3_shiny/amyg_reactivity_shiny/bsc_data.rda', compress = 'xz')
+```
