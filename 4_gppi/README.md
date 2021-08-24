@@ -72,6 +72,19 @@ Loops through the gPPI template files `feat_template_gppi_deconv.fsf` and `feat_
     * Fear faces > neutral faces gPPI
 
 
+### Info on `feat_template_gppi_no_deconv.fsf`
+
+This gPPI setup was based on the [FSL PPI analysis documentation](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/PPIHowToRun). 
+
+* Uses preprocessed BOLD data from the preregistered FSL pipeline, only running a new first-level analysis for the gPPI statistical model (no more preprocessing here)
+* GLM Regressors:
+    * EV1 = Fear faces (same as level1 reactivity GLM), convolved with HRF, and temporal derivative
+    * EV2 = Neutral faces (same as level1 reactivity GLM), convolved with HRF, and temporal derivative
+    * EV3 = 'PHYSIO' regressor, the detrended amygdala seed timeseries. No convolution here, since it is BOLD data already. 
+    * EV4 = fear gPPI term, but this time made through FSL's `Interaction` option, as an interaction between EV1-EV3. Before the interaction term is created, EV1 is demeaned such that the minimum value is 0, and EV3 is demeaned such that the mean value is 0. No orthogonalization, temporal derivative, or temporal filtering. 
+    * EV4 = neutral gPPI term, but this time made through FSL's `Interaction` option, as an interaction between EV2-EV3. Before the interaction term is created, EV2 is demeaned such that the minimum value is 0, and EV3 is demeaned such that the mean value is 0. No orthogonalization, temporal derivative, or temporal filtering. 
+
+
 ## `3_submit_ppi_feat_jobs.py`
 
 Loops through all scan-specific `.fsf` scripts and launches `run_ppi_fsl.sh` many times using the `sbatch` command to run the gPPI models for many scans in parallel on the Habanero computing cluster. 
@@ -79,3 +92,17 @@ Loops through all scan-specific `.fsf` scripts and launches `run_ppi_fsl.sh` man
 ## `4_register_ppi_stats_to_standard.py`
 
 Warps output gPPI statmap files to MNI space for subsequent pulling amygdala-mPFC gPPI estimates.
+
+## `5_amyg_mpfc_gppi.ipynb`
+
+Pull beta and t-statistic estimates for amygdala-mPFC gPPI for 4 different mPFC regions (see [OSF](https://osf.io/hvdmx/) for ROI files). 
+
+
+![](https://mfr.osf.io/export?url=https://osf.io/f53sj/?direct%26mode=render%26action=download%26public_file=True&initialWidth=750&childId=mfrIframe&parentTitle=OSF+%7C+pfc_crop_2.png&parentUrl=https://osf.io/f53sj/&format=2400x2400.jpeg)
+
+* Estimates are pulled for the `fear faces > baseline`, `neutral faces > baseline`, and `fear faces > neutral faces` gPPI contrasts for each ROI, as well as the `PHYSIO` term representing the association between the amygdala & mPFC timeseries controlling for the task. 
+* Estimates are pulled separately for both the gPPI pipeline with, and the pipeline without, deconvolution. 
+
+## `6_pull_amyg_harvard_oxford_parcel_gppi.ipynb`
+
+Pull beta and t-statistic estimates for amygdala-seeded with all Harvard-Oxford cortical and subcortical parcels. These will be used to assess cross-pipeline similarity (i.e. with vs. without deconvolution).
