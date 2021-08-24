@@ -1,6 +1,6 @@
 # Paul Bloom
 # December 12, 2018
-# This script is used to generate regressors for PPI in 'afni style' 
+# This script is used to generate regressors for PPI in 'afni style', i.e. using deconvolution (FSL doesn't by default)
 # Regressors where the seed timeseries is 'deconvolved', multiplied by psychological regressor, then reconvolved
 # This script requires existing extracted timeseries for the ROI of interest (amygdala here) and stim timing files
 # NOTE: no upsampling done here
