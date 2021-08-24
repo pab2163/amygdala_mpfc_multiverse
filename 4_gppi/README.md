@@ -1,8 +1,8 @@
 # Generalized Psychophysiological Interaction (gPPI) Analyses
 
 This subfolder contains scripts for setting up regressors and running gPPI models using FSL's feat for *each individual scan*. We run 2 gPPI models for each scan:
-1. No deconvolution is used in creating the gPPI regressor
-2. Deconvolution is used in creating the gPPI regressor
+1. No deconvolution of the seed timeseries is used in creating the gPPI regressor (more typical for FSL)
+2. Deconvolution of the seed timeseries is used in creating the gPPI regressor (more typical for AFNI or SPM)
 
 
 ## `0_extractSeedTS.py`
