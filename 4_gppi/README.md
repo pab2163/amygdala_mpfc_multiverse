@@ -51,3 +51,31 @@ waver -GAM -peak 1 -TR 2 -input %s/fear_gppi_term.1D -numout 130 > fear_gppi_ter
 ```
 
 This `fear_gppi_term_scaled.txt` is now the gPPI term we'll use in the deconvolved verion of the model. Note: the script also makes a similar term for the neutral faces for the full gPPI model. 
+
+## `2_make_ppi_fsfs_for_haba.py`
+
+Loops through the gPPI template files `feat_template_gppi_deconv.fsf` and `feat_template_gppi_no_deconv.fsf` to make scan-specific feat files for launching on the Habanero computing cluster. 
+
+### Info on `feat_template_gppi_deconv.fsf`
+
+* Uses preprocessed BOLD data from the preregistered FSL pipeline, only running a new first-level analysis for the gPPI statistical model (no more preprocessing here)
+* GLM Regressors:
+    * EV1 = Fear faces (same as level1 reactivity GLM), convolved with HRF, and temporal derivative
+    * EV2 = Neutral faces (same as level1 reactivity GLM), convolved with HRF, and temporal derivative
+    * EV3 = 'PHYSIO' regressor, the detrended amygdala seed timeseries. No convolution here, since it is BOLD data already. 
+    * EV4 = fear gPPI term, the `fear_gppi_term_scaled.txt` timeseries created using AFNI tools
+    * EV5 = neutral gPPI term, the `neutral_gppi_term_scaled.txt` timeseries created using AFNI tools
+    * All nuisance parameters (24 head motion parameters + any regressors for downweighting high motion (FD > 0.9mm) TRs are included in the model through an additional `confoundevs.txt` file)
+* Contrasts:
+    * Fear faces > baseline gPPI
+    * Neutral faces > baseline gPPI
+    * Fear faces > neutral faces gPPI
+
+
+## `3_submit_ppi_feat_jobs.py`
+
+Loops through all scan-specific `.fsf` scripts and launches `run_ppi_fsl.sh` many times using the `sbatch` command to run the gPPI models for many scans in parallel on the Habanero computing cluster. 
+
+## `4_register_ppi_stats_to_standard.py`
+
+Warps output gPPI statmap files to MNI space for subsequent pulling amygdala-mPFC gPPI estimates.

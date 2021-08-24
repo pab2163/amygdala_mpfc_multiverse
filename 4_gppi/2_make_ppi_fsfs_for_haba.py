@@ -5,7 +5,7 @@
 # Takes 3 arguments:
   # 1: directory name -- what your feat directories at output will be named and what the folder containing the .fsf scripts will be named
   # 2: path to template script
-  # 3: ppi style ('fsl', 'afni', or 'afni_no_deconvolve')
+  # 3: ppi style ('fsl', 'afni')
 
 ## NOTE: depending on where you intend to run all the fsf scripts, a lot of the paths will change! 
 # This script is currently set up to run them on Habanero, so if that is not desired then the replacement section will need to be edited
@@ -23,7 +23,7 @@ directoryNames = sys.argv[1]
 # Set this to the template .fsf you want to use
 featTemplate = sys.argv[2]
 
-# style afni or fsl
+# style afni (deconvolution) or fsl (no deconvolution)
 ppiStyle = sys.argv[3]
 
 # seed file
@@ -70,7 +70,7 @@ for dir in list(subdirs):
   with open(featTemplate) as infile: 
   # outfile = useable fsf file that is being created for every subject and every run 
     if ppiStyle == 'afni':
-      with open("/danl/SB/PaulCompileTGNG/mri_scripts/7_ppi_fsl/sub_fsfs/%s/%s_%s_afni_style_ppi.fsf"%(directoryNames, subnum, runType), 'w') as outfile:
+      with open("/danl/SB/PaulCompileTGNG/mri_scripts/7_ppi_fsl/sub_fsfs/%s/%s_%s_deconv_ppi.fsf"%(directoryNames, subnum, runType), 'w') as outfile:
           for line in infile:
             # This code will make new fsf files that replace all of the wild cards we made above!  
             for src, target in replacements.items():
@@ -81,17 +81,9 @@ for dir in list(subdirs):
     # If you only want to run one type of PPI, you could take these out
 
     # -------------------------------------------------------------------------------------------------------------------------------
-
-    # Afni with no deconvolution
-    elif ppiStyle == 'afni_no_deconvolve':
-      with open("/danl/SB/PaulCompileTGNG/mri_scripts/7_ppi_fsl/sub_fsfs/%s/%s_%s_afni_no_deconvolve_ppi.fsf"%(directoryNames, subnum, runType), 'w') as outfile:
-          for line in infile:
-            for src, target in replacements.items():
-              line = line.replace(src, target)
-            outfile.write(line)
     # FSL style
     elif ppiStyle == 'fsl':
-      with open("/danl/SB/PaulCompileTGNG/mri_scripts/7_ppi_fsl/sub_fsfs/%s/%s_%s_fsl_style_ppi.fsf"%(directoryNames, subnum, runType), 'w') as outfile:
+      with open("/danl/SB/PaulCompileTGNG/mri_scripts/7_ppi_fsl/sub_fsfs/%s/%s_%s_no_deconv_ppi.fsf"%(directoryNames, subnum, runType), 'w') as outfile:
           for line in infile:
             for src, target in replacements.items():
               line = line.replace(src, target)

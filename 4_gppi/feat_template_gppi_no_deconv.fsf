@@ -30,7 +30,7 @@ set fmri(featwatcher_yn) 1
 set fmri(sscleanup_yn) 0
 
 # Output directory
-set fmri(outputdir) "/danl/SB/PaulCompileTGNG/data/SUBNUM/model/EMOTION/MODEL_DIR/gppi_afni_style_seed_SEED_TS"
+set fmri(outputdir) "/danl/SB/PaulCompileTGNG/data/SUBNUM/model/EMOTION/MODEL_DIR/gppi_no_deconv_seed_SEED_TS"
 
 # TR(s)
 set fmri(tr) 2.000000
@@ -273,7 +273,7 @@ set fmri(totalVoxels) 18104320
 set fmri(ncopeinputs) 0
 
 # 4D AVW data or FEAT directory (1)
-set feat_files(1) "/danl/SB/PaulCompileTGNG/data/SUBNUM/model/EMOTION/MODEL_DIR/filtered_func_data"
+set feat_files(1) "/danl/SB/PaulCompileTGNG/data/SUBNUM/model/EMOTION/24motion.feat/filtered_func_data"
 
 # Add confound EVs text file
 set fmri(confoundevs) 1
@@ -423,7 +423,7 @@ set fmri(tempfilt_yn3) 0
 set fmri(deriv_yn3) 0
 
 # Custom EV file (EV 3)
-set fmri(custom3) "/danl/SB/PaulCompileTGNG/data/SUBNUM/model/EMOTION/MODEL_DIR/afni_ppi_regressors/seed_SEED_TS_ts.txt"
+set fmri(custom3) "/danl/SB/PaulCompileTGNG/data/SUBNUM/model/EMOTION/24motion.feat/timecourses/SEED_TS.txt"
 
 # Orthogonalise EV 3 wrt EV 0
 set fmri(ortho3.0) 0
@@ -453,7 +453,7 @@ set fmri(evtitle4) "PPI_EMOTION"
 # 3 : Custom (3 column format)
 # 4 : Interaction
 # 10 : Empty (all zeros)
-set fmri(shape4) 2
+set fmri(shape4) 4
 
 # Convolution (EV 4)
 # 0 : None
@@ -475,8 +475,23 @@ set fmri(tempfilt_yn4) 0
 # Add temporal derivative (EV 4)
 set fmri(deriv_yn4) 0
 
-# Custom EV file (EV 4)
-set fmri(custom4) "/danl/SB/PaulCompileTGNG/data/SUBNUM/model/EMOTION/MODEL_DIR/afni_ppi_regressors/interEMOTIONScaled_SEED_TS.txt"
+# Interactions (EV 4 with EV 1)
+set fmri(interactions4.1) 1
+
+# Demean before using in interactions (EV 4 with EV 1)
+set fmri(interactionsd4.1) 0
+
+# Interactions (EV 4 with EV 2)
+set fmri(interactions4.2) 0
+
+# Demean before using in interactions (EV 4 with EV 2)
+set fmri(interactionsd4.2) 0
+
+# Interactions (EV 4 with EV 3)
+set fmri(interactions4.3) 1
+
+# Demean before using in interactions (EV 4 with EV 3)
+set fmri(interactionsd4.3) 2
 
 # Orthogonalise EV 4 wrt EV 0
 set fmri(ortho4.0) 0
@@ -506,7 +521,7 @@ set fmri(evtitle5) "PPI_NEUTRAL"
 # 3 : Custom (3 column format)
 # 4 : Interaction
 # 10 : Empty (all zeros)
-set fmri(shape5) 2
+set fmri(shape5) 4
 
 # Convolution (EV 5)
 # 0 : None
@@ -528,8 +543,29 @@ set fmri(tempfilt_yn5) 0
 # Add temporal derivative (EV 5)
 set fmri(deriv_yn5) 0
 
-# Custom EV file (EV 5)
-set fmri(custom5) "/danl/SB/PaulCompileTGNG/data/SUBNUM/model/EMOTION/MODEL_DIR/afni_ppi_regressors/interNeutScaled_SEED_TS.txt"
+# Interactions (EV 5 with EV 1)
+set fmri(interactions5.1) 0
+
+# Demean before using in interactions (EV 5 with EV 1)
+set fmri(interactionsd5.1) 0
+
+# Interactions (EV 5 with EV 2)
+set fmri(interactions5.2) 1
+
+# Demean before using in interactions (EV 5 with EV 2)
+set fmri(interactionsd5.2) 0
+
+# Interactions (EV 5 with EV 3)
+set fmri(interactions5.3) 1
+
+# Demean before using in interactions (EV 5 with EV 3)
+set fmri(interactionsd5.3) 2
+
+# Interactions (EV 5 with EV 4)
+set fmri(interactions5.4) 0
+
+# Demean before using in interactions (EV 5 with EV 4)
+set fmri(interactionsd5.4) 0
 
 # Orthogonalise EV 5 wrt EV 0
 set fmri(ortho5.0) 0
