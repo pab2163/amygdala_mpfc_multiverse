@@ -24,6 +24,30 @@ Run the actual deconvolution step with [3dTfitter](https://afni.nimh.nih.gov/pub
  3dTfitter -RHS seed_ts.1D -FALTUNG GammaHR.1D seed_deconvolved 012 0
  ```
 
- What does this do?
+What does this do?
 * `-RHS seed_ts.1D` specifies that the amygdala seed timeseries is the 'right-hand-side' dataset (i.e. the outcome variable in the model)
 * `FALTUNG GammaHR.1D seed_deconvolved 012 0`. 'Faltung' means 'convolution' in German, and everything here specifies the 'left-hand-side' (or LHS predictor matrix) of the equation. This pecifies that `GammaHR.1D` is the known convolution kernel, and `seed_deconvolved` is the timeseries we are solving for (this file will be reated). Also, the `012` indicates that we will use the sum of 3 penalty functions when solving for the deconvoled timeseries, trying to keep the timeseries values, and first and second derivatives of the timeseries over time small (see `pen` options in [docs](https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTfitter.html)). The last `0` here is the weighting of the penalty function, with 0 indicating that the program "chooses a range of penalty factors, does the deconvolution regression for each one, and then chooses the fit it likes best (as a tradeoff between fit error and solution size)" (see `fac` option in [docs](https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTfitter.html))
+
+Next, pull in the stimulus timing files for both the fear & neutral faces. These are the 3-column files previously set up for FSL, but we'll need to convert them here. We use the following code to use [timing_tool.py](https://afni.nimh.nih.gov/pub/dist/doc/program_help/timing_tool.py.html): 
+
+```
+timing_tool.py -timing fear_times.1D -tr 2 -stim_dur .350 -min_frac .05 -run_len 260 -timing_to_1D afni_fear_times.1D
+```
+
+* This line take `fear_times.1D`, and knowing that the `tr` = 2 and the stimulus duration (`stim_dur`) is .350s, creates a 1-column file with a 1 in each row if there is a stimulus ocurring in at least `min_frac` of the TR, and a 0 if not. So, here if there is a fear face in a TR for 5% of the time, or 0.1s, we will have a 1 during that TR for the stimulus being 'on'. We also specify the `run_len` for the run length in seconds here. The new timings are exported to the file `afni_fear_times.1D` here.
+
+Now that we have the stimulus timing file and the deconvolved seed timeseries, we make the interaction regressor by multiplying the two timeseries by one another. This gives the interaction timeseries!
+
+```
+1deval -a seed_deconvolved.1D\' -b afni_fear_times.1D -expr 'a*b' > fear_gppi_term.1D
+```
+
+Note: the `\'` following `seed_deconvolved.1D` transposes the timeseries so it can be multiplied.
+
+Last, we *re-convolve* the interaction regressor with the same gamma HRF, make sure it is at the temporal resolution of the data by specificying the TR and number of total volumes (`numout`) and scale the regressor to have a `peak` value of 1:
+
+```
+waver -GAM -peak 1 -TR 2 -input %s/fear_gppi_term.1D -numout 130 > fear_gppi_term_scaled.txt
+```
+
+This `fear_gppi_term_scaled.txt` is now the gPPI term we'll use in the deconvolved verion of the model. Note: the script also makes a similar term for the neutral faces for the full gPPI model. 
