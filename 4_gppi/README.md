@@ -75,8 +75,8 @@ Loops through the gPPI template files `feat_template_gppi_deconv.fsf` and `feat_
 ### Info on `feat_template_gppi_no_deconv.fsf`
 
 This gPPI setup was based on the [FSL PPI analysis documentation](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/PPIHowToRun). The only differences compared to the pipeline with deconvolution are in how the gPPI regressors (EV4-5) themselves are created. 
-    * EV4 = fear gPPI term, but this time made through FSL's `Interaction` option, as an interaction between EV1-EV3. Before the interaction term is created, EV1 is demeaned such that the minimum value is 0, and EV3 is demeaned such that the mean value is 0. No orthogonalization, temporal derivative, or temporal filtering. 
-    * EV4 = neutral gPPI term, but this time made through FSL's `Interaction` option, as an interaction between EV2-EV3. Before the interaction term is created, EV2 is demeaned such that the minimum value is 0, and EV3 is demeaned such that the mean value is 0. No orthogonalization, temporal derivative, or temporal filtering. 
+* EV4 = fear gPPI term, but this time made through FSL's `Interaction` option, as an interaction between EV1-EV3. Before the interaction term is created, EV1 is demeaned such that the minimum value is 0, and EV3 is demeaned such that the mean value is 0. No orthogonalization, temporal derivative, or temporal filtering. 
+* EV4 = neutral gPPI term, but this time made through FSL's `Interaction` option, as an interaction between EV2-EV3. Before the interaction term is created, EV2 is demeaned such that the minimum value is 0, and EV3 is demeaned such that the mean value is 0. No orthogonalization, temporal derivative, or temporal filtering. 
 
 
 ## `3_submit_ppi_feat_jobs.py`
