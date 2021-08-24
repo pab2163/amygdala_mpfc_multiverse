@@ -91,8 +91,7 @@ Warps output gPPI statmap files to MNI space for subsequent pulling amygdala-mPF
 
 Pull beta and t-statistic estimates for amygdala-mPFC gPPI for 4 different mPFC regions (see [OSF](https://osf.io/hvdmx/) for ROI files). 
 
-
-![](https://mfr.osf.io/export?url=https://osf.io/f53sj/?direct%26mode=render%26action=download%26public_file=True&initialWidth=750&childId=mfrIframe&parentTitle=OSF+%7C+pfc_crop_2.png&parentUrl=https://osf.io/f53sj/&format=2400x2400.jpeg)
+<img src='https://mfr.osf.io/export?url=https://osf.io/f53sj/?direct%26mode=render%26action=download%26public_file=True&initialWidth=750&childId=mfrIframe&parentTitle=OSF+%7C+pfc_crop_2.png&parentUrl=https://osf.io/f53sj/&format=2400x2400.jpeg' width = '700'/>
 
 * Estimates are pulled for the `fear faces > baseline`, `neutral faces > baseline`, and `fear faces > neutral faces` gPPI contrasts for each ROI, as well as the `PHYSIO` term representing the association between the amygdala & mPFC timeseries controlling for the task. 
 * Estimates are pulled separately for both the gPPI pipeline with, and the pipeline without, deconvolution. 
