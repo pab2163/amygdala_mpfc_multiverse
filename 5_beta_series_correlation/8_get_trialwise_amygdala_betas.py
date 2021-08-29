@@ -51,13 +51,8 @@ def getBetas(copeDir, name, emotion, mask):
     
     # pull amyg timeseries vector
     trials = np.arange(1, len(meanTimeSeries) + 1)
-
-    # use spearman's correlation to account for betas possibly being skewed
-    # slope is 'habituation'??
-    habitSlope = scipy.stats.spearmanr(meanTimeSeries, trials)[0]
     
-    
-    return(meanTimeSeries, habitSlope)
+    return(meanTimeSeries)
 
 
 # # Function for getting betas from all trials
@@ -83,13 +78,13 @@ def getAllTrials(copeDir):
             
             # subject-level dataframe of betas for each trial
             miniDf = pd.DataFrame({
-                'fear_betas_bilateral':fear_betas_bilateral[0],
-                'neut_betas_bilateral': neut_betas_bilateral[0],
-                'fear_betas_right':fear_betas_right[0],
-                'neut_betas_right': neut_betas_right[0],
-                'fear_betas_left':fear_betas_left[0],
-                'neut_betas_left': neut_betas_left[0],
-                'trial': np.arange(1, len(fear_betas_bilateral[0]) + 1)
+                'fear_betas_bilateral':fear_betas_bilateral,
+                'neut_betas_bilateral': neut_betas_bilateral,
+                'fear_betas_right':fear_betas_right,
+                'neut_betas_right': neut_betas_right,
+                'fear_betas_left':fear_betas_left,
+                'neut_betas_left': neut_betas_left,
+                'trial': np.arange(1, len(fear_betas_bilateral) + 1)
             })
             miniDf['name'] = row['name']
             

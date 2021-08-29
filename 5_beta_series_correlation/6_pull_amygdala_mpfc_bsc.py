@@ -1,4 +1,11 @@
-# This script takes the means across all betas in the brain to make sure that we're getting similar results from the LSS model as the fear/neut condition average models
+'''
+Get beta series correlations between all combinations of amygdala/mPFC masks (3 amygdala masks * 4 mPFC masks)
+Functions run for beta series images with vs. without global signal correction
+
+Author: Paul Bloom
+
+'''
+
 
 import sys
 import os
@@ -15,6 +22,7 @@ for i in range(len(subs)):
     subs[i] = subs[i].split('/')[3]
 d = {'name': subs}
 
+# gather mask paths
 mpfcLarge = '/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/Structural/mni2mmSpace/vmpfc_trimmed_prob.5_mni2mm.nii.gz'
 mpfcSphereOrig = '/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/Structural/mni2mmSpace/mPFC_sphere_5mm_mni2mm.nii.gz'
 mpfcSphereAnterior = '/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/Structural/mni2mmSpace/mPFC_sphere_5mm_anterior_mni2mm.nii.gz'
@@ -31,10 +39,13 @@ for index, mask in enumerate(masks):
     masks[index] = image.load_img(mask).get_fdata()
     maskNames[index] = maskNames[index].split('/')[8]
 
-
-def getCorrelation(name, emotion, mask1, mask2):
-    # Load in the 4d image of 24 betas
-    emotImgPath = 'betaSeriesCopesGlobalSignalSubtract/' + name + '_reg' + emotion + 'Betas.nii.gz'
+# get beta series correlations for a given pair of ROI masks
+def getCorrelation(name, emotion, mask1, mask2, gss):
+     # Load in the 4d image of 24 betas
+    if gss:
+        emotImgPath = 'betaSeriesCopesGlobalSignalSubtract/' + name + '_reg' + emotion + 'Betas.nii.gz'
+    else:
+        emotImgPath = 'betaSeriesCopes/' + name + '_reg' + emotion + 'Betas.nii.gz'
     emotImg = image.load_img(emotImgPath).get_fdata()
 
     # mask it with each roi
@@ -49,7 +60,8 @@ def getCorrelation(name, emotion, mask1, mask2):
     betaSeriesCor = np.corrcoef(meanTimeSeries1, meanTimeSeries2)
     return(betaSeriesCor[0,1])
 
-def getAllCorrelations(condition):
+# for each scan, get beta series correlations between all pairwise combinations of masks
+def getAllCorrelations(condition, gss):
     df = pd.DataFrame(data = d)
 
     # Make list of pairwise tuples of masks to correlate
@@ -67,17 +79,23 @@ def getAllCorrelations(condition):
             for i in df.columns[1:]:
                 pos1 = int(re.findall(r'\d+', i.split(',')[0])[0])
                 pos2 = int(re.findall(r'\d+', i.split(',')[1])[0])
-                df.loc[index, i] = getCorrelation(name = row['name'], emotion = condition, mask1 = masks[pos1], mask2 = masks[pos2])
+                df.loc[index, i] = getCorrelation(name = row['name'], emotion = condition, mask1 = masks[pos1], mask2 = masks[pos2], gss = gss)
         
     # rename to be interpretable as regions
     combsList.insert(0, 'name')
     df.columns = combsList
     
     # write to csv and return
-    df.to_csv('betaSeriesGlobalSignalAmygPFC_' + condition + '.csv', index = False)
+    if gss:
+        df.to_csv('betaSeriesGlobalSignalAmygPFC_' + condition + '.csv', index = False)
+    else:
+        df.to_csv('betaSeriesNoGlobalSignalAmygPFC_' + condition + '.csv', index = False)
     return(df)
 
 
 # Run the functions!
-getAllCorrelations(sys.argv[1])
+getAllCorrelations(condition = 'fear', gss = True)
+getAllCorrelations(condition = 'fear', gss = False)
+getAllCorrelations(condition = 'neutral', gss = True)
+getAllCorrelations(condition = 'neutral', gss = False)
 

@@ -60,11 +60,11 @@ Loops through the gPPI template files `feat_template_gppi_deconv.fsf` and `feat_
 
 * Uses preprocessed BOLD data from the preregistered FSL pipeline, only running a new first-level analysis for the gPPI statistical model (no more preprocessing here)
 * GLM Regressors:
-    * EV1 = Fear faces (same as level1 reactivity GLM), convolved with HRF, and temporal derivative
-    * EV2 = Neutral faces (same as level1 reactivity GLM), convolved with HRF, and temporal derivative
-    * EV3 = 'PHYSIO' regressor, the detrended amygdala seed timeseries. No convolution here, since it is BOLD data already. 
-    * EV4 = fear gPPI term, the `fear_gppi_term_scaled.txt` timeseries created using AFNI tools
-    * EV5 = neutral gPPI term, the `neutral_gppi_term_scaled.txt` timeseries created using AFNI tools
+    * `EV1` = Fear faces (same as level1 reactivity GLM), convolved with HRF, and temporal derivative
+    * `EV2` = Neutral faces (same as level1 reactivity GLM), convolved with HRF, and temporal derivative
+    * `EV3` = 'PHYSIO' regressor, the detrended amygdala seed timeseries. No convolution here, since it is BOLD data already. 
+    * `EV4` = fear gPPI term, the `fear_gppi_term_scaled.txt` timeseries created using AFNI tools
+    * `EV5` = neutral gPPI term, the `neutral_gppi_term_scaled.txt` timeseries created using AFNI tools
     * All nuisance parameters (24 head motion parameters + any regressors for downweighting high motion (FD > 0.9mm) TRs are included in the model through an additional `confoundevs.txt` file)
 * Contrasts:
     * Fear faces > baseline gPPI
@@ -75,8 +75,8 @@ Loops through the gPPI template files `feat_template_gppi_deconv.fsf` and `feat_
 ### Info on `feat_template_gppi_no_deconv.fsf`
 
 This gPPI setup was based on the [FSL PPI analysis documentation](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/PPIHowToRun). The only differences compared to the pipeline with deconvolution are in how the gPPI regressors (EV4-5) themselves are created. 
-* EV4 = fear gPPI term, but this time made through FSL's `Interaction` option, as an interaction between EV1-EV3. Before the interaction term is created, EV1 is demeaned such that the minimum value is 0, and EV3 is demeaned such that the mean value is 0. No orthogonalization, temporal derivative, or temporal filtering. 
-* EV4 = neutral gPPI term, but this time made through FSL's `Interaction` option, as an interaction between EV2-EV3. Before the interaction term is created, EV2 is demeaned such that the minimum value is 0, and EV3 is demeaned such that the mean value is 0. No orthogonalization, temporal derivative, or temporal filtering. 
+* `EV4` = fear gPPI term, but this time made through FSL's `Interaction` option, as an interaction between EV1-EV3. Before the interaction term is created, EV1 is demeaned such that the minimum value is 0, and EV3 is demeaned such that the mean value is 0. No orthogonalization, temporal derivative, or temporal filtering. 
+* `EV4` = neutral gPPI term, but this time made through FSL's `Interaction` option, as an interaction between EV2-EV3. Before the interaction term is created, EV2 is demeaned such that the minimum value is 0, and EV3 is demeaned such that the mean value is 0. No orthogonalization, temporal derivative, or temporal filtering. 
 
 
 ## `3_submit_ppi_feat_jobs.py`

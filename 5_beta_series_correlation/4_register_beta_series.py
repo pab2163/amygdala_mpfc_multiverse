@@ -1,3 +1,5 @@
+# Register 4D BOLD beta series files to standard space for each scan
+
 import os
 import glob
 
