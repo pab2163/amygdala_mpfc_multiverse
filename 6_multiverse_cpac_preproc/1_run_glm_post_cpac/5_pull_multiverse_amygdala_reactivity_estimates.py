@@ -15,36 +15,38 @@ import glob
 import re
 
 
-if not os.path.isfile('allHO_Amyg_FSL_Copes_Fear_Minus_Neutral.csv'):
-    # Set paths to statmaps from FSL pipelines
-    scans = glob.glob('/danl/SB/Investigators/PaulCompileTGNG/data/*')
-    fslTemplates = glob.glob('/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/cpacPipelines/glm/templates/fsl/*.fsf')
+# Set paths to statmaps from FSL pipelines
+scans = glob.glob('/danl/SB/Investigators/PaulCompileTGNG/data/*')
+fslTemplates = glob.glob('/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/cpacPipelines/glm/templates/fsl/*.fsf')
 
-    for index, dir in enumerate(scans):
-        scans[index] = dir.split('/')[6]
-        
-    for index, dir in enumerate(fslTemplates):
-        fslTemplates[index] = dir.split('/')[10][:-4]
+for index, dir in enumerate(scans):
+    scans[index] = dir.split('/')[6]
+    
+for index, dir in enumerate(fslTemplates):
+    fslTemplates[index] = dir.split('/')[10][:-4]
 
 
-    ## Create functions for pulling mean beta estimates for each ROI for each subject
-    def getRoiStatFSL(subject,pipeline, roi, contrastNum, imageType):
-        maskDat = roi.get_fdata()
-        maskDat = maskDat.flatten()
+## Create functions for pulling mean beta estimates for each ROI for each subject
+def getRoiStatFSL(subject,pipeline, roi, contrastNum, imageType):
+    maskDat = roi.get_fdata()
+    maskDat = maskDat.flatten()
 
-        # Pull for the emotional face and neutral face cope for each run
-        emotImg = '/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/cpacPipelines/glm/output/' + subject + '/' + pipeline + '/stats/' + imageType + str(contrastNum) + '.nii.gz'
-        emotCope = image.load_img(emotImg)
-        emotCope = emotCope.get_fdata()
-        emotCope = emotCope.flatten()
-        
-        # Mask the cope images and filter based on mask == 1, then take means      
-        maskedEmotCope = emotCope[maskDat == 1]
-        meanEmotCope = np.mean(maskedEmotCope)
-        
-        # return array of [emotion, neutral]
-        return(meanEmotCope)
+    # Pull for the emotional face and neutral face cope for each run
+    emotImg = '/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/cpacPipelines/glm/output/' + subject + '/' + pipeline + '/stats/' + imageType + str(contrastNum) + '.nii.gz'
+    emotCope = image.load_img(emotImg)
+    emotCope = emotCope.get_fdata()
+    emotCope = emotCope.flatten()
+    
+    # Mask the cope images and filter based on mask == 1, then take means      
+    maskedEmotCope = emotCope[maskDat == 1]
+    meanEmotCope = np.mean(maskedEmotCope)
+    
+    # return array of [emotion, neutral]
+    return(meanEmotCope)
 
+
+
+def pull_reactivity_estimates(contrastNum, contrast_label):
     # FSL COEF # -----------------------------------------------------------------------------------
     # # Set up dataframe
     outDf = pd.DataFrame(index = range(0,len(scans)))
@@ -65,13 +67,10 @@ if not os.path.isfile('allHO_Amyg_FSL_Copes_Fear_Minus_Neutral.csv'):
         for columnName in list(outDf.columns[1:]):
             try:
                 roiPath = '/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/4_roi_analysis/multiverseAmygROIs/amygMultiverseROIs_HO/' + str(columnName).split('__', 1)[1] + '.nii.gz'            
-                outDf.loc[index, columnName] = getRoiStatFSL(subject = row['name'], pipeline = str(columnName).split('__')[0] + '.feat', roi = image.load_img(roiPath), contrastNum = 3, imageType = 'cope')
+                outDf.loc[index, columnName] = getRoiStatFSL(subject = row['name'], pipeline = str(columnName).split('__')[0] + '.feat', roi = image.load_img(roiPath), contrastNum = contrastNum, imageType = 'cope')
             except:
                 print('ERROR!!')
-    outDf.to_csv('allHO_Amyg_FSL_Copes_Fear_Minus_Neutral.csv', index = False)
-
-
-
+    outDf.to_csv(f'allHO_Amyg_FSL_Copes_{contrast_label}.csv', index = False)
 
     # FSL Tstat # -----------------------------------------------------------------------------------
 
@@ -94,19 +93,13 @@ if not os.path.isfile('allHO_Amyg_FSL_Copes_Fear_Minus_Neutral.csv'):
         for columnName in list(outDf.columns[1:]):
             try:
                 roiPath = '/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/4_roi_analysis/multiverseAmygROIs/amygMultiverseROIs_HO/' + str(columnName).split('__', 1)[1] + '.nii.gz'            
-                outDf.loc[index, columnName] = getRoiStatFSL(subject = row['name'], pipeline = str(columnName).split('__')[0] + '.feat', roi = image.load_img(roiPath), contrastNum = 3, imageType = 'tstat')
+                outDf.loc[index, columnName] = getRoiStatFSL(subject = row['name'], pipeline = str(columnName).split('__')[0] + '.feat', roi = image.load_img(roiPath), contrastNum = contrastNum, imageType = 'tstat')
             except:
                 print('ERROR!!')
-    outDf.to_csv('allHO_Amyg_FSL_Tstats_Fear_Minus_Neutral.csv', index = False)
-else:
-    print('FSL already done')
+    outDf.to_csv(f'allHO_Amyg_FSL_Tstats_{contrast_label}.csv', index = False)
 
+    #### AFNI SECTION ####  -------------------------------------------------------
 
-
-#### AFNI SECTION ####  -------------------------------------------------------
-
-
-if not os.path.isfile('allHO_Amyg_AFNI_Copes_Fear_Minus_Neutral.csv'):
     # Function for pulling stats from AFNI glms
     def getRoiStatAFNI(subject,pipeline, roi, contrastNum, imageType):
         maskDat = roi.get_fdata()
@@ -153,10 +146,10 @@ if not os.path.isfile('allHO_Amyg_AFNI_Copes_Fear_Minus_Neutral.csv'):
         for columnName in list(outDf.columns[1:]):
             try:
                 roiPath = '/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/4_roi_analysis/multiverseAmygROIs/amygMultiverseROIs_HO/' + str(columnName).split('__', 1)[1] + '.nii.gz'            
-                outDf.loc[index, columnName] = getRoiStatAFNI(subject = row['name'], pipeline = str(columnName).split('__')[0], roi = image.load_img(roiPath), contrastNum = 1, imageType = 'fearMinusNeutralCoef')
+                outDf.loc[index, columnName] = getRoiStatAFNI(subject = row['name'], pipeline = str(columnName).split('__')[0], roi = image.load_img(roiPath), contrastNum = contrastNum, imageType = 'fearCoef')
             except:
                 print('ERROR!!')
-    outDf.to_csv('allHO_Amyg_AFNI_Copes_Fear_Minus_Neutral.csv', index = False)
+    outDf.to_csv(f'allHO_Amyg_AFNI_Coefs_{contrast_label}.csv', index = False)
 
     # AFNI Tstat # -----------------------------------------------------------------------------------
     outDf = pd.DataFrame(index = range(0,len(scans)))
@@ -176,9 +169,12 @@ if not os.path.isfile('allHO_Amyg_AFNI_Copes_Fear_Minus_Neutral.csv'):
         for columnName in list(outDf.columns[1:]):
             try:
                 roiPath = '/danl/SB/Investigators/PaulCompileTGNG/mri_scripts/4_roi_analysis/multiverseAmygROIs/amygMultiverseROIs_HO/' + str(columnName).split('__', 1)[1] + '.nii.gz'            
-                outDf.loc[index, columnName] = getRoiStatAFNI(subject = row['name'], pipeline = str(columnName).split('__')[0], roi = image.load_img(roiPath), contrastNum = 1, imageType = 'fearMinusNeutralTstat')
+                outDf.loc[index, columnName] = getRoiStatAFNI(subject = row['name'], pipeline = str(columnName).split('__')[0], roi = image.load_img(roiPath), contrastNum = contrastNum, imageType = 'fearTstat')
             except:
                 print('ERROR!!')
-    outDf.to_csv('allHO_Amyg_AFNI_Tstats_Fear_Minus_Neutral.csv', index = False)
-else:
-    print('AFNI already done!')
+    outDf.to_csv(f'allHO_Amyg_AFNI_Tstats.csv_{contrast_label}', index = False)
+
+
+pull_reactivity_estimates(contrastNum = 1, contrast_label = 'fear')
+pull_reactivity_estimates(contrastNum = 2, contrast_label = 'neutral')
+pull_reactivity_estimates(contrastNum = 3, contrast_label = 'fear_minus_neutral')
