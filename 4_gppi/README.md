@@ -98,4 +98,4 @@ Pull beta and t-statistic estimates for amygdala-mPFC gPPI for 4 different mPFC 
 
 ## `6_pull_amyg_harvard_oxford_parcel_gppi.ipynb`
 
-Pull beta and t-statistic estimates for amygdala-seeded with all Harvard-Oxford cortical and subcortical parcels. These will be used to assess cross-pipeline similarity (i.e. with vs. without deconvolution).
+Pull beta and t-statistic estimates for bilateral amygdala-seeded gPPI with *all* Harvard-Oxford cortical and subcortical parcels. These will be used to assess cross-pipeline similarity (i.e. with vs. without deconvolution).
