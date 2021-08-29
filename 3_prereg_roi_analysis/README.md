@@ -4,7 +4,7 @@ Because [VanTieghem et al (2021)](https://www.sciencedirect.com/science/article/
 
 ## `pull_freesurfer_amyg_activity.py`
 
-This script loops through each participant, and then pulls average amygdala reactivity estimates from the GLM outputs (preregistered pipeline) for the Freesurfer-defined ROIs for right, bilateral, and left amygdala using [fslmeants](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils)
+This script loops through each participant, and then pulls average amygdala reactivity estimates from the GLM outputs (preregistered pipeline) for the Freesurfer-defined (native space) and Harvard-Oxford-defined (MNI space) ROIs for right, bilateral, and left amygdala using [fslmeants](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils)
 
 Notes:
 * All GLM statistical output files are in the `24motion.feat/stats` folder for each participant. The number of the file prefixes here indicate the contrast, such that:

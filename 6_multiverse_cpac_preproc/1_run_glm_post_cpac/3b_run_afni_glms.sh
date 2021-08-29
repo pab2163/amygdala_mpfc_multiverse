@@ -1,0 +1,4 @@
+bash templates/afni/5_afni_6motion_regOutConfounds_highpass_1G_no_errors.sh
+bash templates/afni/6_afni_6motion_regOutConfounds_quadratic_1G_no_errors.sh
+bash templates/afni/7_afni_18motionWmCsf_regOutConfounds_highpass_1G_no_errors.sh
+bash templates/afni/8_afni_18motionWmCsf_regOutConfounds_quadratic_1G_no_errors.sh
