@@ -14,7 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-
 # Load Packages
 
 ```{r message=FALSE, results='hide'}
@@ -28,9 +27,9 @@ library(brms)
 
 **Note:** these data are fake! Under our Institutional Review Board protocol and for the purpose of creating participant identies private, we cannot share our actual data publicly. However, we've *simulated* an amygdala reactivity dataset for the purposes of creating a multiverse analysis where the code can actually be run!
 
-* Briefly, to create simulated data that *decently* approximates the real data without risk of identifying participants, we created a multivariate regression model using [brms](https://github.com/paul-buerkner/brms), then drew samples from the model's posterior predictive distribution for each timepoint for each real participant. 
+* Briefly, to create simulated data that *decently* approximates the real data without risk of identifying participants, we created a multivariate regression model using [brms](https://github.com/paul-buerkner/brms), then drew samples from the model's posterior predictive distribution for fear > baseline amygdala reactivity estimates for each study timepoint for each real participant. 
 * We also scrambled the order of participant IDs and added noise to ages. 
-* So, the data here should do a reasonable job of mimicking the *structure* of some of the data analyzed in [Bloom et al](https://osf.io/) without compromising participant data privacy and security. 
+* So, the data here should do a *reasonable* job of mimicking the *structure* of some of the data analyzed in [Bloom et al](https://osf.io/) without compromising participant data privacy and security. Some of the relationships among variables may differ somewhat from the real data, however. For more on data synthesis for these purposes, check out the [synthpop](https://cran.r-project.org/web/packages/synthpop/vignettes/synthpop.pdf) R package. 
 
 # Read in the data
 
@@ -56,27 +55,108 @@ All of the rest of the columns are measurements of amygdala reactivity to fear f
 fake_data = read_csv('simulated_amygdala_reactivity.csv')
 head(fake_data[,1:8])
 ```
-# Specifiation curve: `specr` version
+
+# Specification curve: `specr` version
+
+[specr](https://cran.r-project.org/web/packages/specr/vignettes/specr.html) is a great package with a lot of nice functionality for running specification curve analyses. This wasn't the software we used for the main analyses (because it hadn't yet been released yet), but it's probably the most straightforward way to go for regression-based specification curve analyses. 
+
+First, a little data wrangling before modeling. 
+
+* We'll create a variable called `grp` to index whether scans were previously studied for age-related changes in amygdala reactivity in [Gee et al., 2013](https://www.jneurosci.org/content/33/10/4584). The `not_studied` group here can be considered a more independent sample from the previous study. 
+* We'll also create a vector of the outcomes (different measures of amygdala reactivity)
 
 ```{r}
-
 fake_data = mutate(fake_data, grp = ifelse(is.na(prev_studied), 'not_studied', 'prev_studied'))
-
 outcomes = names(fake_data)[grepl('amyg', names(fake_data))]
+```
 
-lmer_ri_1 <- function(formula, data,...) {
+## Specify the custom model 
+
+`Specr` has a nice feature of allowing a custom model function. For more detailed info on this, see [here](https://masurp.github.io/specr/articles/random_effects.html).
+
+Here, we set up a multilevel model using the `lme4` package's `lmer()` function to take advangate of varying intercepts for each participant (as denoted by the `(1|id)` syntax in the model formula). We also include a covariate for `motion`, because we want all models to include this covariate for head motion during the scan. We also need to load the `lme4` and `broom.mixed` packages inside the custom model function so that `specr` can use them to run the model and parse the results. 
+
+```{r}
+lmer_model_with_motion <- function(formula, data,...) {
   require(lme4)
   require(broom.mixed)
+  # set up the model base formula (basically specr will past all other model info in here)
   formula <- paste(formula, "+ motion + (1|id)")
   lmer(formula, data)
 }
 
+brms_model_with_motion <- function(formula, data,...) {
+  require(brms)
+  require(broom.mixed)
+  # set up the model base formula (basically specr will past all other model info in here)
+  formula <- paste(formula, "+ motion + (1|id)")
+  brm(formula, data, cores = 4)
+}
+```
+
+## Run all model specifications with `run_specs()`
+
+How does this [`run_specs()`](https://masurp.github.io/specr/reference/run_specs.html) function work?
+
+* `df=fake_data`: specifies the data frame to fit the model to
+* `x = 'age'`: the 'x' variable, or predictor of interest in the model. You can have multiple x variables if you want by specificying a vector with multiple values here
+* `y = outcomes`: here we specify a vector of multiple outcome variables, the 8 different measures of amygdala reactivity
+* `controls = c('block', 'scanner')`: covariates to include in the model. 
+* `model = 'lmer_model_with_motion'`: specifies the custom model. If you don't need a custom model, there are also defaults, like `"lm"` to run OLS regression
+* `subsets = list(grp = 'not_studied')`: subsets of the data to run the model on, expressed as a list. Here, we want to run the model specifically on the `not_studied` group, in addition to the full dataset. 
+* Because we have `all.comb=TRUE`, this will run specifications with all possible combinations of covariates. Otherwise, it will run models with no covariates, each single covariate, and then all together. Note: random slopes are not included for these covariates by default unless we add this to the custom model
+
+Here, 8 outcomes X 4 possible covariate specifications X 2 subsets = 64 total specifications in our multiverse
+
+```{r, message=FALSE, results='hide', warning=FALSE, cache=TRUE}
 specs = specr::run_specs(df = fake_data,
                          x = 'age', y = outcomes, 
                          controls = c('block', 'scanner'),
-                         model = 'lmer_ri_1',
-                         subsets = list(grp = 'not_studied'))
+                         model = 'lmer_model_with_motion',
+                         subsets = list(grp = 'not_studied'), 
+                         all.comb = TRUE)
 
-plot_specs(specs)
-unique(fake_data$grp)
+```
+
+## Check out results summaries across all models
+
+The output of `run_specs()` is a data frame with each row representing one specification from the multiverse analysis we have just run. The `x`, `y`, `model`, `controls` and `subsets` columns give us information on the setup of each model, then we get a variety of statistical outputs from the fit models. Because we have 64 specifications here, the dataframe is 64 rows. 
+
+* `estimate`: the beta estimate in the regression model for the given `x` term of interest (or the 'slope' for a continuous predictor). Here, these beta estimates represent estimates for age-related change in amygdala reactivity, such that negative estimates indicate age-related decreases in amygdala reactivity.
+* `std.error`: The standard error about the beta estimate
+* `statistic`: The t-statistic for the beta estimate
+* `conf.low`: The lower bound of the 95% confidence interval for the beta estimate
+* `conf.high`: The upper bound of the 95% confidence interval for the beta estimate
+* all of the `fit_` columns provide information on the goodness-of-fit of the model more generally (i.e. log likelihood, AIC, BIC), as well as the residual degrees of freedom. 
+
+```{r}
+specs
+```
+
+## Plot the specification curve
+
+```{r, fig.width=8, fig.height=8}
+specr::plot_specs(specs)
+```
+
+This type of plot can be overwhelming at first because it shows us a **lot** of information, but it is really helpful for looking at several different things!
+
+* **Panel A** shows us the regression beta estimates for our `x` predictor (plus 95% confidence intervals) for all of our specifications. Specifications are ordered from least to greatest, and colored such that red indicates a significant negative association, gray indicates a nonsignificant association, and blue (not shown on this plot) indicates a significant positive association. So, here, the majority of the specifications indicate a significant negative estimate (under $\alpha=0.05$, such that the 95% confidence interval excludes 0), suggesting a negative relationship here between age and amygdala reactivity. 
+* **Panel B** shows us the details for each specification, keeping the coloring schema from Panel A based on estimate direction/significance. On any given line, a dash (`|`) indicates that the choice marked on the left was made, where a blank space it wasn't made. 
+  * The top section `age` indicates that that the `x` variable (the term being examined) in all models was `age`. 
+  * In the `y` section below that, dashes on a given line indicate what `y` variable for amygdala reactivity was used in a given specification (note that different choices for `y` are mutually exclusive). 
+  * The `model` section indicates that the `lmer_model_with_motion` was the model used in all specifications here. 
+  * The `controls`  section shows which covariates were used in each specification, although we should remember here that ALL models had a covariate for head motion built into them (so `no covariates` really means no covariates *other than head motion*)
+  * The bottom section `subsets` indicaates which subset of the data the model was run on, either `all`, or just the `not_studied` group. 
+  
+* So, what is **Panel B** telling us practically? We can see how estimates term of interest differ as a function of different model specification decision points! In general, if specifications tend to show up towards the left side of the graph, this means that the specifications resulted in *more negative* beta estimates (more negative age-related change in amygdala reactivity here), while specifications that tend to show up towards the right side of the graph tended to result in *more positive* beta estimates. Most specifically, we can see that here in the simulated data:
+  * Specifications with `ho_right_amyg_tstat` or ``ho_right_amyg_beta` as the `y` variable tended to result in the most strongly negative estimates compared to the others (they show up towards the left side)
+  * Specifications with `native_left_amyg_tstat` as the `y` variable tended to result in the most strongly positive estimates compared to the others (they show up towards the right side)
+
+## View the multiverse decision tree
+
+specr also gives us a nice `plot_decisiontree()` function for summarizing what our specifications are
+
+```{r}
+specr::plot_decisiontree(specs, legend = TRUE)
 ```

@@ -1,3 +1,15 @@
 ---
-title: "Speed and Distance!"
+title: "Stuff!"
 ---
+
+# Preprint Manuscript
+
+
+
+# Simulated Data
+
+
+
+# Interactive 
+
+[Here](https://pbloom.shinyapps.io/amygdala_mpfc_multiverse/)
