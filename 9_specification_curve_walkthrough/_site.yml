@@ -16,3 +16,4 @@ output:
     theme: cosmo
     toc: yes
     toc_float: true
+    code_folding: show
