@@ -5,8 +5,12 @@ navbar:
   left:
   - text: "Info"
     href: index.html
-  - text: "Amygdala Multiverse Demo"
+  - text: "Multiverse Code Walkthrough"
     href: into_the_bayesian_multiverse.html
+  - text: "Project Analysis Code & Docs"
+    href: https://github.com/pab2163/amygdala_mpfc_multiverse
+  - text: "Interactive Multiverse Explorer"
+    href: https://pbloom.shinyapps.io/amygdala_mpfc_multiverse/
 output:
   html_document:
     theme: cosmo
