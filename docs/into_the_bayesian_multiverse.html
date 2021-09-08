@@ -402,9 +402,11 @@ div.tocify {
 <p>A <strong>multiverse analysis</strong> is an analytical tool that helps provide an understanding of whether study results hinge on decisions made during the analysis process. Briefly, a multiverse analysis means that one identifies a set of analyses methods that are all theoretically justified <em>then conducts all of these analysis “specifications” in parallel</em>. Then, a <strong>specification curve</strong> can be used for visualization of all of the different analysis specifications at once, as well as statistical inference.</p>
 <p>The specification curve analyses here were particularly inspired by work from <a href="https://dcosme.github.io/specification-curves/SCA_tutorial_inferential">Dani Cosme</a> and <a href="https://www.amyorben.com/pdf/2019_orbenprzybylski_nhb.pdf">Amy Orben</a>.</p>
 <p>See more background on the statistics <a href="https://www.nature.com/articles/s41562-020-0912-z">here</a> and <a href="https://journals.sagepub.com/doi/10.1177/1745691616658637">here</a>.</p>
-<div class="figure">
-<img src="images/fear_amyg_ppi_sca.png" alt="specification curve for age-related change in fear &gt; baseline amygdala-mPFC gPPI" />
-<p class="caption">specification curve for age-related change in fear &gt; baseline amygdala-mPFC gPPI</p>
+<div id="a-fun-way-to-think-about-multiverse-analyses" class="section level3">
+<h3>A fun way to think about multiverse analyses…</h3>
+<p>If you’ve ever seen <a href="https://www.imdb.com/title/tt4633694/">Spider Man: Into The Spiderverse</a>, first of all – its a great movie. But more specifically, there are many “parallel universes” with different versions of “spider people” in each one. The “spidey-essence” is the same in all universes, but each spider-person (or pig…) is a little different based on the specifics of that universe. So, we can think of the raw data as the “spidey-essence” in a multiverse analysis, and each model specification is a different “parallel universe” of how the results of the analysis could come out when combined with a certain set of analytical decisions.</p>
+<p><img src="images/spideyverse.png" /><br />
+I’m not an expert, but “the multiverse” is now part of the canon of the <a href="https://marvel.fandom.com/wiki/Multiverse">Marvel Cinematic Universe</a>…</p>
 </div>
 </div>
 <div id="in-what-situation-should-i-run-a-multiverse-analysis" class="section level2">
@@ -424,7 +426,7 @@ div.tocify {
 <li>estimate all specifications and report the results in a descriptive specification curve</li>
 <li>conduct joint statistical tests using an inferential specification curve.</li>
 </ol>
-<p>Because the analyses presented here are considered exploratory, we aren’t going to cover the inferential procedudes in step #3. For more info on this step, see this <a href="https://dcosme.github.io/specification-curves/SCA_tutorial_inferential#4_Inferential_statistics">great tutorial from Dani Cosme</a>.</p>
+<p>Because the analyses presented here are considered exploratory, we aren’t going to cover the inferential procedudes in step #3. For more info on this step, including applying bootstrapping &amp; permutation testing to spec curves, see this <a href="https://dcosme.github.io/specification-curves/SCA_tutorial_inferential#4_Inferential_statistics">great tutorial from Dani Cosme</a>.</p>
 </div>
 <div id="note-simulated-data-here-only" class="section level2">
 <h2>Note: simulated data here only!</h2>
@@ -491,8 +493,8 @@ library(cowplot)</code></pre>
 <div id="specification-curve-specr-version" class="section level1">
 <h1>2. Specification curve: <code>specr</code> version</h1>
 <p><a href="https://cran.r-project.org/web/packages/specr/vignettes/specr.html">specr</a> is a great package with a lot of nice functionality for running specification curve analyses. This wasn’t the software we used for the main analyses (because it hadn’t yet been released yet), but it’s probably the most straightforward way to go for regression-based specification curve analyses.</p>
-<div id="a-define-all-reasonable-specifictions" class="section level2">
-<h2>2A Define all ‘reasonable’ specifictions</h2>
+<div id="a.-define-all-reasonable-specifictions" class="section level2">
+<h2>2A. Define all ‘reasonable’ specifictions</h2>
 <p>First, we’ll need to define what different ‘reasonable’ and theoretically justifiable ways there are for doing this analysis of age-related change in amygdala reactivity to fear faces &gt; baseline. For the sake of this project, it isn’t computationally feasible to try ALL reasonable ways of doing this analysis, so we can think of this approach as attempting to sample from the space of possible analyses specifications.</p>
 <ul>
 <li><strong>Covariates:</strong> it might make sense to adjust for factors like <code>scanner</code> and <code>block</code> in our group-level model, or different subsets of these.</li>
@@ -586,14 +588,14 @@ outcomes = names(fake_data)[grepl(&#39;amyg&#39;, names(fake_data))]</code></pre
 </ul></li>
 <li>So, what is <strong>Panel B</strong> telling us practically? We can see how estimates term of interest differ as a function of different model specification decision points! In general, if specifications tend to show up towards the left side of the graph, this means that the specifications resulted in <em>more negative</em> beta estimates (more negative age-related change in amygdala reactivity here), while specifications that tend to show up towards the right side of the graph tended to result in <em>more positive</em> beta estimates. Most specifically, we can see that here in the simulated data:
 <ul>
-<li>Specifications with <code>ho_right_amyg_tstat</code> or `<code>ho_right_amyg_beta</code> as the <code>y</code> variable tended to result in the most strongly negative estimates compared to the others (they show up towards the left side)</li>
+<li>Specifications with <code>ho_right_amyg_tstat</code> or <code>ho_right_amyg_beta</code> as the <code>y</code> variable tended to result in the most strongly negative estimates compared to the others (they show up towards the left side)</li>
 <li>Specifications with <code>native_left_amyg_tstat</code> as the <code>y</code> variable tended to result in the most strongly positive estimates compared to the others (they show up towards the right side)</li>
 </ul></li>
 </ul>
 </div>
 <div id="f.-view-the-multiverse-decision-tree" class="section level2">
 <h2>2F. View the multiverse decision tree</h2>
-<p>specr also gives us a nice <code>plot_decisiontree()</code> function for summarizing what our specifications are, and how many of them there are</p>
+<p><code>specr</code> also gives us a nice <code>plot_decisiontree()</code> function for summarizing what our specifications are, and how many of them there are</p>
 <pre class="r"><code>specr::plot_decisiontree(specs, legend = TRUE)</code></pre>
 <p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
@@ -634,16 +636,16 @@ outcomes = names(fake_data)[grepl(&#39;amyg&#39;, names(fake_data))]</code></pre
 <pre><code>## # A tibble: 64 x 15
 ##    x     y     model controls effect component group estimate std.error conf.low
 ##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 age   ho_r… brms… block    fixed  cond      &lt;NA&gt;   -0.0390    0.0159  -0.0691
-##  2 age   ho_l… brms… block    fixed  cond      &lt;NA&gt;   -0.0380    0.0154  -0.0677
-##  3 age   ho_r… brms… block    fixed  cond      &lt;NA&gt;   -0.0411    0.0150  -0.0705
-##  4 age   ho_l… brms… block    fixed  cond      &lt;NA&gt;   -0.0281    0.0144  -0.0552
-##  5 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0269    0.0174  -0.0607
-##  6 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0297    0.0165  -0.0624
-##  7 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0302    0.0171  -0.0628
-##  8 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0261    0.0153  -0.0561
-##  9 age   ho_r… brms… scanner  fixed  cond      &lt;NA&gt;   -0.0384    0.0157  -0.0685
-## 10 age   ho_l… brms… scanner  fixed  cond      &lt;NA&gt;   -0.0384    0.0152  -0.0664
+##  1 age   ho_r… brms… block    fixed  cond      &lt;NA&gt;   -0.0393    0.0160  -0.0702
+##  2 age   ho_l… brms… block    fixed  cond      &lt;NA&gt;   -0.0374    0.0149  -0.0660
+##  3 age   ho_r… brms… block    fixed  cond      &lt;NA&gt;   -0.0416    0.0156  -0.0724
+##  4 age   ho_l… brms… block    fixed  cond      &lt;NA&gt;   -0.0288    0.0140  -0.0561
+##  5 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0273    0.0171  -0.0608
+##  6 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0295    0.0167  -0.0613
+##  7 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0293    0.0167  -0.0619
+##  8 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0258    0.0148  -0.0553
+##  9 age   ho_r… brms… scanner  fixed  cond      &lt;NA&gt;   -0.0381    0.0158  -0.0673
+## 10 age   ho_l… brms… scanner  fixed  cond      &lt;NA&gt;   -0.0379    0.0153  -0.0682
 ## # … with 54 more rows, and 5 more variables: conf.high &lt;dbl&gt;,
 ## #   fit_algorithm &lt;chr&gt;, fit_pss &lt;dbl&gt;, fit_nobs &lt;int&gt;, subsets &lt;chr&gt;</code></pre>
 </div>
@@ -664,32 +666,35 @@ specr::plot_specs(all_specs)</code></pre>
 </div>
 <div id="bayesian-specification-curves-using-custom-code" class="section level1">
 <h1>4. Bayesian specification curves using custom code</h1>
-<p><code>specr</code> is a super useful tool, but when we were first running specification curve analyses, the package hadn’t been released yet. For the analyses in the manuscript, we used mostly functions from the <a href="https://www.tidyverse.org/">tidyverse</a>, especially the <a href="https://purrr.tidyverse.org/">purrr</a> package for dealing with nesting data, for estimation of many Bayesian models within multiverse analyses.</p>
+<p><code>specr</code> is a super useful tool, but when we were first running specification curve analyses, the package hadn’t been released yet. For the analyses in the manuscript, we used mostly functions from the <a href="https://www.tidyverse.org/">tidyverse</a>, especially the <a href="https://purrr.tidyverse.org/">purrr</a> package for dealing with nesting data, for estimation of many Bayesian models within multiverse analyses (in fact, <code>specr</code> is built using <code>purrr</code>). For more background on extreme <code>tidyverse</code> usage and <code>purrr</code>, check out <a href="https://www.monicathieu.com/posts/2020-04-08-tidy-multilevel/">this walkthrough from Monica Thieu</a>.</p>
 <p>While the methods we used required writing more lines of code, one very helpful thing that <code>specr</code> doesn’t do automatically is do is to <em>save the fitted model object for each specification</em>. Storing the fitted model objects will allow us to do a few useful things:</p>
 <ol style="list-style-type: decimal">
 <li>Extract <a href="https://www.rdocumentation.org/packages/brms/versions/2.9.0/topics/fitted.brmsfit">fitted model predictions</a> (i.e. ‘predicting the regression line’) for each model within a specification curve. In this case, we might want to be able to plot each model’s predictions for amygdala reactivity as a function of age.</li>
+<li>Make specification curves for different parameters within the models, without having to rerun them all. For example, here we’ll look at the regression <em>intercept term</em> in a specification curver</li>
 <li>Perform checks, such as <a href="http://paul-buerkner.github.io/brms/reference/pp_check.brmsfit.html">posterior predictive checks</a>, or <a href="https://mjskay.github.io/tidybayes/articles/tidybayes-residuals.html">Q-Q plots</a> on individual models</li>
 </ol>
-<div id="a-convert-the-data-to-long-format" class="section level2">
-<h2>4A Convert the data to long format</h2>
-<p>Here, we use <a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">tidyr::pivot_longer()</a> to reshape the data into long form, such that all amygdala reactivity estimates are in 1 column called <code>amygdala_reactivity</code>, with a variable called <code>amygdala_measure</code> indicating which amygdala reactivity measure it is.</p>
+<div id="a.-convert-the-data-to-long-format" class="section level2">
+<h2>4A. Convert the data to long format</h2>
+<p>First, we’ll create a grand mean-centered version of our <code>age</code> variable called <code>age_center</code>. Now, a 0 for <code>age_center</code> represents the grand mean age in the dataset, or an age of 12.251. We’ll use this centered age dvariable for modeling.</p>
+<p>Then, we use <a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">tidyr::pivot_longer()</a> to reshape the data into long form, such that all amygdala reactivity estimates are in 1 column called <code>amygdala_reactivity</code>, with a variable called <code>amygdala_measure</code> indicating which amygdala reactivity measure it is.</p>
 <pre class="r"><code>fake_data_long = fake_data %&gt;%
+  dplyr::mutate(age_center = age - mean(age)) %&gt;%
   tidyr::pivot_longer(contains(&#39;amyg&#39;), names_to = &#39;amygdala_measure&#39;, values_to = &#39;amygdala_reactivity&#39;) 
 
 head(fake_data_long)</code></pre>
-<pre><code>## # A tibble: 6 x 10
-##      id  wave   age block motion scanner prev_studied grp     amygdala_measure  
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;             
-## 1     1     3  16.1     1  0.293       2           NA not_st… ho_right_amyg_beta
-## 2     1     3  16.1     1  0.293       2           NA not_st… ho_left_amyg_beta 
-## 3     1     3  16.1     1  0.293       2           NA not_st… ho_right_amyg_tst…
-## 4     1     3  16.1     1  0.293       2           NA not_st… ho_left_amyg_tstat
-## 5     1     3  16.1     1  0.293       2           NA not_st… native_right_amyg…
-## 6     1     3  16.1     1  0.293       2           NA not_st… native_left_amyg_…
-## # … with 1 more variable: amygdala_reactivity &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 6 x 11
+##      id  wave   age block motion scanner prev_studied grp         age_center
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;            &lt;dbl&gt;
+## 1     1     3  16.1     1  0.293       2           NA not_studied       3.87
+## 2     1     3  16.1     1  0.293       2           NA not_studied       3.87
+## 3     1     3  16.1     1  0.293       2           NA not_studied       3.87
+## 4     1     3  16.1     1  0.293       2           NA not_studied       3.87
+## 5     1     3  16.1     1  0.293       2           NA not_studied       3.87
+## 6     1     3  16.1     1  0.293       2           NA not_studied       3.87
+## # … with 2 more variables: amygdala_measure &lt;chr&gt;, amygdala_reactivity &lt;dbl&gt;</code></pre>
 </div>
-<div id="b-nest-the-data-within-each-amygdala-measure" class="section level2">
-<h2>4B Nest the data within each amygdala measure</h2>
+<div id="b.-nest-the-data-within-each-amygdala-measure" class="section level2">
+<h2>4B. Nest the data within each amygdala measure</h2>
 <p>In this step, we first group the data by <code>amygdala_measure</code>, then use <a href="https://tidyr.tidyverse.org/reference/nest.html">tidyr::nest()</a> to collapse the data within each amygdala measure into a single cell containing a <a href="https://tibble.tidyverse.org/">tibble object</a>(basically a fancy dataframe). Now, our dataset has only 8 rows, with the <code>data</code> column containing an entire dataset for each amygdala measure in each cell. We also add an <code>index</code> variable to keep track of the data shape here.</p>
 <pre class="r"><code>fake_data_nested = fake_data_long %&gt;%
   dplyr::group_by(amygdala_measure) %&gt;%
@@ -699,40 +704,96 @@ head(fake_data_long)</code></pre>
 
 fake_data_nested</code></pre>
 <pre><code>## # A tibble: 8 x 3
-##   amygdala_measure        data               index
-##   &lt;chr&gt;                   &lt;list&gt;             &lt;int&gt;
-## 1 ho_right_amyg_beta      &lt;tibble [178 × 9]&gt;     1
-## 2 ho_left_amyg_beta       &lt;tibble [178 × 9]&gt;     2
-## 3 ho_right_amyg_tstat     &lt;tibble [178 × 9]&gt;     3
-## 4 ho_left_amyg_tstat      &lt;tibble [178 × 9]&gt;     4
-## 5 native_right_amyg_beta  &lt;tibble [178 × 9]&gt;     5
-## 6 native_left_amyg_beta   &lt;tibble [178 × 9]&gt;     6
-## 7 native_right_amyg_tstat &lt;tibble [178 × 9]&gt;     7
-## 8 native_left_amyg_tstat  &lt;tibble [178 × 9]&gt;     8</code></pre>
+##   amygdala_measure        data                index
+##   &lt;chr&gt;                   &lt;list&gt;              &lt;int&gt;
+## 1 ho_right_amyg_beta      &lt;tibble [178 × 10]&gt;     1
+## 2 ho_left_amyg_beta       &lt;tibble [178 × 10]&gt;     2
+## 3 ho_right_amyg_tstat     &lt;tibble [178 × 10]&gt;     3
+## 4 ho_left_amyg_tstat      &lt;tibble [178 × 10]&gt;     4
+## 5 native_right_amyg_beta  &lt;tibble [178 × 10]&gt;     5
+## 6 native_left_amyg_beta   &lt;tibble [178 × 10]&gt;     6
+## 7 native_right_amyg_tstat &lt;tibble [178 × 10]&gt;     7
+## 8 native_left_amyg_tstat  &lt;tibble [178 × 10]&gt;     8</code></pre>
+</div>
+<div id="c.-run-all-model-specifications" class="section level2">
+<h2>4C. Run all model specifications!</h2>
+<p>To keep things a little more concise for the sake of this walkthrough, we’ll pare down to a total of 16 specifications for this analysis: 8 amygdala measures (right vs. left, native space vs. Harvard-Oxford, beta vs. tstat) X 2 model types (with participant-varying slopes + intercepts vs. only participant-varying intercepts)</p>
+<p>Now, we’ll use the <code>purrr:map()</code> function inside <code>dplyr::mutate()</code>. This is a lot at once, but it allows us to make new columns with <code>brms</code> model objects stored in each cell. We use <code>data</code> as the first argument to the <code>purrr:map()</code> function to tell <code>brms::brm()</code> to fid the model to the <em>nested dataset</em> stored in each cell of the `data column.</p>
+<p>Since we are making 2 new columns with <code>dplyr::mutate()</code>, one for each of the two model formulations (<code>model_varying_slopes</code>, and <code>model_varying_intercepts</code>), we’ll use <code>tidyr::pivot_longer()</code> again to put all models objects into one <code>model_object</code> column, with the <code>model_type</code> column now indicating whether there are varying slopes or just intercepts. <strong>Note:</strong> this step takes about 15 min (on a 2019 Macbook Pro) because we are running 16 Bayesian models in a row!</p>
 <pre class="r"><code>nested_model_frame = fake_data_nested %&gt;%
     dplyr::group_by(amygdala_measure) %&gt;%
-    dplyr::mutate(., model_varying_slopes = purrr::map(data, ~brms::brm(amygdala_reactivity ~ age + motion + (age|id), 
+    dplyr::mutate(., model_varying_slopes = purrr::map(data, ~brms::brm(amygdala_reactivity ~ age_center + motion + (age|id), 
                                                   data = ., cores = 4, chains = 4)),
-                    model_varying_intercepts = purrr::map(data, ~brms::brm(amygdala_reactivity ~ age + motion + (1|id), 
+                    model_varying_intercepts = purrr::map(data, ~brms::brm(amygdala_reactivity ~ age_center + motion + (1|id), 
                                                   data = ., cores = 4, chains = 4))) %&gt;%
     tidyr::pivot_longer(contains(&#39;model&#39;), names_to = &#39;model_type&#39;, values_to = &#39;model_object&#39;)</code></pre>
-<pre class="r"><code>purrr_specs = nested_model_frame %&gt;%
-  mutate(., coefs = map(model_object, ~broom.mixed::tidy(.))) %&gt;%
-  dplyr::select(., -data, -model_object) %&gt;%
-  unnest(coefs)</code></pre>
-<pre><code>## Warning: Problem with `mutate()` input `coefs`.
-## ℹ `data_frame()` was deprecated in tibble 1.1.0.
-## Please use `tibble()` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_warnings()` to see where this warning was generated.
-## ℹ Input `coefs` is `map(model_object, ~broom.mixed::tidy(.))`.
-## ℹ The error occurred in group 1: amygdala_measure = &quot;ho_left_amyg_beta&quot;.</code></pre>
-<pre class="r"><code>purrr_specs_age = dplyr::filter(purrr_specs, term == &#39;age&#39;)</code></pre>
 </div>
-<div id="custom-sca-plot-function" class="section level2">
-<h2>Custom SCA Plot Function</h2>
-<pre class="r fold-hide"><code>make_sca_plot = function(coefs, fork_list, plot_title, y_label, term_choice){
-  sca_decision_frame = coefs %&gt;%
+<div id="d.-pull-coefficients-for-each-model-using-broom.mixedtidy" class="section level2">
+<h2>4D. Pull coefficients for each model using <code>broom.mixed::tidy()</code></h2>
+<p>Now that we’ve run lots of models, we can use <code>broom.mixed::tidy()</code> to pull out all the coefficients for each one. This function is just like the <a href="https://cran.r-project.org/web/packages/broom/vignettes/broom.html">broom::tidy()</a> function, except that it allows us to work with multilevel models (<code>lme4</code>, <code>brms</code>, or <code>rstanarm</code>, for example).</p>
+<p>So, well make a new dataframe called <code>purrr_specs</code> where we pull the coefficients for each model (again using <code>purrr::map()</code> for storing the output in individual cells). Finally, we’ll use <a href="https://tidyr.tidyverse.org/reference/nest.html">tidyr::unnest()</a> to ‘flatten’ the coefficient output for each model back into regular dataframe colums. In other words, we’re taking all of the coefficient information, and making 1 column for each piece of information.</p>
+<pre class="r"><code>purrr_specs = nested_model_frame %&gt;%
+  mutate(., coefs = purrr::map(model_object, ~broom.mixed::tidy(.))) %&gt;%
+  dplyr::select(., -data, -model_object) %&gt;%
+  tidyr::unnest(coefs)</code></pre>
+<p>The output looks very similar to what we previously were working with from <code>specr</code> EXCEPT that we have multiple rows for each specification here. In fact, we have 1 row for each of the coefficients in each model pulled by <code>broom.mixed::tidy()</code> (we are pulling the <code>Intercept</code>, <code>age_center</code>, <code>motion</code> fixed effects terms from the model, parameter estimates for some of the variances/covariances of the participant-varying terms).</p>
+<pre class="r"><code>purrr_specs</code></pre>
+<pre><code>## # A tibble: 96 x 11
+## # Groups:   amygdala_measure [8]
+##    amygdala_measure  index model_type    effect component group term    estimate
+##    &lt;chr&gt;             &lt;int&gt; &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;
+##  1 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  (Inter…   0.597 
+##  2 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  age_ce…  -0.0410
+##  3 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  motion   -0.299 
+##  4 ho_right_amyg_be…     1 model_varyin… ran_p… cond      id    sd__(I…   0.161 
+##  5 ho_right_amyg_be…     1 model_varyin… ran_p… cond      id    sd__age   0.0120
+##  6 ho_right_amyg_be…     1 model_varyin… ran_p… cond      id    cor__(…  -0.302 
+##  7 ho_right_amyg_be…     1 model_varyin… ran_p… cond      Resi… sd__Ob…   0.742 
+##  8 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  (Inter…   0.591 
+##  9 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  age_ce…  -0.0420
+## 10 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  motion   -0.298 
+## # … with 86 more rows, and 3 more variables: std.error &lt;dbl&gt;, conf.low &lt;dbl&gt;,
+## #   conf.high &lt;dbl&gt;</code></pre>
+<p>If we want to make this look almost like the <code>specr</code> output, we can filter for the model term we’re looking for. In this case, <code>age_center</code> is the parameter of primary interest for looking at age-related change in amygdala reactivity for the fear &gt; baseline contrast.</p>
+<pre class="r"><code>purrr_specs_age = dplyr::filter(purrr_specs, term == &#39;age_center&#39;)
+purrr_specs_age</code></pre>
+<pre><code>## # A tibble: 16 x 11
+## # Groups:   amygdala_measure [8]
+##    amygdala_measure   index model_type    effect component group term   estimate
+##    &lt;chr&gt;              &lt;int&gt; &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;
+##  1 ho_right_amyg_beta     1 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0410
+##  2 ho_right_amyg_beta     1 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0420
+##  3 ho_left_amyg_beta      2 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0414
+##  4 ho_left_amyg_beta      2 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0418
+##  5 ho_right_amyg_tst…     3 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0422
+##  6 ho_right_amyg_tst…     3 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0427
+##  7 ho_left_amyg_tstat     4 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0322
+##  8 ho_left_amyg_tstat     4 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0321
+##  9 native_right_amyg…     5 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0294
+## 10 native_right_amyg…     5 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0308
+## 11 native_left_amyg_…     6 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0303
+## 12 native_left_amyg_…     6 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0313
+## 13 native_right_amyg…     7 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0300
+## 14 native_right_amyg…     7 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0316
+## 15 native_left_amyg_…     8 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0265
+## 16 native_left_amyg_…     8 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0272
+## # … with 3 more variables: std.error &lt;dbl&gt;, conf.low &lt;dbl&gt;, conf.high &lt;dbl&gt;</code></pre>
+</div>
+<div id="e.-custom-sca-plot-function" class="section level2">
+<h2>4E. Custom SCA Plot Function</h2>
+<p>Now, we want to make our descriptive specification curve plot! We’ve created a function for this study that is <em>very heavily inspired</em> by <a href="https://dcosme.github.io/specification-curves/SCA_tutorial_inferential#3_Plot_specification_curve">Dani Cosme’s spec curve R code</a>.</p>
+<p>It’s a chunky function with a lot of code, but overall what it does is this:</p>
+<ul>
+<li>Make <code>sca_decision_frame</code>, a dataframe with 1 column for each design point coded as a binary decision, such that there is a <code>|</code> to indicate a ‘yes’ and <code>NA</code> to indicate a ‘no’ (this is important for the bottem panel). This dataframe also creates a <code>rank</code> variable to rank specifications by their point estimates, and an <code>overlap_0</code> variable to indicate the sign of the point estimate, plus whether the 95% posterior interval overlaps 0</li>
+<li>Convert <code>sca_decision_frame</code> to long format, then group decision points into categories for visualization</li>
+<li>For the top panel, plot <code>sca_decision_frame</code> using <a href="https://ggplot2.tidyverse.org/">ggplot2</a> with the <code>rank</code> for each specification on the x-axis and each specification’s point estimate + 95% posterior interval on the y axis. We also color each specification according to the sign of the point estimate and whether the 95% posterior interval overlaps 0. Also, add a horizontal dashed line and an additional point/error bar in black to indicate the median estimate across specifications.</li>
+<li>For the bottom panel, plot <code>sca_decision_frame_long</code> using <a href="https://ggplot2.tidyverse.org/">ggplot2</a> as well, withspecification <code>rank</code> again on the x-axis. This time, the y axis is categorical, with each level representing a different decision point. Then, we use <code>geom_text(label=choice)</code>, where <code>choice</code> is the variable coded as either <code>|</code> or <code>NA</code> for each binarized decision point. This will give us a little vertical tick on the plot for each row every time the <code>choice</code> was ‘yes’, and a blank space every time the <code>choice</code> was ‘no’. So, we’ll get 1 row each on the y-axis for each binarized choice, then vertical ticks marking if that choice was made or not. For each choice, we’ll also plot a black point + horizontal interval representing the median <code>rank</code> and 25%-75% quantiles of the <code>rank</code> when the <code>choice</code> was ‘yes’.</li>
+<li>Lastly, we use <a href="https://wilkelab.org/cowplot/articles/plot_grid.html">cowplot::plot_grid()</a> to vertically align the two panels and label them. Then, we return the data frames &amp; plot objects in a named list.</li>
+</ul>
+<p><strong>Note:</strong> this is a slightly shortened version of the function intended specifically for amygdala reactivity analyses in the current study. It will have to be somewhat modified to work more generally in other contexts.</p>
+<pre class="r fold-hide"><code>make_sca_plot = function(specs, fork_list, plot_title, y_label, term_choice){
+  # compile sca decision frame
+  sca_decision_frame = specs %&gt;%
     ungroup %&gt;% 
     dplyr::filter(term == term_choice) %&gt;%
     dplyr::arrange(estimate) %&gt;%
@@ -748,13 +809,16 @@ fake_data_nested</code></pre>
              conf.low &lt; 0 &amp; estimate &gt; 0 &amp; conf.high &gt; 0 ~ &#39;pos_n&#39;,
              conf.low  &gt; 0 &amp; conf.high &gt; 0 ~ &#39;pos_y&#39;,
            ))
-  
 
   # median model
   median_model_frame = sca_decision_frame %&gt;%
-    summarise(estimate = median(estimate), conf.low = median(conf.low), conf.high = median(conf.high), rank= median(rank))
+    summarise(estimate = median(estimate), 
+              conf.low = median(conf.low), conf.high = median(conf.high), 
+              rank= median(rank))
   
-  sca_decision_frame$overlap_0 = factor(sca_decision_frame$overlap_0, levels = c(&quot;neg_y&quot;, &quot;neg_n&quot;, &quot;pos_n&quot;, &quot;pos_y&quot;))
+  # order factor levels for overlap_0 variable
+  sca_decision_frame$overlap_0 = factor(sca_decision_frame$overlap_0, 
+                                        levels = c(&quot;neg_y&quot;, &quot;neg_n&quot;, &quot;pos_n&quot;, &quot;pos_y&quot;))
   
   # convert to long, assign decition types
   sca_decision_frame_long = sca_decision_frame %&gt;%
@@ -776,15 +840,17 @@ fake_data_nested</code></pre>
   sca_decision_frame_long = left_join(sca_decision_frame_long, sca_decision_frame_long_ranks)
   
   # rename variables to be human-interpretable
-  sca_decision_frame_long$fork  = dplyr::recode(sca_decision_frame_long$fork, 
-                                                &#39;tstat&#39; = &#39;use tstats (vs. beta estimates)&#39;,
-                                                &#39;native_space&#39; = &#39;native space (vs. mni space)&#39;,
-                                                &#39;model_type&#39; = &#39;random intercepts only (vs. random slopes)&#39;,
-                                                &#39;amyg_right&#39; = &#39;right amygdala&#39;,
-                                                &#39;amyg_left&#39; =  &#39;left amygdala&#39;)
+  sca_decision_frame_long$fork = 
+    dplyr::recode(sca_decision_frame_long$fork, 
+                  &#39;tstat&#39; = &#39;use tstats (vs. beta estimates)&#39;,
+                  &#39;native_space&#39; = &#39;native space (vs. mni space)&#39;,
+                  &#39;model_type&#39; = &#39;random intercepts only (vs. random slopes)&#39;,
+                  &#39;amyg_right&#39; = &#39;right amygdala&#39;,
+                  &#39;amyg_left&#39; =  &#39;left amygdala&#39;)
   
   # reorder forks by mean rank
-  sca_decision_frame_long$fork_ordered = reorder(sca_decision_frame_long$fork,  sca_decision_frame_long$mean_rank)
+  sca_decision_frame_long$fork_ordered = reorder(sca_decision_frame_long$fork,  
+                                                 sca_decision_frame_long$mean_rank)
   
   # color palette to code the following:
   # blue = negative, distinct from 0
@@ -812,25 +878,39 @@ fake_data_nested</code></pre>
   # summary for lower plot (median + IQR)
   decision_summary = sca_decision_frame_long %&gt;% 
     group_by(decisiontype, choice, fork, fork_ordered) %&gt;%
-    summarise(n = n(), median_rank = median(rank), lwr_rank = quantile(rank, .25), upr_rank = quantile(rank, .75)) %&gt;%
+    summarise(n = n(), median_rank = median(rank), 
+              lwr_rank = quantile(rank, .25), 
+              upr_rank = quantile(rank, .75)) %&gt;%
     dplyr::filter(choice ==&#39;|&#39;)
   
   # top panel
-  sca_top = ggplot(sca_decision_frame, aes(x = rank, y = estimate, color = overlap_0)) +
+  sca_top = 
+    ggplot(sca_decision_frame, aes(x = rank, y = estimate, color = overlap_0)) +
     geom_hline(yintercept = 0, lty = 1, color = &#39;black&#39;) +
     geom_hline(yintercept = median(sca_decision_frame$estimate), color = &#39;black&#39;, lty = 2) +
     geom_point(alpha = .5) + 
     geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0, lwd = .15, alpha = .5) +
-    geom_point(data = median_model_frame,aes(x = rank, y = estimate), color = &#39;black&#39;) +
-    geom_errorbar(data = median_model_frame,aes(x = rank, y = estimate, ymin = conf.low, ymax = conf.high), color = &#39;black&#39;) +
+    geom_point(data = median_model_frame,aes(x = rank, y = estimate), 
+               color = &#39;black&#39;) +
+    geom_errorbar(data = median_model_frame, 
+                  aes(x = rank, y = estimate, ymin = conf.low, ymax = conf.high), 
+                  color = &#39;black&#39;, width = 0) +
     labs(x = &#39;&#39;, y = y_label, title = plot_title) +
     theme_classic() +
     theme(legend.position = &#39;top&#39;, legend.title = element_blank()) +
     scale_color_manual(values = my_colors)
   
   # lower panel
-  sca_bottom = ggplot(sca_decision_frame_long, aes(x = rank, y = fork_ordered, color = overlap_0)) +
+  sca_bottom = 
+    ggplot(sca_decision_frame_long, aes(x = rank, y = fork_ordered, color = overlap_0)) +
     geom_text(aes(label = choice), alpha = .4) +
+    facet_grid(rows = vars(decisiontype), drop = TRUE, 
+               scales = &#39;free_y&#39;, space = &#39;free_y&#39;) +
+    geom_point(data = decision_summary, aes(x = median_rank, y = fork_ordered), 
+               color = &#39;black&#39;) +
+    geom_errorbarh(data = decision_summary, 
+                   aes(x = median_rank, y = fork_ordered, xmin = lwr_rank, xmax = upr_rank), 
+                   color = &#39;black&#39;, width = 0) +
     labs(x = &quot;Analysis specifications ranked by beta estimates&quot;, y = &quot;Decision Points&quot;) + 
     theme_bw() + 
     theme(legend.title = element_text(size = 10),
@@ -841,13 +921,12 @@ fake_data_nested</code></pre>
           panel.grid.minor = element_blank(),
           panel.background = element_blank(),
           strip.text.y = element_text(size = 8)) +
-    scale_color_manual(values = my_colors) +
-    facet_grid(rows = vars(decisiontype), drop = TRUE, scales = &#39;free_y&#39;, space = &#39;free_y&#39;) +
-    geom_point(data = decision_summary, aes(x = median_rank, y = fork_ordered), color = &#39;black&#39;) +
-    geom_errorbarh(data = decision_summary, aes(x = median_rank, y = fork_ordered, xmin = lwr_rank, xmax = upr_rank), color = &#39;black&#39;)
+    scale_color_manual(values = my_colors) 
+    
   
   # put together using cowplot
-  sca_panel = cowplot::plot_grid(sca_top, sca_bottom, ncol = 1, align = &quot;v&quot;, axis = &#39;lr&#39;, labels = c(&#39;A&#39;, &#39;B&#39;))
+  sca_panel = cowplot::plot_grid(sca_top, sca_bottom, ncol = 1, align = &quot;v&quot;, axis = &#39;lr&#39;, 
+                                 labels = c(&#39;A&#39;, &#39;B&#39;))
   
   # return a list including formatted data, as well as plots
   return(list(&#39;sca_decision_frame&#39; = sca_decision_frame, 
@@ -857,59 +936,128 @@ fake_data_nested</code></pre>
               &#39;sca_panel&#39; = sca_panel))
 }</code></pre>
 </div>
-<div id="custom-spec-curve-plot" class="section level2">
-<h2>Custom Spec Curve Plot</h2>
-<pre class="r"><code>a = make_sca_plot(coefs = purrr_specs, fork_list = c(&#39;tstat&#39;, &#39;random_slopes&#39;, &#39;amyg_right&#39;, &#39;amyg_left&#39;, &#39;native_space&#39;), 
-                  y_label = &#39;Age-related change in amygdaala reactivity\nFear &gt; Neutral Faces&#39;, term_choice = &#39;age&#39;, 
+<div id="f.-plot-custom-brms-spec-curve" class="section level2">
+<h2>4F. Plot custom <code>brms</code> spec curve</h2>
+<p>First, we run <code>make_sca_plot()</code> to generate the plot object</p>
+<pre class="r"><code>age_center_spec_curve = make_sca_plot(specs = purrr_specs, 
+                  fork_list = c(&#39;tstat&#39;, &#39;random_slopes&#39;, &#39;amyg_right&#39;, &#39;amyg_left&#39;, &#39;native_space&#39;), 
+                  y_label = &#39;Age-related change in amyg reactivity\nFear &gt; Neutral Faces&#39;, 
+                  term_choice = &#39;age_center&#39;, 
                   plot_title = &#39;Custom plot for simulated data spec curve&#39;)</code></pre>
-<pre><code>## Joining, by = &quot;fork&quot;</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;decisiontype&#39;, &#39;choice&#39;, &#39;fork&#39;. You can override using the `.groups` argument.</code></pre>
-<pre><code>## Warning: Ignoring unknown aesthetics: x</code></pre>
-<pre><code>## Warning: Removed 40 rows containing missing values (geom_text).</code></pre>
-<pre class="r"><code>a$sca_panel</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-19-1.png" width="768" /></p>
+<p>Then display the <code>sca_panel</code>. Although this is a slightly different set of specifications to the previous curves, we can see that the results are pretty similar – most specifications show negative age-related change estimates.</p>
+<pre class="r"><code>age_center_spec_curve$sca_panel</code></pre>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-22-1.png" width="768" /></p>
 </div>
-<div id="get-fitted-model-predictions-from-custom-multiverse" class="section level2">
-<h2>Get fitted model predictions from custom multiverse</h2>
-<pre class="r"><code>pred_grid = expand.grid(age = 4:22, motion = 0)
+<div id="g.-a-spec-curve-for-the-model-intercept" class="section level2">
+<h2>4G. A spec curve for the model intercept</h2>
+<p>Here, we can also plot a specification curve for the regression <em>intercept</em> term. In this case, the intercept represents the average estimated amygdala reactivity to fear faces &gt; baseline for a participant of <code>age_center=0</code> (age ~12.3 years) and <code>motion=0</code> (average head motion amounts). We can do this by setting <code>term_choice = '(Intercept)'</code> and re-running <code>make_sca_plot()</code></p>
+<pre class="r"><code>intercept_spec = make_sca_plot(specs = purrr_specs, 
+                    fork_list = c(&#39;tstat&#39;, &#39;random_slopes&#39;, &#39;amyg_right&#39;, &#39;amyg_left&#39;, &#39;native_space&#39;), 
+                    y_label = &#39;Estimated Amygdala Reactivity at Age 12.3\nFear &gt; Neutral Faces&#39;, 
+                    term_choice = &#39;(Intercept)&#39;, 
+                    plot_title = &#39;Custom plot for the spec curve for the model *intercepts*&#39;)</code></pre>
+<p>This plot shows that all specificationss estimate positive average amygdala reactivity a participant at age 12.3 and mean head motion levels, with 95% posterior intervals excluding 0.</p>
+<pre class="r"><code>intercept_spec$sca_panel</code></pre>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-24-1.png" width="768" /></p>
+</div>
+</div>
+<div id="get-fitted-model-predictions-from-the-custom-brms-multiverse" class="section level1">
+<h1>5. Get fitted model predictions from the custom <code>brms</code> multiverse</h1>
+<p>Because we’ve saved the fitted model objects into a nested data frame for each specification in our custom multiverse, we can also <em>extract fitted predictions</em> for each model. Here, we’ll do this to visualize each model’s predictions for averaae amygdala reactivity (for fear faces &gt; baselines) as a function of age.</p>
+<p>First, we’ll define a grid of predictor values for which to make predictions. Here, we’ll set <code>motion=0</code> (average head motion across the dataset), and <code>age_center=-8:10</code> to be able to generate a prediction for a range of ages</p>
+<pre class="r"><code>pred_grid = expand.grid(age_center = -8:10, motion = 0) %&gt;%
+  dplyr::mutate(age = age_center + mean(fake_data$age))
 
-
-purrr_specs_preds = nested_model_frame %&gt;%
+head(pred_grid)</code></pre>
+<pre><code>##   age_center motion      age
+## 1         -8      0 4.251169
+## 2         -7      0 5.251169
+## 3         -6      0 6.251169
+## 4         -5      0 7.251169
+## 5         -4      0 8.251169
+## 6         -3      0 9.251169</code></pre>
+<p>Now, we can use <code>purrr::map()</code> again with <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/fitted">stats::fitted()</a> to generate fitted values (estimates of the <a href="https://mc-stan.org/rstanarm/reference/posterior_linpred.stanreg.html">linear predictor</a>) for each specification.</p>
+<ul>
+<li>We’ll use the arguments <code>newdata = pred_grid</code> to specificy which values of the predictors to generate predictions for, and <code>re_formula = NA</code> to indicate not to worry about participant-varying random effects here</li>
+<li>Just like when we pulled the model coefficients with <code>broom.mixed::tidy()</code>, the predictions for each specification are nested into cells of the <code>model_preds</code> column. We use <code>tidyr::unnest(model_preds)</code> to flatten them back out and get a data frame (in long form) of predictions for each model</li>
+</ul>
+<pre class="r"><code>purrr_specs_preds = nested_model_frame %&gt;%
   dplyr::mutate(model_preds = purrr::map(model_object, ~stats::fitted(., newdata = pred_grid, re_formula = NA) %&gt;%
                cbind(pred_grid, .))) %&gt;%
   dplyr::select(-data, -model_object) %&gt;%
-  unnest(model_preds)
-
-head(purrr_specs_preds)</code></pre>
-<pre><code>## # A tibble: 6 x 9
+  tidyr::unnest(model_preds)</code></pre>
+<p>For each specification, and for each level of <code>age_center</code>, we get an <code>Estimate</code> (the median posterior estimate), as well as the upper/lower bounds of the 95% posterior interval.</p>
+<pre class="r"><code>head(purrr_specs_preds)</code></pre>
+<pre><code>## # A tibble: 6 x 10
 ## # Groups:   amygdala_measure [1]
-##   amygdala_measure  index model_type   age motion Estimate Est.Error  Q2.5 Q97.5
-##   &lt;chr&gt;             &lt;int&gt; &lt;chr&gt;      &lt;int&gt;  &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 ho_right_amyg_be…     1 model_var…     4      0    0.938    0.128  0.683 1.18 
-## 2 ho_right_amyg_be…     1 model_var…     5      0    0.896    0.116  0.667 1.12 
-## 3 ho_right_amyg_be…     1 model_var…     6      0    0.855    0.104  0.649 1.05 
-## 4 ho_right_amyg_be…     1 model_var…     7      0    0.813    0.0927 0.625 0.992
-## 5 ho_right_amyg_be…     1 model_var…     8      0    0.772    0.0824 0.602 0.932
-## 6 ho_right_amyg_be…     1 model_var…     9      0    0.731    0.0734 0.579 0.874</code></pre>
-</div>
-</div>
-<div id="spaghetti-plot-of-model-predictions-across-specifications" class="section level1">
-<h1>Spaghetti plot of model predictions across specifications</h1>
+##   amygdala_measure  index model_type  age_center motion   age Estimate Est.Error
+##   &lt;chr&gt;             &lt;int&gt; &lt;chr&gt;            &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 ho_right_amyg_be…     1 model_vary…         -8      0  4.25    0.925    0.125 
+## 2 ho_right_amyg_be…     1 model_vary…         -7      0  5.25    0.884    0.113 
+## 3 ho_right_amyg_be…     1 model_vary…         -6      0  6.25    0.843    0.101 
+## 4 ho_right_amyg_be…     1 model_vary…         -5      0  7.25    0.802    0.0902
+## 5 ho_right_amyg_be…     1 model_vary…         -4      0  8.25    0.761    0.0802
+## 6 ho_right_amyg_be…     1 model_vary…         -3      0  9.25    0.720    0.0715
+## # … with 2 more variables: Q2.5 &lt;dbl&gt;, Q97.5 &lt;dbl&gt;</code></pre>
+<div id="spaghetti-plot-of-model-predictions-across-specifications" class="section level2">
+<h2>Spaghetti plot of model predictions across specifications</h2>
+<p>Now that we’ve extracted the fitted predictions for each model, we can plot the group-average ‘regression line’ for each one.</p>
+<ul>
+<li>Here we’ll color the specifications by whether they included particiapnt-varying slopes, or just intercepts.</li>
+<li>Here, each line represents the model predictions for 1 specification.</li>
+<li>This can be a good way to summarize fitted model predictions across a multiverse, even if we can’t see the uncertainty about the regression line for any given specification.</li>
+</ul>
 <pre class="r"><code>ggplot(data = purrr_specs_preds, aes(x = age, y = Estimate, 
-                                     group = interaction(amygdala_measure, model_type), color = model_type)) +
-  geom_line()</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+                                     group = interaction(amygdala_measure, model_type), 
+                                     color = model_type)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_line() +
+  theme_bw() +
+  labs(y = &#39;Estimated Amygdala Reactivity\nFear &gt; Baseline&#39;)</code></pre>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+</div>
+<div id="panel-plot-of-fitted-predictions" class="section level2">
+<h2>Panel plot of fitted predictions</h2>
+<p>We can also plot each specification here as a separate panel, and include the 95% posterior interval for the fitted model predictions at each level of <code>age</code>. This is just about possible with 16 specifications, but many more than that and we probably won’t have room on the screen to view them all.</p>
+<pre class="r"><code>ggplot(data = purrr_specs_preds, aes(x = age, y = Estimate)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_line() +
+  geom_ribbon(aes(ymin = `Q2.5`, ymax = `Q97.5`), alpha = .3) + 
+  theme_bw() +
+  labs(y = &#39;Estimated Amygdala Reactivity\nFear &gt; Baseline&#39;, 
+       title = &#39;Panel plot with fitted model predictions for each specification&#39;) +
+  facet_grid(rows = vars(model_type), cols = vars(amygdala_measure)) +
+  theme(strip.text = element_text(size = 6))</code></pre>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-29-1.png" width="864" /></p>
+</div>
+<div id="plot-an-individual-models-fitted-predictions-with-raw-data" class="section level2">
+<h2>Plot an individual model’s fitted predictions with raw data</h2>
+<p>As a check of a model’s fit, it is often helpful to look at the fitted predictions overplotted on top of the raw datapoints. We can do that by filtering our predictions to just look at one single specification (<code>amygdala_measure == 'ho_right_amyg_beta'</code>, <code>model_type == 'model_varying_slopes'</code>), then plotting with <code>ggplot()</code> with age on the x-axis and estimated amygdala-reactivity on the y-axis, along with the raw data used by that specification.</p>
+<pre class="r"><code>one_spec_preds = dplyr::filter(purrr_specs_preds, amygdala_measure == &#39;ho_right_amyg_beta&#39;, model_type == &#39;model_varying_slopes&#39;)
+
+ggplot(fake_data, aes(x = age, y = ho_right_amyg_beta)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() + 
+  geom_line(aes(group = id), alpha = .1) +
+  geom_line(data = one_spec_preds, aes(x = age, y = Estimate)) +
+  geom_ribbon(data = one_spec_preds, aes(x = age, y = Estimate, ymin = `Q2.5`, ymax = `Q97.5`), alpha = .3) +
+  theme_bw() +
+  labs(y = &#39;Estimated Amygdala Reactivity\nFear &gt; Baseline&#39;, 
+       title = &#39;Model predictions &amp; raw data for one specification&#39;, 
+       subtitle = &#39;Harvard-Oxford right amygdala betas, brms model with varying slopes&#39;)</code></pre>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p>This is a nice check of our model fits! However, the more specifications we have, the more difficult it is to look at so many plots for individual specifications like this. To that end, for this study we have made <a href="https://pbloom.shinyapps.io/amygdala_mpfc_multiverse/">an interactive multiverse explorer Shiny app</a> for browsing model fits across specifications.</p>
+</div>
 <div id="graphical-posterior-predictive-checks" class="section level2">
 <h2>Graphical posterior predictive checks</h2>
 <pre class="r"><code>brms::pp_check(nested_model_frame$model_object[[1]], nsamples = 1)</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <pre class="r"><code>pp_check_grid = nested_model_frame %&gt;%
   dplyr::mutate(chex = purrr::map(model_object, ~brms::pp_check(., nsamples = 2)))
 
 nested_model_frame = mutate(nested_model_frame,
-                            spec = paste0(amygdala_measure, &#39;, &#39;, model_type))
-
-print(nested_model_frame$spec)</code></pre>
+                            spec = paste0(amygdala_measure, &#39;, &#39;, model_type))</code></pre>
+<pre class="r"><code>print(nested_model_frame$spec)</code></pre>
 <pre><code>##  [1] &quot;ho_right_amyg_beta, model_varying_slopes&quot;         
 ##  [2] &quot;ho_right_amyg_beta, model_varying_intercepts&quot;     
 ##  [3] &quot;ho_left_amyg_beta, model_varying_slopes&quot;          
@@ -926,9 +1074,10 @@ print(nested_model_frame$spec)</code></pre>
 ## [14] &quot;native_right_amyg_tstat, model_varying_intercepts&quot;
 ## [15] &quot;native_left_amyg_tstat, model_varying_slopes&quot;     
 ## [16] &quot;native_left_amyg_tstat, model_varying_intercepts&quot;</code></pre>
-<pre class="r"><code>f = cowplot::plot_grid(plotlist = (pp_check_grid$chex), labels = as.vector(nested_model_frame$spec))
+<pre class="r"><code>f = cowplot::plot_grid(plotlist = (pp_check_grid$chex), labels = as.vector(nested_model_frame$spec), 
+                       label_size = 4, label_x = 0, hjust = 0)
 f</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-22-2.png" width="672" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
 </div>
 </div>
 

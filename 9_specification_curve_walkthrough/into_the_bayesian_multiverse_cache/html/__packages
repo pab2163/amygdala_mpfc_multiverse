@@ -11,6 +11,7 @@ forcats
 specr
 Rcpp
 brms
+cowplot
 Matrix
 lme4
 broom.mixed
