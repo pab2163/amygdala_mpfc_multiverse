@@ -1001,8 +1001,8 @@ head(pred_grid)</code></pre>
 ## 5 ho_right_amyg_be…     1 model_vary…         -4      0  8.25    0.761    0.0802
 ## 6 ho_right_amyg_be…     1 model_vary…         -3      0  9.25    0.720    0.0715
 ## # … with 2 more variables: Q2.5 &lt;dbl&gt;, Q97.5 &lt;dbl&gt;</code></pre>
-<div id="spaghetti-plot-of-model-predictions-across-specifications" class="section level2">
-<h2>Spaghetti plot of model predictions across specifications</h2>
+<div id="a.-spaghetti-plot-of-model-predictions-across-specifications" class="section level2">
+<h2>5A. Spaghetti plot of model predictions across specifications</h2>
 <p>Now that we’ve extracted the fitted predictions for each model, we can plot the group-average ‘regression line’ for each one.</p>
 <ul>
 <li>Here we’ll color the specifications by whether they included particiapnt-varying slopes, or just intercepts.</li>
@@ -1018,8 +1018,8 @@ head(pred_grid)</code></pre>
   labs(y = &#39;Estimated Amygdala Reactivity\nFear &gt; Baseline&#39;)</code></pre>
 <p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 </div>
-<div id="panel-plot-of-fitted-predictions" class="section level2">
-<h2>Panel plot of fitted predictions</h2>
+<div id="b.-panel-plot-of-fitted-predictions" class="section level2">
+<h2>5B. Panel plot of fitted predictions</h2>
 <p>We can also plot each specification here as a separate panel, and include the 95% posterior interval for the fitted model predictions at each level of <code>age</code>. This is just about possible with 16 specifications, but many more than that and we probably won’t have room on the screen to view them all.</p>
 <pre class="r"><code>ggplot(data = purrr_specs_preds, aes(x = age, y = Estimate)) +
   geom_hline(yintercept = 0, lty = 2) +
@@ -1032,8 +1032,8 @@ head(pred_grid)</code></pre>
   theme(strip.text = element_text(size = 6))</code></pre>
 <p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-29-1.png" width="864" /></p>
 </div>
-<div id="plot-an-individual-models-fitted-predictions-with-raw-data" class="section level2">
-<h2>Plot an individual model’s fitted predictions with raw data</h2>
+<div id="c.-plot-an-individual-models-fitted-predictions-with-raw-data" class="section level2">
+<h2>5C. Plot an individual model’s fitted predictions with raw data</h2>
 <p>As a check of a model’s fit, it is often helpful to look at the fitted predictions overplotted on top of the raw datapoints. We can do that by filtering our predictions to just look at one single specification (<code>amygdala_measure == 'ho_right_amyg_beta'</code>, <code>model_type == 'model_varying_slopes'</code>), then plotting with <code>ggplot()</code> with age on the x-axis and estimated amygdala-reactivity on the y-axis, along with the raw data used by that specification.</p>
 <pre class="r"><code>one_spec_preds = dplyr::filter(purrr_specs_preds, amygdala_measure == &#39;ho_right_amyg_beta&#39;, model_type == &#39;model_varying_slopes&#39;)
 
@@ -1093,6 +1093,7 @@ loo_cv_grid$elpd_loo_se = as.numeric(loo_unnest$loo_cv[,2][row.names(loo_unnest$
   theme_bw() +
   labs(x = &#39;Specification&#39;, y = &#39;elpd_loo&#39;)</code></pre>
 <p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p>While the values of <code>elpd_loo</code> don’t tell us so much intrinsically, the <em>relative ranking</em> of the values tells us which models (i.e. the ones with larger <code>elpd_loo</code>, towards the right of the plot) have better expected predictive performance.</p>
 </div>
 </div>
 <div id="recap" class="section level1">

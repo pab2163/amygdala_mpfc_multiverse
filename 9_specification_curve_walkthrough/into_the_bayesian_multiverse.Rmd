@@ -581,7 +581,7 @@ head(purrr_specs_preds)
 ```
 
 
-## Spaghetti plot of model predictions across specifications
+## 5A. Spaghetti plot of model predictions across specifications
 
 Now that we've extracted the fitted predictions for each model, we can plot the group-average 'regression line' for each one. 
 
@@ -600,7 +600,7 @@ ggplot(data = purrr_specs_preds, aes(x = age, y = Estimate,
 ```
 
 
-## Panel plot of fitted predictions
+## 5B. Panel plot of fitted predictions
 
 We can also plot each specification here as a separate panel, and include the 95% posterior interval for the fitted model predictions at each level of `age`. This is just about possible with 16 specifications, but many more than that and we probably won't have room on the screen to view them all. 
 
@@ -616,7 +616,7 @@ ggplot(data = purrr_specs_preds, aes(x = age, y = Estimate)) +
   theme(strip.text = element_text(size = 6))
 ```
 
-## Plot an individual model's fitted predictions with raw data
+## 5C. Plot an individual model's fitted predictions with raw data
 
 As a check of a model's fit, it is often helpful to look at the fitted predictions overplotted on top of the raw datapoints. We can do that by filtering our predictions to just look at one single specification (`amygdala_measure == 'ho_right_amyg_beta'`, `model_type == 'model_varying_slopes'`), then plotting with `ggplot()` with age on the x-axis and estimated amygdala-reactivity on the y-axis, along with the raw data used by that specification. 
 
@@ -705,6 +705,8 @@ ggplot(loo_cv_grid, aes(x = fct_reorder(spec, elpd_loo), y = elpd_loo)) +
   theme_bw() +
   labs(x = 'Specification', y = 'elpd_loo')
 ```
+
+While the values of `elpd_loo` don't tell us so much intrinsically, the *relative ranking* of the values tells us which models (i.e. the ones with larger `elpd_loo`, towards the right of the plot) have better expected predictive performance. 
 
 # 7. Recap
 
