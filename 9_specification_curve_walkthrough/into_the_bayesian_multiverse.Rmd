@@ -8,7 +8,9 @@ author: "Paul A. Bloom"
 Welcome! This document serves 2 purposes:
 
 1. Provide a walkthough for anyone potentially interested in conducting multiverse analyses (or specification curves), especially when considering Bayesian models or fMRI data. 
-2. Serve as documentation for analysis code for [Bloom et al., 2021](https://osf.io/) with code that can  be run using *simulated data* (i.e. fake data), since we cannot share the data publicly. Note: the simulated data & corresponding code walkthrough are specifically for amygdala reactivity analyses for the fear > baseline contrast. 
+2. Serve as documentation for analysis code for [Bloom et al., 2021](https://osf.io/) with code that can  be run using *simulated data* (i.e. fake data), since we cannot share the data publicly. Note: the simulated data & corresponding code walkthrough are specifically for amygdala reactivity analyses for the fear > baseline contrast.
+
+Want to try the code out yourself? You can clone the [Github repo](https://github.com/pab2163/amygdala_mpfc_multiverse), or download the [simulated data](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv) and the [into_the_bayesian_multiverse.Rmd](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/9_specification_curve_walkthrough/into_the_bayesian_multiverse.Rmd) file to run & experiment with the code.
 
 ## What is a multiverse anyway? What is a specification curve? 
 
@@ -54,7 +56,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Note: simulated data here only!
 
-**Note:** these data are fake! Under our Institutional Review Board protocol and for the purpose of creating participant identies private, we cannot share our actual data publicly. However, we've *simulated* an amygdala reactivity dataset for the purposes of creating a multiverse analysis where the code can actually be run! You can find the simulated data [here](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv)
+**Note:** these data are fake! Under our Institutional Review Board protocol and for the purpose of creating participant identies private, we cannot share our actual data publicly. However, we've [*simulated*](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/7_group_level_analyses/simulate_amygdala_reactivity/simulate_reactivity_data.Rmd) an amygdala reactivity dataset for the purposes of creating a multiverse analysis where the code can actually be run! You can find the simulated data [here](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv)
 
 * Briefly, to create simulated data that *decently* approximates the real data without risk of identifying participants, we created a multivariate regression model using [brms](https://github.com/paul-buerkner/brms), then drew samples from the model's posterior predictive distribution for fear > baseline amygdala reactivity estimates for each study timepoint for each real participant. 
 * We also scrambled the order of participant IDs and added noise to ages. 
@@ -731,3 +733,9 @@ Though we can't share the real data used in the current study, hopefully these w
 * [Dani Cosme's comprehensive SCA tutorial](https://dcosme.github.io/specification-curves/SCA_tutorial_inferential)
 * [Monica Thieu's tutorial](https://www.monicathieu.com/posts/2020-04-08-tidy-multilevel/) on wrangling mulilevel data using the tidyverse, especially with `purrr`
 * [Columbia Psychology Scientific Computing R tutorials, videos, & challenges](https://cu-psych-computing.github.io/cu-psych-comp-tutorial/) (good for getting started with R)
+
+## R session info
+
+```{r}
+sessionInfo()
+```

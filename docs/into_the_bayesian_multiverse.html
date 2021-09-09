@@ -397,6 +397,7 @@ div.tocify {
 <li>Provide a walkthough for anyone potentially interested in conducting multiverse analyses (or specification curves), especially when considering Bayesian models or fMRI data.</li>
 <li>Serve as documentation for analysis code for <a href="https://osf.io/">Bloom et al., 2021</a> with code that can be run using <em>simulated data</em> (i.e. fake data), since we cannot share the data publicly. Note: the simulated data &amp; corresponding code walkthrough are specifically for amygdala reactivity analyses for the fear &gt; baseline contrast.</li>
 </ol>
+<p>Want to try the code out yourself? You can clone the <a href="https://github.com/pab2163/amygdala_mpfc_multiverse">Github repo</a>, or download the <a href="https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv">simulated data</a> and the <a href="https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/9_specification_curve_walkthrough/into_the_bayesian_multiverse.Rmd">into_the_bayesian_multiverse.Rmd</a> file to run &amp; experiment with the code.</p>
 <div id="what-is-a-multiverse-anyway-what-is-a-specification-curve" class="section level2">
 <h2>What is a multiverse anyway? What is a specification curve?</h2>
 <p>A <strong>multiverse analysis</strong> is an analytical tool that helps provide an understanding of whether study results hinge on decisions made during the analysis process. Briefly, a multiverse analysis means that one identifies a set of analyses methods that are all theoretically justified <em>then conducts all of these analysis “specifications” in parallel</em>. Then, a <strong>specification curve</strong> can be used for visualization of all of the different analysis specifications at once, as well as statistical inference.</p>
@@ -430,7 +431,7 @@ I’m not an expert, but “the multiverse” is now part of the canon of the <a
 </div>
 <div id="note-simulated-data-here-only" class="section level2">
 <h2>Note: simulated data here only!</h2>
-<p><strong>Note:</strong> these data are fake! Under our Institutional Review Board protocol and for the purpose of creating participant identies private, we cannot share our actual data publicly. However, we’ve <em>simulated</em> an amygdala reactivity dataset for the purposes of creating a multiverse analysis where the code can actually be run! You can find the simulated data <a href="https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv">here</a></p>
+<p><strong>Note:</strong> these data are fake! Under our Institutional Review Board protocol and for the purpose of creating participant identies private, we cannot share our actual data publicly. However, we’ve <a href="https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/7_group_level_analyses/simulate_amygdala_reactivity/simulate_reactivity_data.Rmd"><em>simulated</em></a> an amygdala reactivity dataset for the purposes of creating a multiverse analysis where the code can actually be run! You can find the simulated data <a href="https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv">here</a></p>
 <ul>
 <li>Briefly, to create simulated data that <em>decently</em> approximates the real data without risk of identifying participants, we created a multivariate regression model using <a href="https://github.com/paul-buerkner/brms">brms</a>, then drew samples from the model’s posterior predictive distribution for fear &gt; baseline amygdala reactivity estimates for each study timepoint for each real participant.</li>
 <li>We also scrambled the order of participant IDs and added noise to ages.</li>
@@ -1126,6 +1127,72 @@ loo_cv_grid$elpd_loo_se = as.numeric(loo_unnest$loo_cv[,2][row.names(loo_unnest$
 <li><a href="https://www.monicathieu.com/posts/2020-04-08-tidy-multilevel/">Monica Thieu’s tutorial</a> on wrangling mulilevel data using the tidyverse, especially with <code>purrr</code></li>
 <li><a href="https://cu-psych-computing.github.io/cu-psych-comp-tutorial/">Columbia Psychology Scientific Computing R tutorials, videos, &amp; challenges</a> (good for getting started with R)</li>
 </ul>
+</div>
+<div id="r-session-info" class="section level2">
+<h2>R session info</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 3.6.2 (2019-12-12)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS Mojave 10.14.6
+## 
+## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] cowplot_1.0.0      brms_2.12.0        Rcpp_1.0.7         specr_0.2.2       
+##  [5] forcats_0.4.0      stringr_1.4.0      dplyr_1.0.3        purrr_0.3.3       
+##  [9] readr_1.3.1        tidyr_1.0.2        tibble_3.1.2       ggplot2_3.3.3.9000
+## [13] tidyverse_1.3.0   
+## 
+## loaded via a namespace (and not attached):
+##   [1] readxl_1.3.1         backports_1.1.5      plyr_1.8.5          
+##   [4] igraph_1.2.4.2       splines_3.6.2        crosstalk_1.0.0     
+##   [7] rstantools_2.0.0     inline_0.3.15        digest_0.6.27       
+##  [10] htmltools_0.4.0      viridis_0.5.1        rsconnect_0.8.16    
+##  [13] fansi_0.5.0          magrittr_2.0.1       graphlayouts_0.7.1  
+##  [16] modelr_0.1.5         RcppParallel_4.4.4   matrixStats_0.55.0  
+##  [19] xts_0.12-0           prettyunits_1.1.1    colorspace_2.0-1    
+##  [22] rvest_0.3.5          ggrepel_0.8.1        haven_2.2.0         
+##  [25] xfun_0.19            callr_3.4.2          crayon_1.4.1        
+##  [28] jsonlite_1.6.1       lme4_1.1-21          zoo_1.8-7           
+##  [31] glue_1.4.2           polyclip_1.10-0      gtable_0.3.0        
+##  [34] V8_3.0.1             pkgbuild_1.0.6       rstan_2.21.1        
+##  [37] abind_1.4-5          scales_1.1.1         mvtnorm_1.1-0       
+##  [40] DBI_1.1.0            miniUI_0.1.1.1       viridisLite_0.4.0   
+##  [43] xtable_1.8-4         stats4_3.6.2         StanHeaders_2.21.0-1
+##  [46] DT_0.11              htmlwidgets_1.5.1    httr_1.4.1          
+##  [49] threejs_0.3.3        RColorBrewer_1.1-2   ellipsis_0.3.2      
+##  [52] pkgconfig_2.0.3      loo_2.2.0            farver_2.1.0        
+##  [55] dbplyr_1.4.2         utf8_1.2.1           tidyselect_1.1.0    
+##  [58] labeling_0.4.2       rlang_0.4.11         reshape2_1.4.3      
+##  [61] later_1.0.0          munsell_0.5.0        cellranger_1.1.0    
+##  [64] tools_3.6.2          cli_2.5.0            generics_0.0.2      
+##  [67] broom_0.7.4          ggridges_0.5.2       evaluate_0.14       
+##  [70] fastmap_1.0.1        yaml_2.2.1           processx_3.4.2      
+##  [73] knitr_1.30           fs_1.3.1             tidygraph_1.2.0     
+##  [76] ggraph_2.0.4         nlme_3.1-142         mime_0.9            
+##  [79] xml2_1.2.2           compiler_3.6.2       bayesplot_1.7.1     
+##  [82] shinythemes_1.2.0    rstudioapi_0.10      curl_4.3            
+##  [85] reprex_0.3.0         tweenr_1.0.1         stringi_1.4.6       
+##  [88] ps_1.3.2             Brobdingnag_1.2-6    lattice_0.20-38     
+##  [91] Matrix_1.2-18        nloptr_1.2.1         markdown_1.1        
+##  [94] shinyjs_1.1          vctrs_0.3.8          pillar_1.6.1        
+##  [97] lifecycle_1.0.0      bridgesampling_1.0-0 httpuv_1.5.2        
+## [100] R6_2.5.0             promises_1.1.0       gridExtra_2.3       
+## [103] codetools_0.2-16     boot_1.3-23          colourpicker_1.0    
+## [106] MASS_7.3-51.4        gtools_3.8.1         assertthat_0.2.1    
+## [109] withr_2.4.2          shinystan_2.5.0      parallel_3.6.2      
+## [112] hms_0.5.3            grid_3.6.2           coda_0.19-3         
+## [115] minqa_1.2.4          rmarkdown_2.1        ggforce_0.3.1       
+## [118] shiny_1.4.0          lubridate_1.7.4      base64enc_0.1-3     
+## [121] dygraphs_1.1.1.6</code></pre>
 </div>
 </div>
 
