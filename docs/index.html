@@ -23,6 +23,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
@@ -248,6 +249,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -369,6 +373,14 @@ div.tocify {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Amygdala-mPFC Multiverse Project Info</h1>
@@ -377,26 +389,26 @@ div.tocify {
 
 
 <div id="preprint-manuscript" class="section level1">
-<h1>Preprint Manuscript</h1>
+<h1>- Preprint Manuscript</h1>
 <p>All materials here accompany the manuscript for <em>Age-related change in task-evoked amygdala-prefrontal circuitry: a multiverse approach with an accelerated longitudinal cohort aged 4-22 years</em>. A preprint of manuscript (not yet peer-reviewed) is posted on <a href="https://osf.io/">bioRxiv</a>.</p>
 <p><a href="https://osf.io/"><img src="images/biorxiv_logo.png" alt="preprint manuscript on biorxiv" style="width:20.0%" /></a><br></br></p>
 </div>
 <div id="analysis-code-documentation" class="section level1">
-<h1>Analysis Code &amp; Documentation</h1>
+<h1>- Analysis Code &amp; Documentation</h1>
 <p>Analysis code (mostly R and Python, with a little Bash) with documentation is posted on Github at <a href="https://github.com/pab2163/amygdala_mpfc_multiverse">https://github.com/pab2163/amygdala_mpfc_multiverse</a>. Unfortunately, because participants did not consent to their data being made public, we cannot publicly post any real data used in the current analyses, so while analysis code is documented on Github, it cannot be run as-is.</p>
 <p><a href="https://github.com/pab2163/amygdala_mpfc_multiverse"><img src="images/github_logo.png" alt="analysis github repository" style="width:20.0%" /></a></p>
 </div>
 <div id="interactive-multiverse-explorer-tool" class="section level1">
-<h1>Interactive Multiverse Explorer Tool</h1>
+<h1>- Interactive Multiverse Explorer Tool</h1>
 <p>Because specification curve analyses make exploring results for individual specifications difficult, we made a web-based <a href="https://pbloom.shinyapps.io/amygdala_mpfc_multiverse/">interactive multiverse explorer</a>. The explorer, built with R and <a href="https://shiny.rstudio.com/tutorial/">Shiny</a> allows viewers to select analysis options and view age-related change results for specific pipelines for amygdala reactivity and amygdala-mPFC functional connectivity. Try the explorer tool <a href="https://pbloom.shinyapps.io/amygdala_mpfc_multiverse/">here</a>.</p>
 <p><a href="https://pbloom.shinyapps.io/amygdala_mpfc_multiverse/"><img src="images/multiverse_explorer_screenshot.png" alt="interactive multiverse app" style="width:95.0%" /></a></p>
 </div>
 <div id="simulated-data" class="section level1">
-<h1>Simulated Data</h1>
+<h1>- Simulated Data</h1>
 <p>Because we cannot share real data from the current study, we have created and made public simulated dataset sharing a similar structure to the real data for analyses of age-related change in amygdala reactivity. These data can be viewed or downloaded in csv form <a href="https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv">here</a>, and documentation for the variables in the dataset can be found in the “Read in the Data” section <a href="into_the_bayesian_multiverse.html">here</a></p>
 </div>
 <div id="multiverse-analysis-code-walkthrough" class="section level1">
-<h1>Multiverse Analysis Code Walkthrough</h1>
+<h1>- Multiverse Analysis Code Walkthrough</h1>
 <p>Using the simulated data describe above, we also put together <a href="into_the_bayesian_multiverse.html">documentation</a> that:</p>
 <ol style="list-style-type: decimal">
 <li>Provides a walkthough for anyone potentially interested in conducting multiverse analyses (or specification curves) using R, especially when considering Bayesian models or fMRI data. The walkthough highlights the <a href="https://cran.r-project.org/web/packages/specr/vignettes/specr.html"><code>specr</code></a> package as a particularly useful tool for R users interested in multiverse analyses.</li>
@@ -404,8 +416,14 @@ div.tocify {
 </ol>
 <p><a href="into_the_bayesian_multiverse.html"><img src="images/multiverse_vis.png" alt="bayesian multiverse walkthrough" style="width:70.0%" /></a></p>
 </div>
+<div id="open-science-framework-repository-including-study-preregistration" class="section level1">
+<h1>- Open Science Framework Repository (including study preregistration)</h1>
+<p>Our preregistratio document for this study, as well as study materials &amp; template brain images, can be found on OSF <a href="https://osf.io/hvdmx/">here</a></p>
+<p><a href="https://osf.io/hvdmx/"><img src="images/osf_logo.png" alt="osf repository" style="width:20.0%" /></a></p>
+<p><br></br></p>
+</div>
 <div id="contact-info" class="section level1">
-<h1>Contact info</h1>
+<h1>- Contact info</h1>
 <p>Questions or comments? Feel free to email <a href="mailto:paul.bloom@columbia.edu" class="email">paul.bloom@columbia.edu</a> or visit the <a href="https://danlab.psychology.columbia.edu/">Tottenham Lab Website</a></p>
 <p><a href="https://danlab.psychology.columbia.edu/"><img src="images/danlab_logo.jpeg" alt="Tottenham Lab Logo" style="width:20.0%" /></a></p>
 </div>
@@ -445,6 +463,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {

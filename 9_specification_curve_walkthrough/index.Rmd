@@ -34,11 +34,20 @@ Because we cannot share real data from the current study, we have created and ma
 Using the simulated data describe above, we also put together [documentation](into_the_bayesian_multiverse.html) that: 
 
 1. Provides a walkthough for anyone potentially interested in conducting multiverse analyses (or specification curves) using R, especially when considering Bayesian models or fMRI data. The walkthough highlights the [`specr`](https://cran.r-project.org/web/packages/specr/vignettes/specr.html) package as a particularly useful tool for R users interested in multiverse analyses.
-2. Serves as documentation for some of the analysis code for [Bloom et al. 2021](https://osf.io/) with code that can be run using simulated data (i.e. fake data), since we cannot share the data publicly.
+2. Serves as documentation for some of the analysis code for [Bloom et al. 2021](https://osf.io/) with code that can be run using simulated data (i.e. fake data), since we cannot share the data publicly. Note: the simulated data & corresponding code walkthrough are specifically for amygdala reactivity analyses for the fear > baseline contrast. 
 
 
 [![bayesian multiverse walkthrough](images/multiverse_vis.png){ width=70% }](into_the_bayesian_multiverse.html)
 
+
+# Open Science Framework Repository (including study preregistration)
+
+
+Our preregistratio document for this study, as well as study materials & template brain images, can be found on OSF [here](https://osf.io/hvdmx/)
+
+[![osf repository](images/osf_logo.png){ width=20% }](https://osf.io/hvdmx/)
+
+<br></br>
 
 # Contact info
 

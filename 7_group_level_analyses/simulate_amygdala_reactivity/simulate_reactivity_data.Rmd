@@ -1,0 +1,103 @@
+---
+title: "5_make_simulated_data"
+author: "Paul Bloom"
+date: "7/23/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(synthpop)
+library(rstanarm)
+
+reactivity = read_csv('compiled_data/comps_amyg_fear_reactivity_master.csv') %>%
+  dplyr::filter(!is.na(og_ho_amyg_bilateral_beta)) %>%
+  dplyr::select(age = Age, everything())
+
+# Model 8 different amygdala specifications as a function of age
+# all amygdala estimates are separate response variables assumed from a multivariate normal, with correlated random effects
+m = brms::brm(data = reactivity, mvbind(og_ho_amyg_right_beta, 
+                                        og_ho_amyg_left_beta,
+                                        og_ho_amyg_right_tstat,
+                                        og_ho_amyg_left_tstat,
+                                        og_native_amyg_right_beta, 
+                                        og_native_amyg_left_beta,
+                                        og_native_amyg_right_tstat,
+                                        og_native_amyg_left_tstat) ~ age + motion + (age| p | Subject), cores = 4)
+
+
+summary(m)
+
+rstanarm::pp_check(m, resp = 'oghoamygrightbeta')
+```
+
+# Generate a set of non-amygdala variables in the same shape as the real data
+
+```{r}
+sim_df = data.frame(subid = reactivity$Subject, 
+                    wave = reactivity$wave,
+                    age = round(rnorm(n = nrow(reactivity), mean = reactivity$age, sd = .5),3), 
+                    motion = round(rnorm(n= nrow(reactivity), reactivity$motion),3),
+                    block = reactivity$Block,
+                    scanner = reactivity$scanner,
+                    prev_studied = reactivity$prev_studied) 
+
+
+new_ids = data.frame(subid = unique(sim_df$subid)) %>%
+  dplyr::mutate(new_id = sample(subid)) 
+
+
+sim_df = dplyr::left_join(sim_df, new_ids, by = 'subid') 
+sim_df = dplyr::select(sim_df, age, Subject = new_id, motion, wave, block, scanner, prev_studied)
+                
+ggplot(sim_df, aes(x = age, 
+                   y = fct_reorder(.f= factor(Subject), .x = age, .fun = min),
+                   color = factor(wave))) +
+  geom_point() +
+  geom_line(aes(group = Subject))
+
+```
+
+```{r}
+#sim_df$pred  = as.vector(predict(m, newdata = sim_df, summary = FALSE)[2000, ])
+
+g = predict(m, newdata = sim_df, summary = FALSE, allow_new_levels = TRUE)
+
+preds = as.data.frame(g[2000, ,])
+
+sim_df = cbind(sim_df, preds)
+
+sim_df_long = sim_df %>%
+  pivot_longer(contains('amyg'))
+
+ggplot(data = sim_df_long, aes(x = age, y= value, color = name)) +
+  geom_point() + 
+  geom_line(aes(group = Subject), alpha = .1) +
+  stat_smooth(method = lm) +
+  facet_wrap(~name)
+
+
+sim_df = sim_df %>% dplyr::arrange(Subject, age) %>%
+  dplyr::select(id = Subject,
+                wave,
+                age,
+                block,
+                motion,
+                scanner,
+                prev_studied,
+                ho_right_amyg_beta = oghoamygrightbeta,
+                ho_left_amyg_beta = oghoamygleftbeta,
+                ho_right_amyg_tstat = oghoamygrighttstat,
+                ho_left_amyg_tstat = oghoamyglefttstat,
+                native_right_amyg_beta = ognativeamygrightbeta,
+                native_left_amyg_beta = ognativeamygleftbeta,
+                native_right_amyg_tstat = ognativeamygrighttstat,
+                native_left_amyg_tstat = ognativeamyglefttstat)
+
+
+write.csv(sim_df, file = 'simulated_amygdala_reactivity.csv', row.names = FALSE)
+```
