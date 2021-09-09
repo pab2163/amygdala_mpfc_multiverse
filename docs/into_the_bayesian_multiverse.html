@@ -395,7 +395,7 @@ div.tocify {
 <p>Welcome! This document serves 2 purposes:</p>
 <ol style="list-style-type: decimal">
 <li>Provide a walkthough for anyone potentially interested in conducting multiverse analyses (or specification curves), especially when considering Bayesian models or fMRI data.</li>
-<li>Serve as documentation for analysis code for <a href="https://osf.io/">Bloom et al. 2021</a> with code that can be run using <em>simulated data</em> (i.e. fake data), since we cannot share the data publicly.</li>
+<li>Serve as documentation for analysis code for <a href="https://osf.io/">Bloom et al., 2021</a> with code that can be run using <em>simulated data</em> (i.e. fake data), since we cannot share the data publicly. Note: the simulated data &amp; corresponding code walkthrough are specifically for amygdala reactivity analyses for the fear &gt; baseline contrast.</li>
 </ol>
 <div id="what-is-a-multiverse-anyway-what-is-a-specification-curve" class="section level2">
 <h2>What is a multiverse anyway? What is a specification curve?</h2>
@@ -492,6 +492,7 @@ library(cowplot)</code></pre>
 </div>
 <div id="specification-curve-specr-version" class="section level1">
 <h1>2. Specification curve: <code>specr</code> version</h1>
+<p><a href="https://github.com/masurp/specr"><img src="images/specr_logo.png" alt="specr" style="width:15.0%" /></a></p>
 <p><a href="https://cran.r-project.org/web/packages/specr/vignettes/specr.html">specr</a> is a great package with a lot of nice functionality for running specification curve analyses. This wasn’t the software we used for the main analyses (because it hadn’t yet been released yet), but it’s probably the most straightforward way to go for regression-based specification curve analyses.</p>
 <div id="a.-define-all-reasonable-specifictions" class="section level2">
 <h2>2A. Define all ‘reasonable’ specifictions</h2>
@@ -671,11 +672,11 @@ specr::plot_specs(all_specs)</code></pre>
 <ol style="list-style-type: decimal">
 <li>Extract <a href="https://www.rdocumentation.org/packages/brms/versions/2.9.0/topics/fitted.brmsfit">fitted model predictions</a> (i.e. ‘predicting the regression line’) for each model within a specification curve. In this case, we might want to be able to plot each model’s predictions for amygdala reactivity as a function of age.</li>
 <li>Make specification curves for different parameters within the models, without having to rerun them all. For example, here we’ll look at the regression <em>intercept term</em> in a specification curver</li>
-<li>Perform checks, such as <a href="http://paul-buerkner.github.io/brms/reference/pp_check.brmsfit.html">posterior predictive checks</a>, or <a href="https://mjskay.github.io/tidybayes/articles/tidybayes-residuals.html">Q-Q plots</a> on individual models</li>
+<li>Evaluate models more generally, including using posterior predictive checks](<a href="http://paul-buerkner.github.io/brms/reference/pp_check.brmsfit.html" class="uri">http://paul-buerkner.github.io/brms/reference/pp_check.brmsfit.html</a>), or getting <a href="https://paul-buerkner.github.io/brms/reference/loo.brmsfit.html">cross-validated model performance metrics</a> for individual models</li>
 </ol>
 <div id="a.-convert-the-data-to-long-format" class="section level2">
 <h2>4A. Convert the data to long format</h2>
-<p>First, we’ll create a grand mean-centered version of our <code>age</code> variable called <code>age_center</code>. Now, a 0 for <code>age_center</code> represents the grand mean age in the dataset, or an age of 12.251. We’ll use this centered age dvariable for modeling.</p>
+<p>First, we’ll create a grand mean-centered version of our <code>age</code> variable called <code>age_center</code>. Now, a 0 for <code>age_center</code> represents the grand mean age in the dataset, or an age of 12.251. We’ll use this centered age variable for modeling.</p>
 <p>Then, we use <a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">tidyr::pivot_longer()</a> to reshape the data into long form, such that all amygdala reactivity estimates are in 1 column called <code>amygdala_reactivity</code>, with a variable called <code>amygdala_measure</code> indicating which amygdala reactivity measure it is.</p>
 <pre class="r"><code>fake_data_long = fake_data %&gt;%
   dplyr::mutate(age_center = age - mean(age)) %&gt;%
@@ -1048,36 +1049,83 @@ ggplot(fake_data, aes(x = age, y = ho_right_amyg_beta)) +
 <p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 <p>This is a nice check of our model fits! However, the more specifications we have, the more difficult it is to look at so many plots for individual specifications like this. To that end, for this study we have made <a href="https://pbloom.shinyapps.io/amygdala_mpfc_multiverse/">an interactive multiverse explorer Shiny app</a> for browsing model fits across specifications.</p>
 </div>
-<div id="graphical-posterior-predictive-checks" class="section level2">
-<h2>Graphical posterior predictive checks</h2>
-<pre class="r"><code>brms::pp_check(nested_model_frame$model_object[[1]], nsamples = 1)</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+</div>
+<div id="multiverse-model-checks" class="section level1">
+<h1>6. Multiverse model checks</h1>
+<div id="a.-graphical-posterior-predictive-checks" class="section level2">
+<h2>6A. Graphical posterior predictive checks</h2>
+<p>In addition to looking at the coefficients and predicitons from our different specifications, we may also want to perform <a href="https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf">posterior predictive checks</a> for each one.</p>
+<p>What is a posterior predictive check? * We draw a “simulated dataset” from the model’s posterior distribution, then compare the overall distribution to the real observed data (see <a href="https://arxiv.org/abs/1709.01449">Gabry et al., 2019</a>). * Basically, a posterior predictive check is helpful in answering the question “is the model giving us a distribution of predictions that matches the real data”. If the distributions match, this doesn’t mean the model is <em>good</em> per se (the individual predictions could still be very bad), but if the distributions <em>don’t match</em>, then we know that the model is definitely not doing a good job at describing the data generation process.</p>
+<p>To get these graphical summaries of the posterior predictive check, we use the <a href="http://paul-buerkner.github.io/brms/reference/pp_check.brmsfit.html">pp_check()</a> function for <code>brms</code> models (I know…). Here, we’ll first combine this with <code>purrr_map()</code> to draw 10 samples from the posterior predictive distribution for all observations in the real dataset.</p>
 <pre class="r"><code>pp_check_grid = nested_model_frame %&gt;%
-  dplyr::mutate(chex = purrr::map(model_object, ~brms::pp_check(., nsamples = 2)))
+  dplyr::mutate(chex = purrr::map(model_object, ~brms::pp_check(., nsamples = 10)))
 
+# Make a new column to label all specifications
 nested_model_frame = mutate(nested_model_frame,
                             spec = paste0(amygdala_measure, &#39;, &#39;, model_type))</code></pre>
-<pre class="r"><code>print(nested_model_frame$spec)</code></pre>
-<pre><code>##  [1] &quot;ho_right_amyg_beta, model_varying_slopes&quot;         
-##  [2] &quot;ho_right_amyg_beta, model_varying_intercepts&quot;     
-##  [3] &quot;ho_left_amyg_beta, model_varying_slopes&quot;          
-##  [4] &quot;ho_left_amyg_beta, model_varying_intercepts&quot;      
-##  [5] &quot;ho_right_amyg_tstat, model_varying_slopes&quot;        
-##  [6] &quot;ho_right_amyg_tstat, model_varying_intercepts&quot;    
-##  [7] &quot;ho_left_amyg_tstat, model_varying_slopes&quot;         
-##  [8] &quot;ho_left_amyg_tstat, model_varying_intercepts&quot;     
-##  [9] &quot;native_right_amyg_beta, model_varying_slopes&quot;     
-## [10] &quot;native_right_amyg_beta, model_varying_intercepts&quot; 
-## [11] &quot;native_left_amyg_beta, model_varying_slopes&quot;      
-## [12] &quot;native_left_amyg_beta, model_varying_intercepts&quot;  
-## [13] &quot;native_right_amyg_tstat, model_varying_slopes&quot;    
-## [14] &quot;native_right_amyg_tstat, model_varying_intercepts&quot;
-## [15] &quot;native_left_amyg_tstat, model_varying_slopes&quot;     
-## [16] &quot;native_left_amyg_tstat, model_varying_intercepts&quot;</code></pre>
-<pre class="r"><code>f = cowplot::plot_grid(plotlist = (pp_check_grid$chex), labels = as.vector(nested_model_frame$spec), 
-                       label_size = 4, label_x = 0, hjust = 0)
-f</code></pre>
+<p>Now, we can use <code>cowplot::plot_grid()</code> again to make a panel of all 16 graphical posterior predictive checks, one for each model in our specification curve. We can use the <code>labels</code> argument to label each plot for each specification. Here, <span class="math inline">\(y\)</span> represents the distribution of actual observations, and each <span class="math inline">\(y_{rep}\)</span> distribution is one set of the posterior draws.</p>
+<pre class="r"><code>cowplot::plot_grid(plotlist = pp_check_grid$chex, 
+                   labels = as.vector(nested_model_frame$spec), 
+                   label_size = 4, label_x = 0, hjust = 0)</code></pre>
 <p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p>Again, this is a more descriptive analysis – it allows us to visually compare which specifications result in a model posterior distribution that most closely matches the observed data.</p>
+</div>
+<div id="b.-approximate-leave-one-out-loo-cross-validation" class="section level2">
+<h2>6B. Approximate leave-one-out (LOO) cross-validation</h2>
+<p>We might often want to to get a specification curve for the relative model ‘goodness-of-fit’, or an approximate of predictive performance, for all specifications. We can use <a href="https://www.rdocumentation.org/packages/brms/versions/2.15.0/topics/loo.brmsfit">brms::loo()</a> to performe approximate leave-one-out (LOO) cross-validation for each model. So, here, well use <code>purrr::map()</code> again with <code>brms:loo()</code> to get these estimates</p>
+<ul>
+<li>This function will give us a cross-validated estimate for the expected log pointwise predictive density, or <a href="https://avehtari.github.io/modelselection/CV-FAQ.html">ELPD</a>, as a metric for the “expected predictive performance” for a model. ELPD as estimated by LOO cross-validation is similar in purpose to the Akaike Information Criterion (AIC), although it takes model priors into account and does not make distributional assumptions about the posterior (see <a href="https://link.springer.com/article/10.1007/s11222-016-9696-4">Vehtari, Gelman, &amp; Gabry, 2017</a>)</li>
+<li>This function uses Pareto smoothed importance sampling (<a href="https://arxiv.org/abs/1507.02646">Vehtari et al., 2015</a>) for cross-validation here, which means that unless results are very bad, we won’t have to repeatedly refit the Bayesian models (which would take a while)</li>
+</ul>
+<pre class="r"><code>loo_cv_grid = nested_model_frame %&gt;%
+  dplyr::mutate(loo_cv = purrr::map(model_object, ~brms::loo(.)$estimates))</code></pre>
+<p>Now, we can unnest our ELPD estimates as well as their standard errors, then plot them for each specification.</p>
+<pre class="r"><code># unnest and wrangle elpd estimates into the data frame 
+loo_unnest = unnest(loo_cv_grid, loo_cv)
+loo_cv_grid$elpd_loo = as.numeric(loo_unnest$loo_cv[,1][row.names(loo_unnest$loo_cv)==&#39;elpd_loo&#39;])
+loo_cv_grid$elpd_loo_se = as.numeric(loo_unnest$loo_cv[,2][row.names(loo_unnest$loo_cv)==&#39;elpd_loo&#39;])</code></pre>
+<p>The raw value of ELPD by itself doesn’t mean much intrinsically, but since higher (or less negative) ELPD is better, we can use this to compare expected model predictive performance. So, we can see here that model predictive performance is mostly impacted here by the amygdala measure used, although for most measures, the models with varying intercepts have slightly higher (better) ELPD than models with varying slopes.</p>
+<pre class="r"><code>ggplot(loo_cv_grid, aes(x = fct_reorder(spec, elpd_loo), y = elpd_loo)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = elpd_loo - elpd_loo_se, ymax = elpd_loo + elpd_loo_se)) +
+  coord_flip() +
+  theme_bw() +
+  labs(x = &#39;Specification&#39;, y = &#39;elpd_loo&#39;)</code></pre>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+</div>
+</div>
+<div id="recap" class="section level1">
+<h1>7. Recap</h1>
+<p>Though we can’t share the real data used in the current study, hopefully these walkthroughs of multiverse analyses using publicly available <a href="https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv">simulated data</a> have been helpful! Overall, we find that specification curves can a super useful as a way to examine the robustness of results when we’re faced with many analysis decision points. For anyone who is interested, good luck <em>traveling the multiverse!</em></p>
+<p><strong>Questions?</strong> Feel free to reach out to <a href="mailto:paul.bloom@columbia.edu" class="email">paul.bloom@columbia.edu</a></p>
+</div>
+<div id="resources" class="section level1">
+<h1>Resources</h1>
+<div id="readings-on-specification-curves-multiverse-analyses" class="section level2">
+<h2>Readings on specification curves &amp; multiverse analyses</h2>
+<ul>
+<li><a href="https://journals.sagepub.com/doi/10.1177/2515245920954925">Del Guidice &amp; Gangestad, 2021</a></li>
+<li>Simonsohn, Simmons, &amp; Nelson <a href="https://sticerd.lse.ac.uk/seminarpapers/psyc16022016.pdf">2015</a> &amp; <a href="https://www.nature.com/articles/s41562-020-0912-z">2020</a></li>
+<li><a href="https://journals.sagepub.com/doi/10.1177/1745691616658637">Steegen et al., 2016</a></li>
+</ul>
+</div>
+<div id="a-few-papers-using-multiverse-analyses" class="section level2">
+<h2>A few papers using multiverse analyses</h2>
+<ul>
+<li><a href="https://psyarxiv.com/23mu5/">Cosme &amp; Lopez, 2021</a></li>
+<li><a href="https://www.nature.com/articles/s41562-018-0506-1">Orben &amp; Przybylski, 2019</a></li>
+<li><a href="https://psycnet.apa.org/record/2020-15046-001">Frey et al., 2021</a></li>
+<li><a href="https://www.tandfonline.com/doi/full/10.1080/09658211.2020.1797095">Wessel et al., 2020</a></li>
+</ul>
+</div>
+<div id="resources-for-conducting-specification-curve-analyses-with-r" class="section level2">
+<h2>Resources for conducting specification curve analyses with R</h2>
+<ul>
+<li>The <a href="https://github.com/masurp/specr">specr</a> R package for making specification curves</li>
+<li><a href="https://dcosme.github.io/specification-curves/SCA_tutorial_inferential">Dani Cosme’s comprehensive SCA tutorial</a></li>
+<li><a href="https://www.monicathieu.com/posts/2020-04-08-tidy-multilevel/">Monica Thieu’s tutorial</a> on wrangling mulilevel data using the tidyverse, especially with <code>purrr</code></li>
+<li><a href="https://cu-psych-computing.github.io/cu-psych-comp-tutorial/">Columbia Psychology Scientific Computing R tutorials, videos, &amp; challenges</a> (good for getting started with R)</li>
+</ul>
 </div>
 </div>
 
