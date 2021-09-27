@@ -36,17 +36,17 @@ Multiverse analyses are particularly useful when there are [decisions we have to
 1. Do the results from differing, theoretically justifiable, versions of the analyses converge on a consistent finding?
 2. How do different choices we make as analysts of the data influence the results? Which decisions are most influential?
 
-These analyses have been particularly useful with neuroimaging data where there are MANY decisions to be made where we don't have consensus for an "optimal" method. However, multiverse analyses and specification curves equally useful in any topic of research where there are mutiple theoretically justifiable ways an analysis can be done.
+These analyses have been particularly useful with neuroimaging data where there are MANY decisions to be made where we don't have consensus for an "optimal" method. However, multiverse analyses and specification curves equally useful in any topic of research where there are multiple theoretically justifiable ways an analysis can be done.
 
 ## Specification curve analysis steps  
 
-[Simonsohn et al (2020)](https://www.nature.com/articles/s41562-020-0912-z) describe 3 steps for specifiction curve analyses: 
+[Simonsohn et al (2020)](https://www.nature.com/articles/s41562-020-0912-z) describe 3 steps for specification curve analyses: 
 
 1. define the set of reasonable specifications to estimate
 2. estimate all specifications and report the results in a descriptive specification curve
 3. conduct joint statistical tests using an inferential specification curve.
 
-Because the analyses presented here are considered exploratory, we aren't going to cover the inferential procedudes in step #3. For more info on this step, including applying bootstrapping & permutation testing to spec curves, see this [great tutorial from Dani Cosme](https://dcosme.github.io/specification-curves/SCA_tutorial_inferential#4_Inferential_statistics).
+Because the analyses presented here are considered exploratory, we aren't going to cover the inferential procedures in step #3. For more info on this step, including applying bootstrapping & permutation testing to spec curves, see this [great tutorial from Dani Cosme](https://dcosme.github.io/specification-curves/SCA_tutorial_inferential#4_Inferential_statistics).
 
 
 ```{r setup, include=FALSE}
@@ -56,9 +56,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Note: simulated data here only!
 
-**Note:** these data are fake! Under our Institutional Review Board protocol and for the purpose of creating participant identies private, we cannot share our actual data publicly. However, we've [*simulated*](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/7_group_level_analyses/simulate_amygdala_reactivity/simulate_reactivity_data.Rmd) an amygdala reactivity dataset for the purposes of creating a multiverse analysis where the code can actually be run! You can find the simulated data [here](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv)
+**Note:** these data are fake! Under our Institutional Review Board protocol and for the purpose of creating participant identities private, we cannot share our actual data publicly. However, we've [*simulated*](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/7_group_level_analyses/simulate_amygdala_reactivity/simulate_reactivity_data.Rmd) an amygdala reactivity dataset for the purposes of creating a multiverse analysis where the code can actually be run! You can find the simulated data [here](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv)
 
-* Briefly, to create simulated data that *decently* approximates the real data without risk of identifying participants, we created a multivariate regression model using [brms](https://github.com/paul-buerkner/brms), then drew samples from the model's posterior predictive distribution for fear > baseline amygdala reactivity estimates for each study timepoint for each real participant. 
+* Briefly, to create simulated data that *decently* approximates the real data without risk of identifying participants, we created a multivariate regression model using [brms](https://github.com/paul-buerkner/brms), then drew samples from the model's posterior predictive distribution for fear > baseline amygdala reactivity estimates for each study time point for each real participant. 
 * We also scrambled the order of participant IDs and added noise to ages. 
 * So, the data here should do a *reasonable* job of mimicking the *structure* of some of the data analyzed in [Bloom et al](https://osf.io/) without compromising participant data privacy and security. Some of the relationships among variables may differ somewhat from the real data, however. For more on data synthesis for these purposes, check out the [synthpop](https://cran.r-project.org/web/packages/synthpop/vignettes/synthpop.pdf) R package. 
 
@@ -73,12 +73,12 @@ library(cowplot)
 
 Here's what is in each column:
 
-* `id` - participant ID, identifies a participant across timepoints
-* `wave` - the study timepoint (either `1`, `2`, or `3`)
-* `age` - participant age at the given timepoint, in years
+* `id` - participant ID, identifies a participant across time points
+* `wave` - the study time point (either `1`, `2`, or `3`)
+* `age` - participant age at the given time point, in years
 * `block` - the temporal position of the task run relative to other tasks in the scanner (`1` = first, `2` = second, `3` = third)
 * `motion` - head motion (mean framewise displacement), which has been z-scored here
-* `scanner` - whether the data were collected on a first MRI scanner (`1`= timepoints 1 & 2) or a second (`2` = timepoint 3). Both were Siemens Tim Trio
+* `scanner` - whether the data were collected on a first MRI scanner (`1`= time points 1 & 2) or a second (`2` = time point 3). Both were Siemens Tim Trio
 * `prev_studied`- whether this scan was previously analyzed in similar work by [Gee et al (2013)](https://www.jneurosci.org/content/33/10/4584). `1` indicates a scan was previously studied
 
 All of the rest of the columns are measurements of amygdala reactivity to fear faces > baseline for each scan, labeled such that:
@@ -100,13 +100,13 @@ head(fake_data[,1:8])
 
 [specr](https://cran.r-project.org/web/packages/specr/vignettes/specr.html) is a great package with a lot of nice functionality for running specification curve analyses. This wasn't the software we used for the main analyses (because it hadn't yet been released yet), but it's probably the most straightforward way to go for regression-based specification curve analyses. 
 
-## 2A. Define all 'reasonable' specifictions
+## 2A. Define all 'reasonable' specifications
 
 First, we'll need to define what  different 'reasonable' and theoretically justifiable ways there are for doing this analysis of age-related change in amygdala reactivity to fear faces > baseline. For the sake of this project, it isn't computationally feasible to try ALL reasonable ways of doing this analysis, so we can think of this approach as attempting to sample from the space of possible analyses specifications. 
 
 * **Covariates:** it might make sense to adjust for factors like `scanner` and `block` in our group-level model, or different subsets of these. 
 * **Amygdala ROI:** there are several justifiable ways of defining an 'amygdala' brain region, either using a "native space" mask generated through Freesurfer, or by using Harvard-Oxford amygdala estimates in standard space. We could also us right, left, or bilateral amygdala estimates
-* **Estimate type:** Here we pull both from the `beta` images and `tstat` images for 2 different amygdala reactivity estmates. The `beta` is the *contrast parameter estimate* and represents the point estimate (beta estimate) of the regression coefficient. Thus, the the `beta` is the *magnitude* of the estimated relationship between the presence of the task stimuli and the BOLD signal. The `tstat` represents the estimate scaled by the uncertainty (i.e. by the standard error of the estimate), and so it is a *standardized* effect size measure of the relationship between the presence of the task stimuli and the BOLD signal
+* **Estimate type:** Here we pull both from the `beta` images and `tstat` images for 2 different amygdala reactivity estimates. The `beta` is the *contrast parameter estimate* and represents the point estimate (beta estimate) of the regression coefficient. Thus, the `beta` is the *magnitude* of the estimated relationship between the presence of the task stimuli and the BOLD signal. The `tstat` represents the estimate scaled by the uncertainty (i.e. by the standard error of the estimate), and so it is a *standardized* effect size measure of the relationship between the presence of the task stimuli and the BOLD signal
 * **Data inclusion:** Some of the scans studied here were previously analyzed for age-related change in amygdala reactivity by [Gee et al (2013).](https://www.jneurosci.org/content/33/10/4584). So, to get an estimate more independent from the previous work, we might want to exclude these. However, we might have higher statistical power if we include all the available data. 
 
 First, a little data wrangling before modeling. 
@@ -122,7 +122,7 @@ outcomes = names(fake_data)[grepl('amyg', names(fake_data))]
 
 `Specr` has a nice feature of allowing a custom model function. For more detailed info on this, see [here](https://masurp.github.io/specr/articles/random_effects.html).
 
-Here, we set up a multilevel model using the `lme4` package's `lmer()` function to take advangate of varying intercepts for each participant (as denoted by the `(1|id)` syntax in the model formula). We also include a covariate for `motion`, because we want all models to include this covariate for head motion during the scan. We also need to load the `lme4` and `broom.mixed` packages inside the custom model function so that `specr` can use them to run the model and parse the results. 
+Here, we set up a multilevel model using the `lme4` package's `lmer()` function to take advantage of varying intercepts for each participant (as denoted by the `(1|id)` syntax in the model formula). We also include a covariate for `motion` in *the custom formula itself* (rather than later on in the spec curve), because we want *all* models to include this covariate for head motion during the scan. We also need to load the `lme4` and `broom.mixed` packages inside the custom model function so that `specr` can use them to run the model and parse the results. 
 
 ```{r}
 lmer_model_with_motion <- function(formula, data,...) {
@@ -139,7 +139,7 @@ lmer_model_with_motion <- function(formula, data,...) {
 How does this [`run_specs()`](https://masurp.github.io/specr/reference/run_specs.html) function work?
 
 * `df=fake_data`: specifies the data frame to fit the model to
-* `x = 'age'`: the 'x' variable, or predictor of interest in the model. You can have multiple x variables if you want by specificying a vector with multiple values here
+* `x = 'age'`: the 'x' variable, or predictor of interest in the model. You can have multiple x variables if you want by specifying a vector with multiple values here
 * `y = outcomes`: here we specify a vector of multiple outcome variables, the 8 different measures of amygdala reactivity
 * `controls = c('block', 'scanner')`: covariates to include in the model. 
 * `model = 'lmer_model_with_motion'`: specifies the custom model. If you don't need a custom model, there are also defaults, like `"lm"` to run OLS regression
@@ -181,13 +181,13 @@ specr::plot_specs(specs)
 
 This type of plot can be overwhelming at first because it shows us a **lot** of information, but it is really helpful for looking at several different things!
 
-* **Panel A** shows us the regression beta estimates for our `x` predictor (plus 95% confidence intervals) for all of our specifications. Specifications are ordered from least to greatest, and colored such that red indicates a significant negative association, gray indicates a nonsignificant association, and blue (not shown on this plot) indicates a significant positive association. So, here, the majority of the specifications indicate a significant negative estimate (under $\alpha=0.05$, such that the 95% confidence interval excludes 0), suggesting a negative relationship here between age and amygdala reactivity. Here, we can see that the *point estimates* of all the models are negative, indicating that all the models agreed on the *direction* of age-related change, if not the significance.
+* **Panel A** shows us the regression beta estimates for our `x` predictor (plus 95% confidence intervals) for all of our specifications. Specifications are ordered from least to greatest, and colored such that red indicates a significant negative association, gray indicates a non-significant association, and blue (not shown on this plot) indicates a significant positive association. So, here, the majority of the specifications indicate a significant negative estimate (under $\alpha=0.05$, such that the 95% confidence interval excludes 0), suggesting a negative relationship here between age and amygdala reactivity. Here, we can see that the *point estimates* of all the models are negative, indicating that all the models agreed on the *direction* of age-related change, if not the significance.
 * **Panel B** shows us the details for each specification, keeping the coloring schema from Panel A based on estimate direction/significance. So, looking vertically across the both panels tells us specifics about a single model specification. On any given line, a dash (`|`) indicates that the choice marked on the left was made, where a blank space it wasn't made. 
   * The top section `age` indicates that that the `x` variable (the term being examined) in all models was `age`. 
   * In the `y` section below that, dashes on a given line indicate what `y` variable for amygdala reactivity was used in a given specification (note that different choices for `y` are mutually exclusive). 
   * The `model` section indicates that the `lmer_model_with_motion` was the model used in all specifications here. 
   * The `controls`  section shows which covariates were used in each specification, although we should remember here that ALL models had a covariate for head motion built into them (so `no covariates` really means no covariates *other than head motion*)
-  * The bottom section `subsets` indicaates which subset of the data the model was run on, either `all`, or just the `not_studied` group. 
+  * The bottom section `subsets` indicates which subset of the data the model was run on, either `all`, or just the `not_studied` group. 
   
 * So, what is **Panel B** telling us practically? We can see how estimates term of interest differ as a function of different model specification decision points! In general, if specifications tend to show up towards the left side of the graph, this means that the specifications resulted in *more negative* beta estimates (more negative age-related change in amygdala reactivity here), while specifications that tend to show up towards the right side of the graph tended to result in *more positive* beta estimates. Most specifically, we can see that here in the simulated data:
   * Specifications with `ho_right_amyg_tstat` or `ho_right_amyg_beta` as the `y` variable tended to result in the most strongly negative estimates compared to the others (they show up towards the left side)
@@ -219,7 +219,7 @@ The `brm()` function from the [brms](https://cran.r-project.org/web/packages/brm
 brms_model_with_motion <- function(formula, data,...) {
   require(brms)
   require(broom.mixed)
-  # set up the model base formula (basically specr will past all other model info in here)
+  # set up the model base formula (basically specr will paste all other model info in here)
   formula <- paste(formula, "+ motion + (age|id)")
   brms::brm(formula, data, cores = 4)
 }
@@ -269,12 +269,12 @@ specr::plot_specs(all_specs)
 
 # 4. Bayesian specification curves using custom code
 
-`specr` is a super useful tool, but when we were first running specification curve analyses, the package hadn't been released yet. For the analyses in the manuscript, we used mostly functions from the [tidyverse](https://www.tidyverse.org/), especially the [purrr](https://purrr.tidyverse.org/) package for dealing with nesting data, for estimation of many Bayesian models within multiverse analyses (in fact, `specr` is built using `purrr`). For more background on extreme `tidyverse` usage and `purrr`, check out [this walkthrough from Monica Thieu](https://www.monicathieu.com/posts/2020-04-08-tidy-multilevel/).
+`specr` is a super useful tool, but when we were first running specification curve analyses, the package hadn't been released yet. For the analyses in the manuscript, we used mostly functions from the [tidyverse](https://www.tidyverse.org/), especially the [purrr](https://purrr.tidyverse.org/) package for dealing with nested data, for estimation of many Bayesian models within multiverse analyses (in fact, `specr` is built using `purrr`). For more background on extreme `tidyverse` usage and `purrr`, check out [this walkthrough from Monica Thieu](https://www.monicathieu.com/posts/2020-04-08-tidy-multilevel/).
 
 While the methods we used required writing more lines of code, one very helpful thing that `specr` doesn't do automatically is do is to *save the fitted model object for each specification*. Storing the fitted model objects will allow us to do a few useful things:
 
 1. Extract [fitted model predictions](https://www.rdocumentation.org/packages/brms/versions/2.9.0/topics/fitted.brmsfit) (i.e. 'predicting the regression line') for each model within a specification curve. In this case, we might want to be able to plot each model's predictions for amygdala reactivity as a function of age. 
-2. Make specification curves for different parameters within the models, without having to rerun them all. For example, here we'll look at the regression *intercept term* in a specification curver
+2. Make specification curves for different parameters within the models, without having to rerun them all. For example, here we'll look at the regression *intercept term* in a specification curve
 3. Evaluate models more generally, including using posterior predictive checks](http://paul-buerkner.github.io/brms/reference/pp_check.brmsfit.html), or getting [cross-validated model performance metrics](https://paul-buerkner.github.io/brms/reference/loo.brmsfit.html) for individual models
 
 
@@ -308,7 +308,7 @@ fake_data_nested
 
 To keep things a little more concise for the sake of this walkthrough, we'll pare down to a total of 16 specifications for this analysis: 8 amygdala measures (right vs. left, native space vs. Harvard-Oxford, beta vs. tstat) X 2 model types (with participant-varying slopes + intercepts vs. only participant-varying intercepts)
 
-Now, we'll use the `purrr:map()` function inside `dplyr::mutate()`. This is a lot at once, but it allows us to make new columns with `brms` model objects stored in each cell. We use `data` as the first argument to the `purrr:map()` function to tell `brms::brm()` to fid the model to the *nested dataset* stored in each cell of the `data  column. 
+Now, we'll use the `purrr:map()` function inside `dplyr::mutate()`. This is a lot at once, but it allows us to make new columns with `brms` model objects stored in each cell. We use `data` as the first argument to the `purrr:map()` function to tell `brms::brm()` to fit the model to the *nested dataset* stored in each cell of the `data  column. 
 
 Since we are making 2 new columns with `dplyr::mutate()`, one for each of the two model formulations (`model_varying_slopes`, and `model_varying_intercepts`), we'll use `tidyr::pivot_longer()` again to put all models objects into one `model_object` column, with the `model_type` column now indicating whether there are varying slopes or just intercepts. **Note:** this step takes about 15 min (on a 2019 Macbook Pro) because we are running 16 Bayesian models in a row!
 
@@ -327,7 +327,7 @@ nested_model_frame = fake_data_nested %>%
 
 Now that we've run lots of models, we can use `broom.mixed::tidy()` to pull out all the coefficients for each one. This function is just like the [broom::tidy()](https://cran.r-project.org/web/packages/broom/vignettes/broom.html) function, except that it allows us to work with multilevel models (`lme4`, `brms`, or `rstanarm`, for example).
 
-So, well make a new dataframe called `purrr_specs` where we pull the coefficients for each model (again using `purrr::map()` for storing the output in individual cells). Finally, we'll use [tidyr::unnest()](https://tidyr.tidyverse.org/reference/nest.html) to 'flatten' the coefficient output for each model back into regular dataframe colums. In other words, we're taking all of the coefficient information, and making 1 column for each piece of information.  
+So, well make a new dataframe called `purrr_specs` where we pull the coefficients for each model (again using `purrr::map()` for storing the output in individual cells). Finally, we'll use [tidyr::unnest()](https://tidyr.tidyverse.org/reference/nest.html) to 'flatten' the coefficient output for each model back into regular dataframe columns. In other words, we're taking all of the coefficient information, and making 1 column for each piece of information.  
 
 ```{r, cache=TRUE}
 purrr_specs = nested_model_frame %>%
@@ -355,10 +355,10 @@ Now, we want to make our descriptive specification curve plot! We've created a f
 
 It's a chunky function with a lot of code, but overall what it does is this:
 
-* Make `sca_decision_frame`, a dataframe with 1 column for each design point coded as a binary decision, such that there is a `|` to indicate a 'yes' and `NA` to indicate a 'no' (this is important for the bottem panel). This dataframe also creates a `rank` variable to rank specifications by their point estimates, and an `overlap_0` variable to indicate the sign of the point estimate, plus whether the 95% posterior interval overlaps 0
+* Make `sca_decision_frame`, a dataframe with 1 column for each design point coded as a binary decision, such that there is a `|` to indicate a 'yes' and `NA` to indicate a 'no' (this is important for the bottom panel). This dataframe also creates a `rank` variable to rank specifications by their point estimates, and an `overlap_0` variable to indicate the sign of the point estimate, plus whether the 95% posterior interval overlaps 0
 * Convert `sca_decision_frame` to long format, then group decision points into categories for visualization
 * For the top panel, plot `sca_decision_frame` using [ggplot2](https://ggplot2.tidyverse.org/) with the `rank` for each specification on the x-axis and each specification's point estimate + 95% posterior interval on the y axis. We also color each specification according to the sign of the point estimate and whether the 95% posterior interval overlaps 0. Also, add a horizontal dashed line and an additional point/error bar in black to indicate the median estimate across specifications. 
-* For the bottom panel, plot `sca_decision_frame_long` using [ggplot2](https://ggplot2.tidyverse.org/) as well, withspecification `rank` again on the x-axis. This time, the y axis is categorical, with each level representing a different decision point. Then, we use `geom_text(label=choice)`, where `choice` is the variable coded as either `|` or `NA` for each binarized decision point. This will give us a little vertical tick on the plot for each row every time the `choice` was 'yes', and a blank space every time the `choice` was 'no'. So, we'll get 1 row each on the y-axis for each binarized choice, then vertical ticks marking if that choice was made or not. For each choice, we'll also plot a black point + horizontal interval representing the median `rank` and 25%-75% quantiles of the `rank` when the `choice` was 'yes'. 
+* For the bottom panel, plot `sca_decision_frame_long` using [ggplot2](https://ggplot2.tidyverse.org/) as well, with specification `rank` again on the x-axis. This time, the y axis is categorical, with each level representing a different decision point. Then, we use `geom_text(label=choice)`, where `choice` is the variable coded as either `|` or `NA` for each binarized decision point. This will give us a little vertical tick on the plot for each row every time the `choice` was 'yes', and a blank space every time the `choice` was 'no'. So, we'll get 1 row each on the y-axis for each binarized choice, then vertical ticks marking if that choice was made or not. For each choice, we'll also plot a black point + horizontal interval representing the median `rank` and 25%-75% quantiles of the `rank` when the `choice` was 'yes'. 
 * Lastly, we use [cowplot::plot_grid()](https://wilkelab.org/cowplot/articles/plot_grid.html) to vertically align the two panels and label them. Then, we return the data frames & plot objects in a named list. 
 
 **Note:** this is a slightly shortened version of the function intended specifically for amygdala reactivity analyses in the current study. It will have to be somewhat modified to work more generally in other contexts. 
@@ -541,7 +541,7 @@ intercept_spec = make_sca_plot(specs = purrr_specs,
                     plot_title = 'Custom plot for the spec curve for the model *intercepts*')
 ```
 
-This plot shows that all specificationss estimate positive average amygdala reactivity a participant at age 12.3 and mean head motion levels, with 95% posterior intervals excluding 0. 
+This plot shows that all specifications estimate positive average amygdala reactivity a participant at age 12.3 and mean head motion levels, with 95% posterior intervals excluding 0. 
 
 ```{r, fig.width=8, fig.height=8}
 intercept_spec$sca_panel
@@ -549,7 +549,7 @@ intercept_spec$sca_panel
 
 # 5. Get fitted model predictions from the custom `brms` multiverse
 
-Because we've saved the fitted model objects into a nested data frame for each specification in our custom multiverse, we can also *extract fitted predictions* for each model. Here, we'll do this to visualize each model's predictions for averaae amygdala reactivity (for fear faces > baselines) as a function of age. 
+Because we've saved the fitted model objects into a nested data frame for each specification in our custom multiverse, we can also *extract fitted predictions* for each model. Here, we'll do this to visualize each model's predictions for average amygdala reactivity (for fear faces > baselines) as a function of age. 
 
 
 First, we'll define a grid of predictor values for which to make predictions. Here, we'll set `motion=0` (average head motion across the dataset), and `age_center=-8:10` to be able to generate a prediction for a range of ages
@@ -562,7 +562,7 @@ head(pred_grid)
 
 Now, we can use `purrr::map()` again with [stats::fitted()](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/fitted) to generate fitted values (estimates of the [linear predictor](https://mc-stan.org/rstanarm/reference/posterior_linpred.stanreg.html)) for each specification. 
 
-* We'll use the arguments `newdata = pred_grid` to specificy which values of the predictors to generate predictions for, and `re_formula = NA` to indicate not to worry about participant-varying random effects here
+* We'll use the arguments `newdata = pred_grid` to specify which values of the predictors to generate predictions for, and `re_formula = NA` to indicate not to worry about participant-varying random effects here
 * Just like when we pulled the model coefficients with `broom.mixed::tidy()`, the predictions for each specification are nested into cells of the `model_preds` column. We use `tidyr::unnest(model_preds)` to flatten them back out and get a data frame (in long form) of predictions for each model
 
 
@@ -585,7 +585,7 @@ head(purrr_specs_preds)
 
 Now that we've extracted the fitted predictions for each model, we can plot the group-average 'regression line' for each one. 
 
-* Here we'll color the specifications by whether they included particiapnt-varying slopes, or just intercepts. 
+* Here we'll color the specifications by whether they included participant-varying slopes, or just intercepts. 
 * Here, each line represents the model predictions for 1 specification. 
 * This can be a good way to summarize fitted model predictions across a multiverse, even if we can't see the uncertainty about the regression line for any given specification. 
 
@@ -618,7 +618,7 @@ ggplot(data = purrr_specs_preds, aes(x = age, y = Estimate)) +
 
 ## 5C. Plot an individual model's fitted predictions with raw data
 
-As a check of a model's fit, it is often helpful to look at the fitted predictions overplotted on top of the raw datapoints. We can do that by filtering our predictions to just look at one single specification (`amygdala_measure == 'ho_right_amyg_beta'`, `model_type == 'model_varying_slopes'`), then plotting with `ggplot()` with age on the x-axis and estimated amygdala-reactivity on the y-axis, along with the raw data used by that specification. 
+As a check of a model's fit, it is often helpful to look at the fitted predictions overplotted on top of the raw data points. We can do that by filtering our predictions to just look at one single specification (`amygdala_measure == 'ho_right_amyg_beta'`, `model_type == 'model_varying_slopes'`), then plotting with `ggplot()` with age on the x-axis and estimated amygdala-reactivity on the y-axis, along with the raw data used by that specification. 
 
 ```{r}
 one_spec_preds = dplyr::filter(purrr_specs_preds, amygdala_measure == 'ho_right_amyg_beta', model_type == 'model_varying_slopes')
@@ -643,7 +643,7 @@ This is a nice check of our model fits! However, the more specifications we have
 
 ## 6A. Graphical posterior predictive checks
 
-In addition to looking at the coefficients and predicitons from our different specifications, we may also want to perform [posterior predictive checks](https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf) for each one. 
+In addition to looking at the coefficients and predictions from our different specifications, we may also want to perform [posterior predictive checks](https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf) for each one. 
 
 What is a posterior predictive check?
 * We draw a "simulated dataset" from the model's posterior distribution, then compare the overall distribution to the real observed data (see [Gabry et al., 2019](https://arxiv.org/abs/1709.01449)). 
@@ -675,7 +675,7 @@ Again, this is a more descriptive analysis -- it allows us to visually compare w
 
 ## 6B. Approximate leave-one-out (LOO) cross-validation
 
-We might often want to to get a specification curve for the relative model 'goodness-of-fit', or an approximate of predictive performance, for all specifications. We can use [brms::loo()](https://www.rdocumentation.org/packages/brms/versions/2.15.0/topics/loo.brmsfit) to performe approximate leave-one-out (LOO) cross-validation for each model. So, here, well use `purrr::map()` again with `brms:loo()` to get these estimates
+We might often want to to get a specification curve for the relative model 'goodness-of-fit', or an approximate of predictive performance, for all specifications. We can use [brms::loo()](https://www.rdocumentation.org/packages/brms/versions/2.15.0/topics/loo.brmsfit) to perform approximate leave-one-out (LOO) cross-validation for each model. So, here, well use `purrr::map()` again with `brms:loo()` to get these estimates
 
 * This function will give us a cross-validated estimate for the expected log pointwise predictive density, or [ELPD](https://avehtari.github.io/modelselection/CV-FAQ.html), as a metric for the "expected predictive performance" for a model. ELPD as estimated by LOO cross-validation is similar in purpose to the Akaike Information Criterion (AIC), although it takes model priors into account and does not make distributional assumptions about the posterior (see [Vehtari, Gelman, & Gabry, 2017](https://link.springer.com/article/10.1007/s11222-016-9696-4))
 * This function uses Pareto smoothed importance sampling ([Vehtari et al., 2015](https://arxiv.org/abs/1507.02646)) for cross-validation here, which means that unless results are very bad, we won't have to repeatedly refit the Bayesian models (which would take a while)
@@ -733,7 +733,7 @@ Though we can't share the real data used in the current study, hopefully these w
 
 * The [specr](https://github.com/masurp/specr) R package for making specification curves
 * [Dani Cosme's comprehensive SCA tutorial](https://dcosme.github.io/specification-curves/SCA_tutorial_inferential)
-* [Monica Thieu's tutorial](https://www.monicathieu.com/posts/2020-04-08-tidy-multilevel/) on wrangling mulilevel data using the tidyverse, especially with `purrr`
+* [Monica Thieu's tutorial](https://www.monicathieu.com/posts/2020-04-08-tidy-multilevel/) on wrangling multilevel data using the tidyverse, especially with `purrr`
 * [Columbia Psychology Scientific Computing R tutorials, videos, & challenges](https://cu-psych-computing.github.io/cu-psych-comp-tutorial/) (good for getting started with R)
 
 ## R session info
