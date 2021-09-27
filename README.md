@@ -14,17 +14,17 @@ Analysis scripts and documentation for this project, and README files within eac
 
 | Sub-directory      | Contents |
 | ----------- | ----------- |
-| 0_setup_and_behavioral_analyses      | Compiling behavioral files collected in the scanner, making onset timing files, task behavior analyses       |
+| [0_setup_and_behavioral_analyses](0_setup_and_behavioral_analyses/REAME.md)      | Compiling behavioral files collected in the scanner, making onset timing files, task behavior analyses       |
 | 1_head_motion   | In-scanner head motion assessment        |
 | 2_prereg_level1      | Pre-registered FSL preprocessing pipeline      |
 | 3_pull_prereg_roi  | Get amygdala reactivity estimates (native & MNI space) for preregistered pipelin  |
 | 4_gppi     | Run generalized psychophysiological interaction models for task-based amygdala functional connectivity       |
 | 5_beta_series_correlation  | Run beta series correlations for task-based amygdala functional connectivity         |
-| 6_multiverse_cpac_preproc      | Title       |
-| 7_group_level_aanalyses  | Text        |
-| 8_interactive_multiverse_app      | Title       |
-| 9_specification_curve_walkthrough  | Text        |
-| docs  | Text        |
+| 6_multiverse_cpac_preproc      | Run forked C-PAC preprocessing and FSL/AFNI GLM models to create proc multiverse       |
+| 7_group_level_aanalyses  | Run all group-level analyses involving the fMRI data to make specification curves      |
+| 8_interactive_multiverse_app      | Code for shiny application       |
+| 9_specification_curve_walkthrough  | Markdown files for spec curve tutorial & simulated amygdala reactivity dataset |
+
 
 Analysis code written by Paul A. Bloom
 
