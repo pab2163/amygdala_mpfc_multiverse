@@ -14,7 +14,7 @@ Analysis scripts and documentation for this project, and README files within eac
 
 | Sub-directory      | Contents |
 | ----------- | ----------- |
-| [0_setup_and_behavioral_analyses](0_setup_and_behavioral_analyses/README.md)      | Compiling behavioral files collected in the scanner, making onset timing files, task behavior analyses       |
+| [0_setup_and_behavioral_analyses](0_setup_and_behavioral_analyses/)      | Compiling behavioral files collected in the scanner, making onset timing files, task behavior analyses       |
 | 1_head_motion   | In-scanner head motion assessment        |
 | 2_prereg_level1      | Pre-registered FSL preprocessing pipeline      |
 | 3_pull_prereg_roi  | Get amygdala reactivity estimates (native & MNI space) for preregistered pipelin  |
