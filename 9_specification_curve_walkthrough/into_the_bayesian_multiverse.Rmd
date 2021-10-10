@@ -8,7 +8,7 @@ author: "Paul A. Bloom"
 Welcome! This document serves 2 purposes:
 
 1. Provide a walkthough for anyone potentially interested in conducting multiverse analyses (or specification curves), especially when considering Bayesian models or fMRI data. 
-2. Serve as documentation for analysis code for [Bloom et al., 2021](https://osf.io/) with code that can  be run using *simulated data* (i.e. fake data), since we cannot share the data publicly. Note: the simulated data & corresponding code walkthrough are specifically for amygdala reactivity analyses for the fear > baseline contrast.
+2. Serve as documentation for analysis code for [Bloom et al., 2021](https://www.biorxiv.org/content/10.1101/2021.10.08.463601v1) with code that can  be run using *simulated data* (i.e. fake data), since we cannot share the data publicly. Note: the simulated data & corresponding code walkthrough are specifically for amygdala reactivity analyses for the fear > baseline contrast.
 
 Want to try the code out yourself? You can clone the [Github repo](https://github.com/pab2163/amygdala_mpfc_multiverse), or download the [simulated data](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/docs/simulated_amygdala_reactivity.csv) and the [into_the_bayesian_multiverse.Rmd](https://github.com/pab2163/amygdala_mpfc_multiverse/blob/master/9_specification_curve_walkthrough/into_the_bayesian_multiverse.Rmd) file to run & experiment with the code.
 
@@ -60,7 +60,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 * Briefly, to create simulated data that *decently* approximates the real data without risk of identifying participants, we created a multivariate regression model using [brms](https://github.com/paul-buerkner/brms), then drew samples from the model's posterior predictive distribution for fear > baseline amygdala reactivity estimates for each study time point for each real participant. 
 * We also scrambled the order of participant IDs and added noise to ages. 
-* So, the data here should do a *reasonable* job of mimicking the *structure* of some of the data analyzed in [Bloom et al](https://osf.io/) without compromising participant data privacy and security. Some of the relationships among variables may differ somewhat from the real data, however. For more on data synthesis for these purposes, check out the [synthpop](https://cran.r-project.org/web/packages/synthpop/vignettes/synthpop.pdf) R package. 
+* So, the data here should do a *reasonable* job of mimicking the *structure* of some of the data analyzed in [Bloom et al. (2021)](https://www.biorxiv.org/content/10.1101/2021.10.08.463601v1) without compromising participant data privacy and security. Some of the relationships among variables may differ somewhat from the real data, however. For more on data synthesis for these purposes, check out the [synthpop](https://cran.r-project.org/web/packages/synthpop/vignettes/synthpop.pdf) R package. 
 
 # 1. Read in the data
 
@@ -269,7 +269,7 @@ specr::plot_specs(all_specs)
 
 # 4. Bayesian specification curves using custom code
 
-`specr` is a super useful tool, but when we were first running specification curve analyses, the package hadn't been released yet. For the analyses in the manuscript, we used mostly functions from the [tidyverse](https://www.tidyverse.org/), especially the [purrr](https://purrr.tidyverse.org/) package for dealing with nested data, for estimation of many Bayesian models within multiverse analyses (in fact, `specr` is built using `purrr`). For more background on extreme `tidyverse` usage and `purrr`, check out [this walkthrough from Monica Thieu](https://www.monicathieu.com/posts/2020-04-08-tidy-multilevel/).
+`specr` is a super useful tool, but when we were first running specification curve analyses, the package hadn't been released yet. For the analyses in the [manuscript](https://www.biorxiv.org/content/10.1101/2021.10.08.463601v1), we used mostly functions from the [tidyverse](https://www.tidyverse.org/), especially the [purrr](https://purrr.tidyverse.org/) package for dealing with nested data, for estimation of many Bayesian models within multiverse analyses (in fact, `specr` is built using `purrr`). For more background on extreme `tidyverse` usage and `purrr`, check out [this walkthrough from Monica Thieu](https://www.monicathieu.com/posts/2020-04-08-tidy-multilevel/).
 
 While the methods we used required writing more lines of code, one very helpful thing that `specr` doesn't do automatically is do is to *save the fitted model object for each specification*. Storing the fitted model objects will allow us to do a few useful things:
 
