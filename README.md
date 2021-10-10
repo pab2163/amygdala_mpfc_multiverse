@@ -17,7 +17,7 @@ Analysis scripts and documentation for this project, and README files within eac
 | [0_setup_and_behavioral_analyses](0_setup_and_behavioral_analyses)      | Compiling behavioral files collected in the scanner, making onset timing files, task behavior analyses       |
 | [1_head_motion](1_head_motion)   | In-scanner head motion assessment        |
 | [2_prereg_level1](2_prereg_level1)      | Pre-registered FSL preprocessing pipeline      |
-| [3_pull_prereg_roi](3_pull_prereg_roi)  | Get amygdala reactivity estimates (native & MNI space) for preregistered pipelin  |
+| [3_pull_prereg_roi](3_pull_prereg_roi)  | Get amygdala reactivity estimates (native & MNI space) for preregistered pipeline  |
 | [4_gppi](4_gppi)     | Run generalized psychophysiological interaction models for task-based amygdala functional connectivity       |
 | [5_beta_series_correlation](5_beta_series_correlation)  | Run beta series correlations for task-based amygdala functional connectivity         |
 | [6_multiverse_cpac_preproc](6_multiverse_cpac_preproc)      | Run forked C-PAC preprocessing and FSL/AFNI GLM models to create proc multiverse       |
