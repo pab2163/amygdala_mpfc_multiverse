@@ -492,18 +492,20 @@ library(cowplot)</code></pre>
 ## 6     7     1  5.83     1  1.18        1           NA           -0.817</code></pre>
 <div id="a.-accelerated-longitudinal-study-design" class="section level2">
 <h2>1A. Accelerated Longitudinal Study Design</h2>
-<p>Here’s a plot displaying when each (fake) participant came in for visits. The x-axis indicates the age of the participants at each visit, and participants (on the y-axis) are ordered by the age at their first study visit. Horizontal lines connecting dots indicate the multiple study visits over time for the same participant (although some participants only completed 1 visit)</p>
+<p>Here’s a plot displaying when each (fake) participant came in for visits. The x-axis indicates the age of the participants at each visit, and participants (on the y-axis) are ordered by the age at their first study visit (<code>min_age</code>). Horizontal lines connecting dots indicate the multiple study visits over time for the same participant (although some participants only completed 1 visit)</p>
 <pre class="r"><code>designPlot = dplyr::mutate(fake_data, wave = as.factor(wave)) %&gt;%
-  ggplot(aes(x = age, y = forcats::fct_reorder(as.factor(id), age))) +
-  geom_line(aes(group = id)) + 
-  geom_point(aes(color = wave)) +
-  theme_bw() + theme(axis.text.y = element_blank(), panel.grid.major = element_blank()) +
-  labs(y = &#39;Participants&#39;, x = &#39;Age at visit&#39;) +
-  guides(color = guide_legend(title = &#39;Study Wave&#39;)) +
-  theme(text = element_text(face = &#39;bold&#39;),
-        axis.ticks.y=element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
+  dplyr::group_by(id) %&gt;%
+  dplyr::mutate(min_age = min(age)) %&gt;%
+  ggplot(aes(x = age, y = forcats::fct_reorder(as.factor(id), min_age))) +
+    geom_line(aes(group = id)) + 
+    geom_point(aes(color = wave)) +
+    theme_bw() + theme(axis.text.y = element_blank(), panel.grid.major = element_blank()) +
+    labs(y = &#39;Participants&#39;, x = &#39;Age at visit&#39;) +
+    guides(color = guide_legend(title = &#39;Study Wave&#39;)) +
+    theme(text = element_text(face = &#39;bold&#39;),
+          axis.ticks.y=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
 
 designPlot</code></pre>
 <p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
@@ -1165,22 +1167,22 @@ loo_cv_grid$elpd_loo_se = as.numeric(loo_unnest$loo_cv[,2][row.names(loo_unnest$
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] broom.mixed_0.2.4  lme4_1.1-21        Matrix_1.2-18      cowplot_1.0.0     
-##  [5] brms_2.12.0        Rcpp_1.0.7         specr_0.2.2        forcats_0.4.0     
-##  [9] stringr_1.4.0      dplyr_1.0.3        purrr_0.3.3        readr_1.3.1       
-## [13] tidyr_1.0.2        tibble_3.1.2       ggplot2_3.3.3.9000 tidyverse_1.3.0   
+##  [1] cowplot_1.0.0      brms_2.12.0        Rcpp_1.0.7         specr_0.2.2       
+##  [5] forcats_0.4.0      stringr_1.4.0      dplyr_1.0.3        purrr_0.3.3       
+##  [9] readr_1.3.1        tidyr_1.0.2        tibble_3.1.2       ggplot2_3.3.3.9000
+## [13] tidyverse_1.3.0   
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] readxl_1.3.1         backports_1.1.5      plyr_1.8.5          
-##   [4] igraph_1.2.4.2       TMB_1.7.16           splines_3.6.2       
-##   [7] crosstalk_1.0.0      rstantools_2.0.0     inline_0.3.15       
-##  [10] digest_0.6.27        htmltools_0.4.0      viridis_0.5.1       
-##  [13] rsconnect_0.8.16     fansi_0.5.0          magrittr_2.0.1      
-##  [16] graphlayouts_0.7.1   modelr_0.1.5         RcppParallel_4.4.4  
-##  [19] matrixStats_0.55.0   xts_0.12-0           prettyunits_1.1.1   
-##  [22] colorspace_2.0-1     rvest_0.3.5          ggrepel_0.8.1       
-##  [25] haven_2.2.0          xfun_0.19            callr_3.4.2         
-##  [28] crayon_1.4.1         jsonlite_1.6.1       zoo_1.8-7           
+##   [4] igraph_1.2.4.2       splines_3.6.2        crosstalk_1.0.0     
+##   [7] rstantools_2.0.0     inline_0.3.15        digest_0.6.27       
+##  [10] htmltools_0.4.0      viridis_0.5.1        rsconnect_0.8.16    
+##  [13] fansi_0.5.0          magrittr_2.0.1       graphlayouts_0.7.1  
+##  [16] modelr_0.1.5         RcppParallel_4.4.4   matrixStats_0.55.0  
+##  [19] xts_0.12-0           prettyunits_1.1.1    colorspace_2.0-1    
+##  [22] rvest_0.3.5          ggrepel_0.8.1        haven_2.2.0         
+##  [25] xfun_0.19            callr_3.4.2          crayon_1.4.1        
+##  [28] jsonlite_1.6.1       lme4_1.1-21          zoo_1.8-7           
 ##  [31] glue_1.4.2           polyclip_1.10-0      gtable_0.3.0        
 ##  [34] V8_3.0.1             pkgbuild_1.0.6       rstan_2.21.1        
 ##  [37] abind_1.4-5          scales_1.1.1         mvtnorm_1.1-0       
@@ -1201,16 +1203,17 @@ loo_cv_grid$elpd_loo_se = as.numeric(loo_unnest$loo_cv[,2][row.names(loo_unnest$
 ##  [82] shinythemes_1.2.0    rstudioapi_0.10      curl_4.3            
 ##  [85] reprex_0.3.0         tweenr_1.0.1         stringi_1.4.6       
 ##  [88] ps_1.3.2             Brobdingnag_1.2-6    lattice_0.20-38     
-##  [91] nloptr_1.2.1         markdown_1.1         shinyjs_1.1         
-##  [94] vctrs_0.3.8          pillar_1.6.1         lifecycle_1.0.0     
-##  [97] bridgesampling_1.0-0 httpuv_1.5.2         R6_2.5.0            
-## [100] promises_1.1.0       gridExtra_2.3        codetools_0.2-16    
-## [103] boot_1.3-23          colourpicker_1.0     MASS_7.3-51.4       
-## [106] gtools_3.8.1         assertthat_0.2.1     withr_2.4.2         
-## [109] shinystan_2.5.0      parallel_3.6.2       hms_0.5.3           
-## [112] grid_3.6.2           coda_0.19-3          minqa_1.2.4         
-## [115] rmarkdown_2.1        ggforce_0.3.1        shiny_1.4.0         
-## [118] lubridate_1.7.4      base64enc_0.1-3      dygraphs_1.1.1.6</code></pre>
+##  [91] Matrix_1.2-18        nloptr_1.2.1         markdown_1.1        
+##  [94] shinyjs_1.1          vctrs_0.3.8          pillar_1.6.1        
+##  [97] lifecycle_1.0.0      bridgesampling_1.0-0 httpuv_1.5.2        
+## [100] R6_2.5.0             promises_1.1.0       gridExtra_2.3       
+## [103] codetools_0.2-16     boot_1.3-23          colourpicker_1.0    
+## [106] MASS_7.3-51.4        gtools_3.8.1         assertthat_0.2.1    
+## [109] withr_2.4.2          shinystan_2.5.0      parallel_3.6.2      
+## [112] hms_0.5.3            grid_3.6.2           coda_0.19-3         
+## [115] minqa_1.2.4          rmarkdown_2.1        ggforce_0.3.1       
+## [118] shiny_1.4.0          lubridate_1.7.4      base64enc_0.1-3     
+## [121] dygraphs_1.1.1.6</code></pre>
 </div>
 </div>
 

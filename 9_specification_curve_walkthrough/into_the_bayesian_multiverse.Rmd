@@ -96,21 +96,22 @@ head(fake_data[,1:8])
 
 ## 1A. Accelerated Longitudinal Study Design
 
-
-Here's a plot displaying when each (fake) participant came in for visits. The x-axis indicates the age of the participants at each visit, and participants (on the y-axis) are ordered by the age at their first study visit. Horizontal lines connecting dots indicate the multiple study visits over time for the same participant (although some participants only completed 1 visit)
+Here's a plot displaying when each (fake) participant came in for visits. The x-axis indicates the age of the participants at each visit, and participants (on the y-axis) are ordered by the age at their first study visit (`min_age`). Horizontal lines connecting dots indicate the multiple study visits over time for the same participant (although some participants only completed 1 visit)
 
 ```{r}
 designPlot = dplyr::mutate(fake_data, wave = as.factor(wave)) %>%
-  ggplot(aes(x = age, y = forcats::fct_reorder(as.factor(id), age))) +
-  geom_line(aes(group = id)) + 
-  geom_point(aes(color = wave)) +
-  theme_bw() + theme(axis.text.y = element_blank(), panel.grid.major = element_blank()) +
-  labs(y = 'Participants', x = 'Age at visit') +
-  guides(color = guide_legend(title = 'Study Wave')) +
-  theme(text = element_text(face = 'bold'),
-        axis.ticks.y=element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
+  dplyr::group_by(id) %>%
+  dplyr::mutate(min_age = min(age)) %>%
+  ggplot(aes(x = age, y = forcats::fct_reorder(as.factor(id), min_age))) +
+    geom_line(aes(group = id)) + 
+    geom_point(aes(color = wave)) +
+    theme_bw() + theme(axis.text.y = element_blank(), panel.grid.major = element_blank()) +
+    labs(y = 'Participants', x = 'Age at visit') +
+    guides(color = guide_legend(title = 'Study Wave')) +
+    theme(text = element_text(face = 'bold'),
+          axis.ticks.y=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
 
 designPlot
 ```
