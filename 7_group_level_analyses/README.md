@@ -1,6 +1,8 @@
 # Group-level analses
 
-Lots of code in here! Most broadly:
+There is a *lot* of code in the subfolders here! While the below documentation describes where to find different pieces, for demonstration purposes we have provided simulated data & code that can be run with it that accomplishes many of the sama analyses [here](https://pab2163.github.io/amygdala_mpfc_multiverse/into_the_bayesian_multiverse.html.)
+
+Some documentation on how code is organized here:
 
 ## `0_compile_data`
 

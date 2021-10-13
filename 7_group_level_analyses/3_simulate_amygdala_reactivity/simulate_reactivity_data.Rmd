@@ -63,8 +63,6 @@ ggplot(sim_df, aes(x = age,
 ```
 
 ```{r}
-#sim_df$pred  = as.vector(predict(m, newdata = sim_df, summary = FALSE)[2000, ])
-
 g = predict(m, newdata = sim_df, summary = FALSE, allow_new_levels = TRUE)
 
 preds = as.data.frame(g[2000, ,])
