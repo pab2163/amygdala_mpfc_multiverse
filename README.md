@@ -31,3 +31,13 @@ Analysis code written by Paul A. Bloom
 ## Questions? 
 
 Email *paul.bloom@columbia.edu*
+
+## Software & Versions
+
+Computing was carried out using MacOs Mojave via a MacBook Pro 2019 laptop, a lab server (Ubuntu 18.04.4 LTS (GNU/Linux 4.15.0-154-generic x86_64)), and Columbia University's [Habanero Research Computing Cluster](https://confluence.columbia.edu/confluence/display/rcs/Habanero+HPC+Cluster+User+Documentation). 
+
+* Python 3.4
+* R 3.6.2
+* FSL v6.00
+* AFNI 20.1.16
+* C-PAC 1.4.1 
