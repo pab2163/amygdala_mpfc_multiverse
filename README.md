@@ -1,6 +1,6 @@
 # Age-related change in task-evoked amygdala-prefrontal circuitry: a multiverse approach with an accelerated longitudinal cohort aged 4-22 years
 
-Analysis scripts and documentation for this project, and README files within each sub-directory give more detailed information on how each step was carried out (and where to find the code). 
+Analysis scripts (R, python, and shell) and documentation for this project, and README files within each sub-directory give more detailed information on how each step was carried out (and where to find the code). 
 
 ## Links:
 
@@ -23,7 +23,7 @@ Analysis scripts and documentation for this project, and README files within eac
 | [6_multiverse_cpac_preproc](6_multiverse_cpac_preproc)      | Run forked C-PAC preprocessing and FSL/AFNI GLM models to create proc multiverse       |
 | [7_group_level_aanalyses](7_group_level_aanalyses)  | Run all group-level analyses involving the fMRI data to make specification curves      |
 | [8_interactive_multiverse_app](8_interactive_multiverse_app)      | Code for [shiny application](https://pbloom.shinyapps.io/amygdala_mpfc_multiverse/)       |
-| [9_specification_curve_walkthrough](9_specification_curve_walkthrough)  | Markdown files for spec curve tutorial & simulated amygdala reactivity dataset |
+| [9_specification_curve_walkthrough](9_specification_curve_walkthrough)  | Markdown files for [specification curve tutorial](https://pab2163.github.io/amygdala_mpfc_multiverse/into_the_bayesian_multiverse.html) & simulated amygdala reactivity dataset |
 
 
 Analysis code written by Paul A. Bloom
