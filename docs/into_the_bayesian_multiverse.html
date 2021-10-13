@@ -490,6 +490,24 @@ library(cowplot)</code></pre>
 ## 4     2     3 19.4      1  0.063       2           NA           -0.230  
 ## 5     3     1 22.7      2 -0.986       1           NA            0.00908
 ## 6     7     1  5.83     1  1.18        1           NA           -0.817</code></pre>
+<div id="a.-accelerated-longitudinal-study-design" class="section level2">
+<h2>1A. Accelerated Longitudinal Study Design</h2>
+<p>Here’s a plot displaying when each (fake) participant came in for visits. The x-axis indicates the age of the participants at each visit, and participants (on the y-axis) are ordered by the age at their first study visit. Horizontal lines connecting dots indicate the multiple study visits over time for the same participant (although some participants only completed 1 visit)</p>
+<pre class="r"><code>designPlot = dplyr::mutate(fake_data, wave = as.factor(wave)) %&gt;%
+  ggplot(aes(x = age, y = forcats::fct_reorder(as.factor(id), age))) +
+  geom_line(aes(group = id)) + 
+  geom_point(aes(color = wave)) +
+  theme_bw() + theme(axis.text.y = element_blank(), panel.grid.major = element_blank()) +
+  labs(y = &#39;Participants&#39;, x = &#39;Age at visit&#39;) +
+  guides(color = guide_legend(title = &#39;Study Wave&#39;)) +
+  theme(text = element_text(face = &#39;bold&#39;),
+        axis.ticks.y=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+designPlot</code></pre>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
 </div>
 <div id="specification-curve-specr-version" class="section level1">
 <h1>2. Specification curve: <code>specr</code> version</h1>
@@ -576,7 +594,7 @@ outcomes = names(fake_data)[grepl(&#39;amyg&#39;, names(fake_data))]</code></pre
 <div id="e.-plot-the-specification-curve" class="section level2">
 <h2>2E. Plot the specification curve</h2>
 <pre class="r"><code>specr::plot_specs(specs)</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-8-1.png" width="768" /></p>
 <p>This type of plot can be overwhelming at first because it shows us a <strong>lot</strong> of information, but it is really helpful for looking at several different things!</p>
 <ul>
 <li><strong>Panel A</strong> shows us the regression beta estimates for our <code>x</code> predictor (plus 95% confidence intervals) for all of our specifications. Specifications are ordered from least to greatest, and colored such that red indicates a significant negative association, gray indicates a non-significant association, and blue (not shown on this plot) indicates a significant positive association. So, here, the majority of the specifications indicate a significant negative estimate (under <span class="math inline">\(\alpha=0.05\)</span>, such that the 95% confidence interval excludes 0), suggesting a negative relationship here between age and amygdala reactivity. Here, we can see that the <em>point estimates</em> of all the models are negative, indicating that all the models agreed on the <em>direction</em> of age-related change, if not the significance.</li>
@@ -599,7 +617,7 @@ outcomes = names(fake_data)[grepl(&#39;amyg&#39;, names(fake_data))]</code></pre
 <h2>2F. View the multiverse decision tree</h2>
 <p><code>specr</code> also gives us a nice <code>plot_decisiontree()</code> function for summarizing what our specifications are, and how many of them there are</p>
 <pre class="r"><code>specr::plot_decisiontree(specs, legend = TRUE)</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
 </div>
 <div id="a-bayesian-specification-curve-with-specr-and-brms" class="section level1">
@@ -638,16 +656,16 @@ outcomes = names(fake_data)[grepl(&#39;amyg&#39;, names(fake_data))]</code></pre
 <pre><code>## # A tibble: 64 x 15
 ##    x     y     model controls effect component group estimate std.error conf.low
 ##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 age   ho_r… brms… block    fixed  cond      &lt;NA&gt;   -0.0393    0.0160  -0.0702
-##  2 age   ho_l… brms… block    fixed  cond      &lt;NA&gt;   -0.0374    0.0149  -0.0660
-##  3 age   ho_r… brms… block    fixed  cond      &lt;NA&gt;   -0.0416    0.0156  -0.0724
-##  4 age   ho_l… brms… block    fixed  cond      &lt;NA&gt;   -0.0288    0.0140  -0.0561
-##  5 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0273    0.0171  -0.0608
-##  6 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0295    0.0167  -0.0613
-##  7 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0293    0.0167  -0.0619
-##  8 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0258    0.0148  -0.0553
-##  9 age   ho_r… brms… scanner  fixed  cond      &lt;NA&gt;   -0.0381    0.0158  -0.0673
-## 10 age   ho_l… brms… scanner  fixed  cond      &lt;NA&gt;   -0.0379    0.0153  -0.0682
+##  1 age   ho_r… brms… block    fixed  cond      &lt;NA&gt;   -0.0386    0.0156  -0.0681
+##  2 age   ho_l… brms… block    fixed  cond      &lt;NA&gt;   -0.0383    0.0154  -0.0677
+##  3 age   ho_r… brms… block    fixed  cond      &lt;NA&gt;   -0.0405    0.0152  -0.0704
+##  4 age   ho_l… brms… block    fixed  cond      &lt;NA&gt;   -0.0287    0.0147  -0.0568
+##  5 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0264    0.0175  -0.0601
+##  6 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0284    0.0165  -0.0601
+##  7 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0294    0.0171  -0.0622
+##  8 age   nati… brms… block    fixed  cond      &lt;NA&gt;   -0.0261    0.0153  -0.0563
+##  9 age   ho_r… brms… scanner  fixed  cond      &lt;NA&gt;   -0.0385    0.0156  -0.0696
+## 10 age   ho_l… brms… scanner  fixed  cond      &lt;NA&gt;   -0.0374    0.0157  -0.0677
 ## # … with 54 more rows, and 5 more variables: conf.high &lt;dbl&gt;,
 ## #   fit_algorithm &lt;chr&gt;, fit_pss &lt;dbl&gt;, fit_nobs &lt;int&gt;, subsets &lt;chr&gt;</code></pre>
 </div>
@@ -655,7 +673,7 @@ outcomes = names(fake_data)[grepl(&#39;amyg&#39;, names(fake_data))]</code></pre
 <h2>3D. Plot Bayesian specification curve</h2>
 <p>With the Bayesian models including participant-varying age terms, results are largely similar to before. The main difference is that a slightly larger proportion of the 95% posterior intervals overlap with 0 than with the previous models without participant-varying age terms.</p>
 <pre class="r"><code>specr::plot_specs(brms_specs)</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-13-1.png" width="768" /></p>
 </div>
 <div id="e.-plot-specification-curve-with-brms-and-lme4-models-together" class="section level2">
 <h2>3E. Plot specification curve with <code>brms</code> and <code>lme4</code> models together</h2>
@@ -663,7 +681,7 @@ outcomes = names(fake_data)[grepl(&#39;amyg&#39;, names(fake_data))]</code></pre
 <pre class="r"><code># columns are slightly different depending on the model type, so use rbind.fill() to deal with this
 all_specs = plyr::rbind.fill(specs, brms_specs)
 specr::plot_specs(all_specs)</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-13-1.png" width="768" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-14-1.png" width="768" /></p>
 </div>
 </div>
 <div id="bayesian-specification-curves-using-custom-code" class="section level1">
@@ -745,15 +763,15 @@ fake_data_nested</code></pre>
 ##    amygdala_measure  index model_type    effect component group term    estimate
 ##    &lt;chr&gt;             &lt;int&gt; &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;
 ##  1 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  (Inter…   0.597 
-##  2 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  age_ce…  -0.0410
-##  3 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  motion   -0.299 
-##  4 ho_right_amyg_be…     1 model_varyin… ran_p… cond      id    sd__(I…   0.161 
-##  5 ho_right_amyg_be…     1 model_varyin… ran_p… cond      id    sd__age   0.0120
-##  6 ho_right_amyg_be…     1 model_varyin… ran_p… cond      id    cor__(…  -0.302 
-##  7 ho_right_amyg_be…     1 model_varyin… ran_p… cond      Resi… sd__Ob…   0.742 
-##  8 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  (Inter…   0.591 
-##  9 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  age_ce…  -0.0420
-## 10 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  motion   -0.298 
+##  2 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  age_ce…  -0.0412
+##  3 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  motion   -0.298 
+##  4 ho_right_amyg_be…     1 model_varyin… ran_p… cond      id    sd__(I…   0.168 
+##  5 ho_right_amyg_be…     1 model_varyin… ran_p… cond      id    sd__age   0.0127
+##  6 ho_right_amyg_be…     1 model_varyin… ran_p… cond      id    cor__(…  -0.330 
+##  7 ho_right_amyg_be…     1 model_varyin… ran_p… cond      Resi… sd__Ob…   0.741 
+##  8 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  (Inter…   0.593 
+##  9 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  age_ce…  -0.0419
+## 10 ho_right_amyg_be…     1 model_varyin… fixed  cond      &lt;NA&gt;  motion   -0.299 
 ## # … with 86 more rows, and 3 more variables: std.error &lt;dbl&gt;, conf.low &lt;dbl&gt;,
 ## #   conf.high &lt;dbl&gt;</code></pre>
 <p>If we want to make this look almost like the <code>specr</code> output, we can filter for the model term we’re looking for. In this case, <code>age_center</code> is the parameter of primary interest for looking at age-related change in amygdala reactivity for the fear &gt; baseline contrast.</p>
@@ -763,22 +781,22 @@ purrr_specs_age</code></pre>
 ## # Groups:   amygdala_measure [8]
 ##    amygdala_measure   index model_type    effect component group term   estimate
 ##    &lt;chr&gt;              &lt;int&gt; &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;
-##  1 ho_right_amyg_beta     1 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0410
-##  2 ho_right_amyg_beta     1 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0420
-##  3 ho_left_amyg_beta      2 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0414
-##  4 ho_left_amyg_beta      2 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0418
+##  1 ho_right_amyg_beta     1 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0412
+##  2 ho_right_amyg_beta     1 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0419
+##  3 ho_left_amyg_beta      2 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0417
+##  4 ho_left_amyg_beta      2 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0423
 ##  5 ho_right_amyg_tst…     3 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0422
-##  6 ho_right_amyg_tst…     3 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0427
-##  7 ho_left_amyg_tstat     4 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0322
+##  6 ho_right_amyg_tst…     3 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0431
+##  7 ho_left_amyg_tstat     4 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0323
 ##  8 ho_left_amyg_tstat     4 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0321
-##  9 native_right_amyg…     5 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0294
-## 10 native_right_amyg…     5 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0308
-## 11 native_left_amyg_…     6 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0303
-## 12 native_left_amyg_…     6 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0313
-## 13 native_right_amyg…     7 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0300
-## 14 native_right_amyg…     7 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0316
-## 15 native_left_amyg_…     8 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0265
-## 16 native_left_amyg_…     8 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0272
+##  9 native_right_amyg…     5 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0297
+## 10 native_right_amyg…     5 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0311
+## 11 native_left_amyg_…     6 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0301
+## 12 native_left_amyg_…     6 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0311
+## 13 native_right_amyg…     7 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0304
+## 14 native_right_amyg…     7 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0319
+## 15 native_left_amyg_…     8 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0260
+## 16 native_left_amyg_…     8 model_varyin… fixed  cond      &lt;NA&gt;  age_c…  -0.0275
 ## # … with 3 more variables: std.error &lt;dbl&gt;, conf.low &lt;dbl&gt;, conf.high &lt;dbl&gt;</code></pre>
 </div>
 <div id="e.-custom-sca-plot-function" class="section level2">
@@ -948,7 +966,7 @@ purrr_specs_age</code></pre>
                   plot_title = &#39;Custom plot for simulated data spec curve&#39;)</code></pre>
 <p>Then display the <code>sca_panel</code>. Although this is a slightly different set of specifications to the previous curves, we can see that the results are pretty similar – most specifications show negative age-related change estimates.</p>
 <pre class="r"><code>age_center_spec_curve$sca_panel</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-22-1.png" width="768" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-23-1.png" width="768" /></p>
 </div>
 <div id="g.-a-spec-curve-for-the-model-intercept" class="section level2">
 <h2>4G. A spec curve for the model intercept</h2>
@@ -960,7 +978,7 @@ purrr_specs_age</code></pre>
                     plot_title = &#39;Custom plot for the spec curve for the model *intercepts*&#39;)</code></pre>
 <p>This plot shows that all specifications estimate positive average amygdala reactivity a participant at age 12.3 and mean head motion levels, with 95% posterior intervals excluding 0.</p>
 <pre class="r"><code>intercept_spec$sca_panel</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-24-1.png" width="768" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-25-1.png" width="768" /></p>
 </div>
 </div>
 <div id="get-fitted-model-predictions-from-the-custom-brms-multiverse" class="section level1">
@@ -994,12 +1012,12 @@ head(pred_grid)</code></pre>
 ## # Groups:   amygdala_measure [1]
 ##   amygdala_measure  index model_type  age_center motion   age Estimate Est.Error
 ##   &lt;chr&gt;             &lt;int&gt; &lt;chr&gt;            &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
-## 1 ho_right_amyg_be…     1 model_vary…         -8      0  4.25    0.925    0.125 
-## 2 ho_right_amyg_be…     1 model_vary…         -7      0  5.25    0.884    0.113 
-## 3 ho_right_amyg_be…     1 model_vary…         -6      0  6.25    0.843    0.101 
-## 4 ho_right_amyg_be…     1 model_vary…         -5      0  7.25    0.802    0.0902
-## 5 ho_right_amyg_be…     1 model_vary…         -4      0  8.25    0.761    0.0802
-## 6 ho_right_amyg_be…     1 model_vary…         -3      0  9.25    0.720    0.0715
+## 1 ho_right_amyg_be…     1 model_vary…         -8      0  4.25    0.926    0.123 
+## 2 ho_right_amyg_be…     1 model_vary…         -7      0  5.25    0.885    0.111 
+## 3 ho_right_amyg_be…     1 model_vary…         -6      0  6.25    0.844    0.0987
+## 4 ho_right_amyg_be…     1 model_vary…         -5      0  7.25    0.803    0.0875
+## 5 ho_right_amyg_be…     1 model_vary…         -4      0  8.25    0.762    0.0774
+## 6 ho_right_amyg_be…     1 model_vary…         -3      0  9.25    0.720    0.0688
 ## # … with 2 more variables: Q2.5 &lt;dbl&gt;, Q97.5 &lt;dbl&gt;</code></pre>
 <div id="a.-spaghetti-plot-of-model-predictions-across-specifications" class="section level2">
 <h2>5A. Spaghetti plot of model predictions across specifications</h2>
@@ -1016,7 +1034,7 @@ head(pred_grid)</code></pre>
   geom_line() +
   theme_bw() +
   labs(y = &#39;Estimated Amygdala Reactivity\nFear &gt; Baseline&#39;)</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 </div>
 <div id="b.-panel-plot-of-fitted-predictions" class="section level2">
 <h2>5B. Panel plot of fitted predictions</h2>
@@ -1030,7 +1048,7 @@ head(pred_grid)</code></pre>
        title = &#39;Panel plot with fitted model predictions for each specification&#39;) +
   facet_grid(rows = vars(model_type), cols = vars(amygdala_measure)) +
   theme(strip.text = element_text(size = 6))</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-29-1.png" width="864" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-30-1.png" width="864" /></p>
 </div>
 <div id="c.-plot-an-individual-models-fitted-predictions-with-raw-data" class="section level2">
 <h2>5C. Plot an individual model’s fitted predictions with raw data</h2>
@@ -1047,7 +1065,7 @@ ggplot(fake_data, aes(x = age, y = ho_right_amyg_beta)) +
   labs(y = &#39;Estimated Amygdala Reactivity\nFear &gt; Baseline&#39;, 
        title = &#39;Model predictions &amp; raw data for one specification&#39;, 
        subtitle = &#39;Harvard-Oxford right amygdala betas, brms model with varying slopes&#39;)</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <p>This is a nice check of our model fits! However, the more specifications we have, the more difficult it is to look at so many plots for individual specifications like this. To that end, for this study we have made <a href="https://pbloom.shinyapps.io/amygdala_mpfc_multiverse/">an interactive multiverse explorer Shiny app</a> for browsing model fits across specifications.</p>
 </div>
 </div>
@@ -1068,7 +1086,7 @@ nested_model_frame = mutate(nested_model_frame,
 <pre class="r"><code>cowplot::plot_grid(plotlist = pp_check_grid$chex, 
                    labels = as.vector(nested_model_frame$spec), 
                    label_size = 4, label_x = 0, hjust = 0)</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 <p>Again, this is a more descriptive analysis – it allows us to visually compare which specifications result in a model posterior distribution that most closely matches the observed data.</p>
 </div>
 <div id="b.-approximate-leave-one-out-loo-cross-validation" class="section level2">
@@ -1092,7 +1110,7 @@ loo_cv_grid$elpd_loo_se = as.numeric(loo_unnest$loo_cv[,2][row.names(loo_unnest$
   coord_flip() +
   theme_bw() +
   labs(x = &#39;Specification&#39;, y = &#39;elpd_loo&#39;)</code></pre>
-<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p><img src="into_the_bayesian_multiverse_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
 <p>While the values of <code>elpd_loo</code> don’t tell us so much intrinsically, the <em>relative ranking</em> of the values tells us which models (i.e. the ones with larger <code>elpd_loo</code>, towards the right of the plot) have better expected predictive performance.</p>
 </div>
 </div>
@@ -1147,22 +1165,22 @@ loo_cv_grid$elpd_loo_se = as.numeric(loo_unnest$loo_cv[,2][row.names(loo_unnest$
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] cowplot_1.0.0      brms_2.12.0        Rcpp_1.0.7         specr_0.2.2       
-##  [5] forcats_0.4.0      stringr_1.4.0      dplyr_1.0.3        purrr_0.3.3       
-##  [9] readr_1.3.1        tidyr_1.0.2        tibble_3.1.2       ggplot2_3.3.3.9000
-## [13] tidyverse_1.3.0   
+##  [1] broom.mixed_0.2.4  lme4_1.1-21        Matrix_1.2-18      cowplot_1.0.0     
+##  [5] brms_2.12.0        Rcpp_1.0.7         specr_0.2.2        forcats_0.4.0     
+##  [9] stringr_1.4.0      dplyr_1.0.3        purrr_0.3.3        readr_1.3.1       
+## [13] tidyr_1.0.2        tibble_3.1.2       ggplot2_3.3.3.9000 tidyverse_1.3.0   
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] readxl_1.3.1         backports_1.1.5      plyr_1.8.5          
-##   [4] igraph_1.2.4.2       splines_3.6.2        crosstalk_1.0.0     
-##   [7] rstantools_2.0.0     inline_0.3.15        digest_0.6.27       
-##  [10] htmltools_0.4.0      viridis_0.5.1        rsconnect_0.8.16    
-##  [13] fansi_0.5.0          magrittr_2.0.1       graphlayouts_0.7.1  
-##  [16] modelr_0.1.5         RcppParallel_4.4.4   matrixStats_0.55.0  
-##  [19] xts_0.12-0           prettyunits_1.1.1    colorspace_2.0-1    
-##  [22] rvest_0.3.5          ggrepel_0.8.1        haven_2.2.0         
-##  [25] xfun_0.19            callr_3.4.2          crayon_1.4.1        
-##  [28] jsonlite_1.6.1       lme4_1.1-21          zoo_1.8-7           
+##   [4] igraph_1.2.4.2       TMB_1.7.16           splines_3.6.2       
+##   [7] crosstalk_1.0.0      rstantools_2.0.0     inline_0.3.15       
+##  [10] digest_0.6.27        htmltools_0.4.0      viridis_0.5.1       
+##  [13] rsconnect_0.8.16     fansi_0.5.0          magrittr_2.0.1      
+##  [16] graphlayouts_0.7.1   modelr_0.1.5         RcppParallel_4.4.4  
+##  [19] matrixStats_0.55.0   xts_0.12-0           prettyunits_1.1.1   
+##  [22] colorspace_2.0-1     rvest_0.3.5          ggrepel_0.8.1       
+##  [25] haven_2.2.0          xfun_0.19            callr_3.4.2         
+##  [28] crayon_1.4.1         jsonlite_1.6.1       zoo_1.8-7           
 ##  [31] glue_1.4.2           polyclip_1.10-0      gtable_0.3.0        
 ##  [34] V8_3.0.1             pkgbuild_1.0.6       rstan_2.21.1        
 ##  [37] abind_1.4-5          scales_1.1.1         mvtnorm_1.1-0       
@@ -1183,17 +1201,16 @@ loo_cv_grid$elpd_loo_se = as.numeric(loo_unnest$loo_cv[,2][row.names(loo_unnest$
 ##  [82] shinythemes_1.2.0    rstudioapi_0.10      curl_4.3            
 ##  [85] reprex_0.3.0         tweenr_1.0.1         stringi_1.4.6       
 ##  [88] ps_1.3.2             Brobdingnag_1.2-6    lattice_0.20-38     
-##  [91] Matrix_1.2-18        nloptr_1.2.1         markdown_1.1        
-##  [94] shinyjs_1.1          vctrs_0.3.8          pillar_1.6.1        
-##  [97] lifecycle_1.0.0      bridgesampling_1.0-0 httpuv_1.5.2        
-## [100] R6_2.5.0             promises_1.1.0       gridExtra_2.3       
-## [103] codetools_0.2-16     boot_1.3-23          colourpicker_1.0    
-## [106] MASS_7.3-51.4        gtools_3.8.1         assertthat_0.2.1    
-## [109] withr_2.4.2          shinystan_2.5.0      parallel_3.6.2      
-## [112] hms_0.5.3            grid_3.6.2           coda_0.19-3         
-## [115] minqa_1.2.4          rmarkdown_2.1        ggforce_0.3.1       
-## [118] shiny_1.4.0          lubridate_1.7.4      base64enc_0.1-3     
-## [121] dygraphs_1.1.1.6</code></pre>
+##  [91] nloptr_1.2.1         markdown_1.1         shinyjs_1.1         
+##  [94] vctrs_0.3.8          pillar_1.6.1         lifecycle_1.0.0     
+##  [97] bridgesampling_1.0-0 httpuv_1.5.2         R6_2.5.0            
+## [100] promises_1.1.0       gridExtra_2.3        codetools_0.2-16    
+## [103] boot_1.3-23          colourpicker_1.0     MASS_7.3-51.4       
+## [106] gtools_3.8.1         assertthat_0.2.1     withr_2.4.2         
+## [109] shinystan_2.5.0      parallel_3.6.2       hms_0.5.3           
+## [112] grid_3.6.2           coda_0.19-3          minqa_1.2.4         
+## [115] rmarkdown_2.1        ggforce_0.3.1        shiny_1.4.0         
+## [118] lubridate_1.7.4      base64enc_0.1-3      dygraphs_1.1.1.6</code></pre>
 </div>
 </div>
 
