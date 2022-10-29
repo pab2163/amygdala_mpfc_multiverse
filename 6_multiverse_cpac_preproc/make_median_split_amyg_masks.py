@@ -1,3 +1,7 @@
+'''
+Median split amygdala ROI into "high signal" and "low signal" based on meanSignalAmygMask.nii.gz 
+'''
+
 import pandas as pd
 import os
 
@@ -9,8 +13,8 @@ df = pd.read_csv('images/medianAmygSignal.txt', header = None)
 medianVal = df.iloc[0,0]
 
 # binarize masks above/below median
-os.system('fslmaths images/meanSignalAmygMask.nii.gz -thr %s -bin images/bilateralAmygHighSignal'%(int(medianVal)))
-os.system('fslmaths images/meanSignalAmygMask.nii.gz -uthr %s -bin images/bilateralAmygLowSignal'%(int(medianVal)))
+os.system(f'fslmaths images/meanSignalAmygMask.nii.gz -thr {int(medianVal)} -bin images/bilateralAmygHighSignal')
+os.system(f'fslmaths images/meanSignalAmygMask.nii.gz -uthr {int(medianVal)}  -bin images/bilateralAmygLowSignal')
 
 # Make left/right for high signal and low signal masks
 os.system('fslmaths images/bilateralAmygHighSignal.nii.gz -roi 45 91 0 -1 0 -1 0 -1 images/leftAmygHighSignal')
@@ -18,7 +22,7 @@ os.system('fslmaths images/bilateralAmygLowSignal.nii.gz -roi 45 91 0 -1 0 -1 0 
 os.system('fslmaths images/bilateralAmygHighSignal.nii.gz -roi 0 45 0 -1 0 -1 0 -1 images/rightAmygHighSignal')
 os.system('fslmaths images/bilateralAmygLowSignal.nii.gz -roi 0 45 0 -1 0 -1 0 -1 images/rightAmygLowSignal')
 
-# Regular right/left
+# Entire right & left amygdala
 os.system('fslmaths ../../Structural/mni2mmSpace/harvardoxfordsubcortical_bilateralamyg_2mm.nii.gz -roi 45 91 0 -1 0 -1 0 -1 images/leftAmyg')
 os.system('fslmaths ../../Structural/mni2mmSpace/harvardoxfordsubcortical_bilateralamyg_2mm.nii.gz -roi 0 45 0 -1 0 -1 0 -1 images/rightAmyg')
 
