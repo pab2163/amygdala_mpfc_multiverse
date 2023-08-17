@@ -4,7 +4,7 @@ Analysis scripts (R, python, and shell) and documentation for this project, and 
 
 ## Links:
 
-* See paper at [Bloom et al., 2022](https://doi.org/10.1002/hbm.25847) [Preprint Manuscript(https://www.biorxiv.org/content/10.1101/2021.10.08.463601v1)
+* See paper at [Bloom et al., 2022](https://doi.org/10.1002/hbm.25847) [Preprint Manuscript](https://www.biorxiv.org/content/10.1101/2021.10.08.463601v1)
 * [Multiverse analysis tutorial + walkthrough](https://pab2163.github.io/amygdala_mpfc_multiverse/into_the_bayesian_multiverse.html)
 * [Interactive multiverse explorer app](https://pbloom.shinyapps.io/amygdala_mpfc_multiverse/)
 * [Materials & preregistration on Open Science Framework](https://osf.io/hvdmx/)
