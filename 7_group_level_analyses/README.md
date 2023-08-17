@@ -10,7 +10,7 @@ Scripts for compiling data into tabular form, ready to run many group-level mode
 
 ## `1_run_multiverse_group_level_models`
 
-Scripts that run hundreds/thousands of `brms` group-level models for amygdala reactivity, amygdala-mPFC functional connectivity, and associations with separation anxiety behaviors. Note: code similar to this  that can be run with simulated data can be found [here](https://pab2163.github.io/amygdala_mpfc_multiverse/into_the_bayesian_multiverse.html).
+Scripts that run hundreds/thousands of `brms` group-level models for amygdala reactivity, amygdala-mPFC functional connectivity, and associations with separation anxiety behaviors. Reliability analyses also in this folder. Note: code similar to this  that can be run with simulated data can be found [here](https://pab2163.github.io/amygdala_mpfc_multiverse/into_the_bayesian_multiverse.html).
 
 ## `2_make_plots_inspect_models`
 
