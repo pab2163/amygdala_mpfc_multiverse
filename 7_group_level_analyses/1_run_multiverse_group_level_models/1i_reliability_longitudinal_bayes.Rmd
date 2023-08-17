@@ -1,0 +1,388 @@
+---
+title: "Bayesian Longitudinal Reliability"
+author: "Paul Bloom"
+date: "1/3/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(psych)
+library(purrr)
+library(sjstats)
+library(cowplot)
+library(brms)
+theme_set(theme_bw())
+```
+
+# Reactivity
+
+```{r}
+reactivity = read_csv('compiled_data/comps_amyg_fear_reactivity_master.csv') %>%
+  dplyr::select(-contains('Signal')) %>%
+  dplyr::filter(censoredTR <= 40)
+
+
+nested_reactivity  = reactivity %>%
+  pivot_longer(contains('bilateral'), names_to = 'metric', values_to = 'reactivity') %>%
+  dplyr::select(Subject, wave, metric, reactivity) %>%
+  group_by(metric) %>%
+  nest() %>%
+  dplyr::mutate(icc = map(data, ~dplyr::filter(., !is.na(reactivity)) %>%
+                              brms::brm(data= ., reactivity ~ 1 + (1|Subject), cores = 4) %>%
+                              performance::variance_decomposition(.)
+                              ))
+
+
+reactivity_icc = dplyr::mutate(nested_reactivity, ICC = NA, lower = NA, upper = NA)
+
+for (row in 1:nrow(reactivity_icc)){
+  reactivity_icc$ICC[row] = reactivity_icc$icc[[row]]$ICC_decomposed
+  reactivity_icc$lower[row] = reactivity_icc$icc[[row]]$ICC_CI[1]
+  reactivity_icc$upper[row] = reactivity_icc$icc[[row]]$ICC_CI[2]
+}
+
+
+save(reactivity_icc, file = 'output/icc/reactivity_bayes_icc.rda')
+
+reactivity_icc_plot = reactivity_icc %>%
+  ggplot(data = ., aes(x = metric, y = ICC)) + 
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  coord_flip() +
+  labs(x = 'Reactivity') 
+
+
+```
+
+# gPPI
+
+```{r}
+gppi = read_csv('compiled_data/comps_amyg_fear_ppi_master.csv') %>%
+  dplyr::filter(censoredTR <= 40)
+
+nested_gppi  = gppi %>%
+  pivot_longer(contains('mpfc'), names_to = 'metric', values_to = 'gppi') %>%
+  dplyr::select(Subject, wave, metric, gppi) %>%
+  group_by(metric) %>%
+  nest() %>%
+  dplyr::mutate(icc = map(data, ~dplyr::filter(., !is.na(gppi)) %>%
+                              brms::brm(data= ., gppi ~ 1 + (1|Subject), cores = 4) %>%
+                              performance::variance_decomposition(.)
+                              ))
+
+
+gppi_icc = dplyr::mutate(nested_gppi, ICC = NA, lower = NA, upper = NA)
+
+for (row in 1:nrow(gppi_icc)){
+  gppi_icc$ICC[row] = gppi_icc$icc[[row]]$ICC_decomposed
+  gppi_icc$lower[row] = gppi_icc$icc[[row]]$ICC_CI[1]
+  gppi_icc$upper[row] = gppi_icc$icc[[row]]$ICC_CI[2]
+}
+
+
+save(gppi_icc, file = 'output/icc/gppi_bayes_icc.rda')
+
+gppi_icc_plot = gppi_icc %>%
+  ggplot(data = ., aes(x = metric, y = ICC)) + 
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  coord_flip() +
+  labs(x = 'gppi') 
+```
+
+
+
+# BSC
+
+```{r}
+bsc = read_csv('compiled_data/comps_amyg_fear_bsc_master.csv') %>%
+  dplyr::filter(censoredTR <= 40)
+
+nested_bsc  = bsc %>%
+  pivot_longer(contains('mpfc'), names_to = 'metric', values_to = 'bsc') %>%
+  dplyr::select(Subject, wave, metric, bsc) %>%
+  group_by(metric) %>%
+  nest() %>%
+  dplyr::mutate(icc = map(data, ~dplyr::filter(., !is.na(bsc)) %>%
+                              brms::brm(data= ., bsc ~ 1 + (1|Subject), cores = 4) %>%
+                              performance::variance_decomposition(.)
+                              ))
+
+
+bsc_icc = dplyr::mutate(nested_bsc, ICC = NA, lower = NA, upper = NA)
+
+for (row in 1:nrow(bsc_icc)){
+  bsc_icc$ICC[row] = bsc_icc$icc[[row]]$ICC_decomposed
+  bsc_icc$lower[row] = bsc_icc$icc[[row]]$ICC_CI[1]
+  bsc_icc$upper[row] = bsc_icc$icc[[row]]$ICC_CI[2]
+}
+
+
+save(bsc_icc, file = 'output/icc/bsc_bayes_icc.rda')
+
+bsc_icc_plot = bsc_icc %>%
+  ggplot(data = ., aes(x = metric, y = ICC)) + 
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  coord_flip() +
+  labs(x = 'bsc') 
+
+```
+
+# Slopes
+
+```{r}
+slopes = read_csv('compiled_data/habit_slopes_master_comps.csv') %>%
+  dplyr::filter(censoredTR <= 40)
+
+nested_slopes  = slopes %>%
+  pivot_longer(contains('fear'), names_to = 'metric', values_to = 'slopes') %>%
+  dplyr::select(Subject, wave, metric, slopes) %>%
+  group_by(metric) %>%
+  nest() %>%
+  dplyr::mutate(icc = map(data, ~dplyr::filter(., !is.na(slopes)) %>%
+                              brms::brm(data= ., slopes ~ 1 + (1|Subject), cores = 4) %>%
+                              performance::variance_decomposition(.)
+                              ))
+
+slopes_icc = dplyr::mutate(nested_slopes, ICC = NA, lower = NA, upper = NA)
+
+for (row in 1:nrow(slopes_icc)){
+  slopes_icc$ICC[row] = slopes_icc$icc[[row]]$ICC_decomposed
+  slopes_icc$lower[row] = slopes_icc$icc[[row]]$ICC_CI[1]
+  slopes_icc$upper[row] = slopes_icc$icc[[row]]$ICC_CI[2]
+}
+
+
+save(slopes_icc, file = 'output/icc/slopes_bayes_icc.rda')
+
+slopes_icc_plot = slopes_icc %>%
+  ggplot(data = ., aes(x = metric, y = ICC)) + 
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  coord_flip() +
+  labs(x = 'slopes') 
+
+```
+
+# Other
+
+```{r}
+other = read_csv('compiled_data/all_brain_sep_anx_comps.csv') 
+
+nested_other  = other %>%
+  pivot_longer(c('motion', 'rcads_raw', 'rcads_t', 'scaredSepAnx'), names_to = 'metric', values_to = 'other') %>%
+  dplyr::select(Subject, wave, metric, other) %>%
+  group_by(metric) %>%
+  nest() %>%
+  dplyr::mutate(icc = map(data, ~dplyr::filter(., !is.na(other)) %>%
+                              brms::brm(data= ., other ~ 1 + (1|Subject), cores = 4) %>%
+                              performance::variance_decomposition(.)
+                              ))
+
+other_icc = dplyr::mutate(nested_other, ICC = NA, lower = NA, upper = NA)
+
+for (row in 1:nrow(other_icc)){
+  other_icc$ICC[row] = other_icc$icc[[row]]$ICC_decomposed
+  other_icc$lower[row] = other_icc$icc[[row]]$ICC_CI[1]
+  other_icc$upper[row] = other_icc$icc[[row]]$ICC_CI[2]
+}
+
+
+save(other_icc, file = 'output/icc/other_bayes_icc.rda')
+
+
+```
+
+
+```{r}
+load('output/icc/other_bayes_icc.rda')
+load('output/icc/reactivity_bayes_icc.rda')
+load('output/icc/gppi_bayes_icc.rda')
+load('output/icc/bsc_bayes_icc.rda')
+load('output/icc/slopes_bayes_icc.rda')
+
+
+min = -0.33
+max = 0.68
+
+other_icc_plot = other_icc %>%
+  mutate(type = ifelse(grepl('motion', metric), 'Head Motion', 'Sep. Anxiety'),
+         metric = dplyr::recode(metric,
+                                'motion'=' Mean Framewise Displacement',
+                                'rcads_raw'='RCADS Sep. Anxiety Raw Score',
+                                'rcads_t'='RCADS Sep. Anxiety T Score',
+                                'scaredSepAnx'='SCARED Sep. Anxiety')) %>%
+  ggplot(data = ., aes(x = metric, y = ICC)) + 
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0.4, aes(fill = '" Poor"'), alpha = 0.3) +
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = 0.4, ymax = 0.6, aes(fill = '"Fair"'), alpha = 0.3) +
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = 0.6, ymax = 0.75, aes(fill = '"Moderate"'), alpha = 0.3) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  coord_flip() +
+  labs(title = '', x = '') +
+  ylim(min, max) +
+  theme(plot.margin=grid::unit(c(0,0,0,0), "mm"), legend.position = 'none',
+        axis.text.y = element_text(size = 10, face = 'bold')) +
+  scale_fill_brewer()
+
+reactivity_icc_plot = reactivity_icc %>%
+  dplyr::mutate(metric = dplyr::recode(metric,
+                                       "og_native_amyg_bilateral_tstat" = 'FSL Preproc, FSL GLM, Native Space, 24motion, 2G HRF, highpass, tstat',
+                                       "og_native_amyg_bilateral_beta" = 'FSL Preproc, FSL GLM, Native Space, 24motion, 2G HRF, highpass, beta',
+                                       "og_ho_amyg_bilateral_tstat"  = 'FSL Preproc, FSL GLM, MNI Space, 24motion, 2G HRF, highpass, tstat',
+                                       "og_ho_amyg_bilateral_beta"   =  'FSL Preproc, FSL GLM, MNI Space, 24motion, 2G HRF, highpass, beta',
+                                       "fsl_4_bilateralAmyg_beta"   =   'CPAC Preproc, FSL GLM, 18motion+WM+CSF, 1G HRF, highpass, beta',
+                                       "fsl_1_bilateralAmyg_beta" =   'CPAC Preproc, FSL GLM, 6motion, 2G HRF, highpass, beta',
+                                       "fsl_2_bilateralAmyg_beta"   =    'CPAC Preproc, FSL GLM, 18motion+WM+CSF, 2G HRF, highpass, beta',
+                                       "fsl_3_bilateralAmyg_beta"   =    'CPAC Preproc, FSL GLM, 6motion, 1G HRF, highpass, beta',
+                                       "afni_6_bilateralAmyg_beta"   =   'CPAC Preproc, AFNI GLM, 6motion, 1G HRF, quradtic detrend, beta',
+                                       "afni_7_bilateralAmyg_beta"    =  'CPAC Preproc, AFNI GLM, 18motion+WM+CSF, 1G HRF, highpass, beta',
+                                       "afni_8_bilateralAmyg_beta"     = 'CPAC Preproc, AFNI GLM, 18motion+WM+CSF, 1G HRF, quadratic detrend, beta',
+                                       "afni_5_bilateralAmyg_beta"     = 'CPAC Preproc, AFNI GLM, 6motion, 1G HRF, highpass, beta', 
+                                       "fsl_4_bilateralAmyg_tstat"   =   'CPAC Preproc, FSL FLM, 18motion+WM+CSF, 1G HRF, highpass, tstat',
+                                       "fsl_1_bilateralAmyg_tstat"     = 'CPAC Preproc FSL GLM, 6motion, 2G HRF, highpass, tstat',
+                                       "fsl_2_bilateralAmyg_tstat"    =   'CPAC Preproc, FSL GLM, 18motion+WM+CSF, 2G HRF, highpass, tstat',
+                                       "fsl_3_bilateralAmyg_tstat"    =  'CPAC Preproc, FSL GLM, 6motion, 1G HRF, highpass, tstat',
+                                       "afni_6_bilateralAmyg_tstat"    = 'CPAC Preproc, AFNI GLM, 6motion, 1G HRF, quradtic detrend, tstat',
+                                       "afni_7_bilateralAmyg_tstat"     = 'CPAC Preproc, AFNI GLM, 18motion+WM+CSF, 1G HRF, highpass, tstat',
+                                       "afni_8_bilateralAmyg_tstat"    = 'CPAC Preproc, AFNI GLM, 18motion+WM+CSF, 1G HRF, quadratic detrend, tstat',
+                                       "afni_5_bilateralAmyg_tstat" = 'CPAC Preproc, AFNI GLM, 6motion, 1G HRF, highpass, tstat', 
+                                       )) %>%
+  ggplot(data = ., aes(x = fct_reorder(metric, ICC), y = ICC)) + 
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0.4, aes(fill = '" Poor"'), alpha = 0.1) +
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = 0.4, ymax = 0.6, aes(fill = '"Fair"'), alpha = 0.1) +
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = 0.6, ymax = 0.75, aes(fill = '"Moderate"'), alpha = 0.1) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  coord_flip() +
+  labs(title = '', x= NULL) +
+  ylim(min, max) +
+  theme(axis.text.y = element_text(size = 10, face = 'bold'), legend.position = 'none') +
+  scale_fill_brewer()
+
+
+fc_icc = rbind(gppi_icc, bsc_icc) %>%
+  dplyr::mutate(type = ifelse(grepl('deconv', metric), 'Amyg-mPFC FC: gPPI', 'Amyg-mPFC FC: BSC'),
+                metric = dplyr::recode(metric,
+                  "fear_deconv_mpfc1_tstat"    = 'mPFC roi #1, deconv+, tstat',
+                  "fear_deconv_mpfc2_tstat"    = 'mPFC roi #2, deconv+, tstat',
+                  "fear_deconv_mpfc3_tstat"    = 'mPFC roi #3, deconv+, tstat',
+                  "fear_deconv_vmpfc_tstat"   = 'large vmPFC, deconv+, tstat',
+                  "fear_deconv_mpfc1_beta"    = 'mPFC roi #1, deconv+, beta',
+                  "fear_deconv_mpfc2_beta"    = 'mPFC roi #2, deconv+, beta',
+                  "fear_deconv_mpfc3_beta"    = 'mPFC roi #3, deconv+, beta',
+                  "fear_deconv_vmpfc_beta"   = 'large vmPFC, deconv+, beta',   
+                  "fear_no_deconv_mpfc1_tstat"    = 'mPFC roi #1, deconv-, tstat',
+                  "fear_no_deconv_mpfc2_tstat"    = 'mPFC roi #2, deconv-, tstat',
+                  "fear_no_deconv_mpfc3_tstat"    = 'mPFC roi #3, deconv-, tstat',
+                  "fear_no_deconv_vmpfc_tstat"   = 'large vmPFC, deconv-, tstat',
+                  "fear_no_deconv_mpfc1_beta"    = 'mPFC roi #1, deconv-, beta',
+                  "fear_no_deconv_mpfc2_beta"    = 'mPFC roi #2, deconv-, beta',
+                  "fear_no_deconv_mpfc3_beta"    = 'mPFC roi #3, deconv-, beta',
+                  "fear_no_deconv_vmpfc_beta"   = 'large vmPFC, deconv-, beta',   
+                  "vmpfc_bilateralamyg_gsr"  = 'large vmPFC, bilateral amyg, GSS+',
+                  "vmpfc_rightamyg_gsr"       ='large vmPFC, right amyg, GSS+',
+                  "vmpfc_leftamyg_gsr"       ='large vmPFC, left amyg, GSS+',
+                  "mpfc1_bilateralamyg_gsr"   = 'mPFC roi #1, bilateral amyg, GSS+',
+                  "mpfc1_rightamyg_gsr"    ='mPFC roi #1, right amyg, GSS+',
+                  "mpfc1_leftamyg_gsr"     ='mPFC roi #1, left amyg, GSS+',
+                  "mpfc2_bilateralamyg_gsr"   = 'mPFC roi #2, bilateral amyg, GSS+',
+                  "mpfc2_rightamyg_gsr"    ='mPFC roi #2, right amyg, GSS+',
+                  "mpfc2_leftamyg_gsr"     ='mPFC roi #2, left amyg, GSS+',
+                  "mpfc3_bilateralamyg_gsr"   = 'mPFC roi #3, bilateral amyg, GSS+',
+                  "mpfc3_rightamyg_gsr"    ='mPFC roi #3, right amyg, GSS+',
+                  "mpfc3_leftamyg_gsr"     ='mPFC roi #3, left amyg, GSS+',    
+                  "vmpfc_bilateralamyg_no_gsr"  = 'large vmPFC, bilateral amyg, GSS-',
+                  "vmpfc_rightamyg_no_gsr"       ='large vmPFC, right amyg, GSS-',
+                  "vmpfc_leftamyg_no_gsr"       ='large vmPFC, left amyg, GSS-',
+                  "mpfc1_bilateralamyg_no_gsr"   = 'mPFC roi #1, bilateral amyg, GSS-',
+                  "mpfc1_rightamyg_no_gsr"    ='mPFC roi #1, right amyg, GSS-',
+                  "mpfc1_leftamyg_no_gsr"     ='mPFC roi #1, left amyg, GSS-',
+                  "mpfc2_bilateralamyg_no_gsr"   = 'mPFC roi #2, bilateral amyg, GSS-',
+                  "mpfc2_rightamyg_no_gsr"    ='mPFC roi #2, right amyg, GSS-',
+                  "mpfc2_leftamyg_no_gsr"     ='mPFC roi #2, left amyg, GSS-',
+                  "mpfc3_bilateralamyg_no_gsr"   = 'mPFC roi #3, bilateral amyg, GSS-',
+                  "mpfc3_rightamyg_no_gsr"    ='mPFC roi #3, right amyg, GSS-',
+                  "mpfc3_leftamyg_no_gsr"     ='mPFC roi #3, left amyg, GSS-',     
+                ))
+
+fc_icc_plot = fc_icc %>%
+  ggplot(data = ., aes(x = fct_reorder(metric, ICC), y = ICC)) + 
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0.4, aes(fill = '" Poor"'), alpha = 0.1) +
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = 0.4, ymax = 0.6, aes(fill = '"Fair"'), alpha = 0.1) +
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = 0.6, ymax = 0.75, aes(fill = '"Moderate"'), alpha = 0.1) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  coord_flip() +
+  labs(title = '', x= NULL)  +
+  facet_grid(rows = vars(type), scales = 'free_y') +
+  ylim(min, max) +
+  theme(axis.text.y = element_text(size = 10, face = 'bold'), legend.position = 'none') +
+  scale_fill_brewer()
+
+
+boxes = data.frame(xmin = rep(-Inf, 3), 
+                   xmax = rep(-Inf, 3), 
+                   ymin = c(-Inf, 0.4, 0.6),
+                   ymax = c(0.4, 0.6, 0.75),
+                   name = c('Poor', 'Fair', 'Moderate'))
+
+
+boxes$name <- factor(boxes$name, levels=c("Poor", "Fair", "Moderate"), labels=c("Poor", "Fair", "Moderate"))
+
+
+slopes_icc_plot = slopes_icc %>%
+  dplyr::mutate(metric = dplyr::recode(metric,
+                                       "bilateral_gsr_fear_slope"  = 'Bilateral Amyg, GSS+',
+                                       "right_gsr_fear_slope"   ='Right Amyg, GSS+',
+                                       "left_gsr_fear_slope"   ='Left Amyg, GSS+'  ,  
+                                       "bilateral_no_gsr_fear_slope" ='Bilateral Amyg, GSS-',
+                                       "right_no_gsr_fear_slope" ='Right Amyg, GSS-',
+                                       "left_no_gsr_fear_slope" ='Left Amyg, GSS-'
+                                       )) %>%
+  ggplot(data = ., aes(x = metric, y = ICC)) + 
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0.4, aes(fill = '" Poor"'), alpha = 0.3) +
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = 0.4, ymax = 0.6, aes(fill = '"Fair"'), alpha = 0.3) +
+  geom_rect(xmin = -Inf, xmax = Inf, ymin = 0.6, ymax = 0.75, aes(fill = '"Moderate"'), alpha = 0.3) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  coord_flip() +
+  labs(title = '', x = NULL, fill = 'Reliability Categorization') +
+  ylim(min, max) +
+  theme(plot.margin=grid::unit(c(0,0,0,0), "mm"), legend.position = 'left',
+        axis.text.y = element_text(size = 10, face = 'bold'),
+        legend.text = element_text(face = 'bold', size = 12),
+        legend.title = element_text(face = 'bold', size = 12)) +
+  scale_fill_brewer(labels = c("Poor (< 0.4)", "Fair (0.4 - 0.6)", "Good (0.6 - 0.75)"))
+
+
+icc_left = cowplot::plot_grid(reactivity_icc_plot, slopes_icc_plot, nrow = 2, align = 'v', axis = 'lr', rel_heights = c(3, 1), 
+                              labels = c('A: Amygdala Reactivity', 'B: Amygdala Slopes Across Trials'))
+icc_right = cowplot::plot_grid(fc_icc_plot, other_icc_plot, nrow = 2, align = 'v', axis = 'lr', 
+                               labels = c('C: Amygdala-mPFC FC', 
+                                          'D: Sep. Anxiety & Head Motion'), 
+                               rel_heights = c(3, 1))
+
+icc_grid = cowplot::plot_grid(icc_left, icc_right, rel_widths = c(1.5, 1))
+
+
+cowplot::save_plot(icc_grid, filename = 'plots/icc_grid.png', base_height = 10, base_width = 12)
+
+```
+
+
+
